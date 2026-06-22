@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Maps the app-private external "downloads" dir where the new APK is saved,
+         so it can be shared with the system package installer via a content:// URI. -->
+    <external-files-path name="updates" path="updates/" />
+</paths>

@@ -6,4 +6,20 @@
     <string name="add_favorite">Tocca per scegliere</string>
     <string name="pick_favorite_title">Scegli un’app preferita</string>
     <string name="empty_favorite">Vuoto</string>
+
+    <!-- Aggiornamento in-app -->
+    <string name="update_check_action">Cerca aggiornamenti</string>
+    <string name="update_up_to_date">Hai già l\'ultima versione</string>
+    <string name="update_check_failed">Impossibile controllare gli aggiornamenti</string>
+    <string name="update_available_title">Aggiornamento disponibile</string>
+    <string name="update_available_message">È disponibile la versione %1$s.</string>
+    <string name="update_action_install">Aggiorna</string>
+    <string name="update_action_later">Più tardi</string>
+    <string name="update_permission_title">Autorizzazione necessaria</string>
+    <string name="update_permission_message">Per installare l\'aggiornamento, consenti a questa app di installare app sconosciute.</string>
+    <string name="update_permission_open_settings">Apri impostazioni</string>
+    <string name="update_downloading_title">Download aggiornamento</string>
+    <string name="update_downloading">Download… %1$d%%</string>
+    <string name="update_download_failed">Download non riuscito</string>
+    <string name="update_verify_failed">Verifica dell\'aggiornamento non riuscita</string>
 </resources>

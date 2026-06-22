@@ -5,4 +5,20 @@
     <string name="add_favorite">Tap to choose</string>
     <string name="pick_favorite_title">Choose a favorite app</string>
     <string name="empty_favorite">Empty</string>
+
+    <!-- In-app updater -->
+    <string name="update_check_action">Check for updates</string>
+    <string name="update_up_to_date">You\'re on the latest version</string>
+    <string name="update_check_failed">Couldn\'t check for updates</string>
+    <string name="update_available_title">Update available</string>
+    <string name="update_available_message">Version %1$s is available.</string>
+    <string name="update_action_install">Update</string>
+    <string name="update_action_later">Later</string>
+    <string name="update_permission_title">Permission required</string>
+    <string name="update_permission_message">To install the update, allow this app to install unknown apps.</string>
+    <string name="update_permission_open_settings">Open settings</string>
+    <string name="update_downloading_title">Downloading update</string>
+    <string name="update_downloading">Downloading… %1$d%%</string>
+    <string name="update_download_failed">Download failed</string>
+    <string name="update_verify_failed">Update verification failed</string>
 </resources>

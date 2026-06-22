@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tommasov.mg4simplelauncher.update.UpdateManager;
+
 /**
  * Home screen. Three vertical cards each launch one chosen favorite app; a long press
  * re-assigns the slot. The fourth column opens the "all apps" and "system apps" drawers.
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 v -> openDrawer(AppDrawerActivity.MODE_ALL, -1));
         findViewById(R.id.card_system_apps).setOnClickListener(
                 v -> openDrawer(AppDrawerActivity.MODE_SYSTEM, -1));
+
+        // Silently check for a newer build on launch; prompts the user only if one exists.
+        new UpdateManager(this).checkForUpdates(false);
     }
 
     @Override

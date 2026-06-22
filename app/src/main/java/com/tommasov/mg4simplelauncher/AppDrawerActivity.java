@@ -7,12 +7,16 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +57,14 @@ public class AppDrawerActivity extends AppCompatActivity {
 
         TextView title = findViewById(R.id.drawer_title);
         title.setText(titleForMode());
+
+        // The manual update check belongs in the browsing drawers, not the favorite picker.
+        Button checkUpdates = findViewById(R.id.check_updates_button);
+        if (MODE_PICK.equals(mode)) {
+            checkUpdates.setVisibility(View.GONE);
+        } else {
+            checkUpdates.setOnClickListener(v -> new UpdateManager(this).checkForUpdates(true));
+        }
 
         RecyclerView grid = findViewById(R.id.app_grid);
         int span = Math.max(4, getResources().getConfiguration().screenWidthDp / 130);
