@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MG4 Simple Launcher</string>
+    <string name="all_apps">Tutte le app</string>
+    <string name="system_apps">App di sistema</string>
+    <string name="add_favorite">Tocca per scegliere</string>
+    <string name="pick_favorite_title">Scegli un’app preferita</string>
+    <string name="empty_favorite">Vuoto</string>
+</resources>
