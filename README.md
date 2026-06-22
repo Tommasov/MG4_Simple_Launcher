@@ -47,7 +47,7 @@ while the page is visible:
 ## Screenshots
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/ezgif-273580ea3cfcbd0f.gif" alt="MG4 Simple Launcher — demo" width="900" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/demo.gif" alt="MG4 Simple Launcher — demo" width="900" />
 </p>
 
 <p align="center">
