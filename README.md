@@ -47,10 +47,16 @@ while the page is visible:
 ## Screenshots
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher_develop.png" alt="MG4 Simple Launcher — development screenshot" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/ezgif-273580ea3cfcbd0f.gif" alt="MG4 Simple Launcher — demo" width="900" />
 </p>
 
-> Work-in-progress development screenshot.
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/Screenshot_1782141845.png" alt="MG4 Simple Launcher — home screen" width="800" />
+</p>
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/Screenshot_1782141854.png" alt="MG4 Simple Launcher — system info screen" width="800" />
+</p>
 
 ## Build
 
