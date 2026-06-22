@@ -175,6 +175,33 @@ public class ApkDownloader {
         }
     }
 
+    /** Downloads younger than this are assumed to belong to an in-progress install. */
+    private static final long STALE_AGE_MS = 60 * 60 * 1000L;
+
+    /**
+     * Deletes stale APKs from the updates directory to reclaim space. Files modified within the
+     * last hour are left untouched: the system installer reads the APK in its own task after we
+     * hand it off, so a just-downloaded file may still be in use even across a launcher relaunch.
+     * Leftovers from earlier sessions are cleaned on a subsequent startup.
+     */
+    public static void clearDownloads(@NonNull Context context) {
+        File base = context.getExternalFilesDir(null);
+        if (base == null) {
+            return;
+        }
+        File[] files = new File(base, SUBDIR).listFiles();
+        if (files == null) {
+            return;
+        }
+        long cutoff = System.currentTimeMillis() - STALE_AGE_MS;
+        for (File file : files) {
+            if (file.lastModified() < cutoff) {
+                //noinspection ResultOfMethodCallIgnored
+                file.delete();
+            }
+        }
+    }
+
     /** Cancels an in-flight download and releases resources. */
     public void cancel() {
         if (downloadId != -1) {

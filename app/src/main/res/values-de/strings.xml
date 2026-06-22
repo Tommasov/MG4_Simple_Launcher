@@ -22,7 +22,6 @@
     <string name="net_ethernet">Ethernet</string>
     <string name="net_offline">Offline</string>
     <string name="sys_uptime">Laufzeit %1$s</string>
-    <string name="sys_temp">Temperatur %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
 </resources>

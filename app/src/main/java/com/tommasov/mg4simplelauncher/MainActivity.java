@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.tommasov.mg4simplelauncher.update.ApkDownloader;
 import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
 /**
@@ -15,6 +16,7 @@ import com.tommasov.mg4simplelauncher.update.UpdateManager;
 public class MainActivity extends AppCompatActivity {
 
     private View[] pageBars;
+    private UpdateManager updateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,25 @@ public class MainActivity extends AppCompatActivity {
                 updateIndicator(position);
             }
         });
-        updateIndicator(pager.getCurrentItem());
+        // Post so the indicator reads the page ViewPager2 restores after a layout pass
+        // (state restore doesn't reliably fire onPageSelected for the initial position).
+        pager.post(() -> updateIndicator(pager.getCurrentItem()));
+
+        // Remove any APK left over from a previous (completed or cancelled) update.
+        ApkDownloader.clearDownloads(this);
 
         // Silently check for a newer build on launch; prompts the user only if one exists.
-        new UpdateManager(this).checkForUpdates(false);
+        updateManager = new UpdateManager(this);
+        updateManager.checkForUpdates(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Tear down any in-flight download/dialog so it can't leak the window or a receiver.
+        if (updateManager != null) {
+            updateManager.cancel();
+        }
     }
 
     /** Highlights the bar of the current page and shrinks the others (SAIC-style pagination). */

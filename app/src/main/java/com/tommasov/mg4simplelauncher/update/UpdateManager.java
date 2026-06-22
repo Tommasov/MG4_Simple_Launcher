@@ -1,8 +1,6 @@
 package com.tommasov.mg4simplelauncher.update;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -11,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.R;
@@ -27,7 +26,6 @@ public class UpdateManager {
 
     private final Activity activity;
     private final UpdateChecker checker;
-    private final ExecutorService verifyExecutor = Executors.newSingleThreadExecutor();
 
     private ApkDownloader downloader;
     private AlertDialog progressDialog;
@@ -123,7 +121,9 @@ public class UpdateManager {
     }
 
     private void verifyAndInstall(@NonNull File apk, @NonNull UpdateInfo info) {
-        // Hashing can take a moment for a large APK; keep it off the main thread.
+        // Hashing can take a moment for a large APK; keep it off the main thread. The executor
+        // is single-use: shutdown() lets the submitted task finish, then releases the thread.
+        ExecutorService verifyExecutor = Executors.newSingleThreadExecutor();
         verifyExecutor.execute(() -> {
             boolean ok = ApkInstaller.verify(apk, info.sha256);
             activity.runOnUiThread(() -> {
@@ -137,6 +137,7 @@ public class UpdateManager {
                 }
             });
         });
+        verifyExecutor.shutdown();
     }
 
     // --- progress dialog --------------------------------------------------
@@ -182,10 +183,26 @@ public class UpdateManager {
     }
 
     private void dismissProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing() && !activity.isFinishing()) {
-            progressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            try {
+                progressDialog.dismiss();
+            } catch (IllegalArgumentException ignored) {
+                // Host window already gone (activity destroyed); nothing to dismiss.
+            }
         }
         progressDialog = null;
+    }
+
+    /**
+     * Releases any in-flight update work. Call from the host activity's onDestroy so a running
+     * download can't leak the progress dialog window or keep a broadcast receiver registered.
+     */
+    public void cancel() {
+        if (downloader != null) {
+            downloader.cancel();
+            downloader = null;
+        }
+        dismissProgressDialog();
     }
 
     private void toast(int resId) {

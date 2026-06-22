@@ -42,6 +42,7 @@ public class AppDrawerActivity extends AppCompatActivity {
 
     private String mode;
     private int slot;
+    private UpdateManager updateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,8 @@ public class AppDrawerActivity extends AppCompatActivity {
         if (MODE_PICK.equals(mode)) {
             checkUpdates.setVisibility(View.GONE);
         } else {
-            checkUpdates.setOnClickListener(v -> new UpdateManager(this).checkForUpdates(true));
+            updateManager = new UpdateManager(this);
+            checkUpdates.setOnClickListener(v -> updateManager.checkForUpdates(true));
         }
 
         // System apps are reached from the "all apps" drawer header; redundant elsewhere.
@@ -157,11 +159,7 @@ public class AppDrawerActivity extends AppCompatActivity {
     }
 
     private void launch(String packageName) {
-        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
+        if (!AppLauncher.launch(this, packageName)) {
             Toast.makeText(this, packageName, Toast.LENGTH_SHORT).show();
         }
     }
@@ -170,5 +168,9 @@ public class AppDrawerActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdownNow();
+        // Tear down any in-flight download/dialog started from the update button.
+        if (updateManager != null) {
+            updateManager.cancel();
+        }
     }
 }

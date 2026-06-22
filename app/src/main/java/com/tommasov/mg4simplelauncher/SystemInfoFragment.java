@@ -1,6 +1,7 @@
 package com.tommasov.mg4simplelauncher;
 
 import android.app.ActivityManager;
+import android.app.usage.StorageStatsManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
 import android.os.SystemClock;
+import android.os.storage.StorageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
- * Carousel page 2: live system information (device, memory, storage, battery, uptime).
+ * Carousel page 2: live system information (device, memory, storage, network, uptime).
  * Every value is read without dangerous permissions; the view refreshes while visible.
  */
 public class SystemInfoFragment extends Fragment {
@@ -89,10 +89,16 @@ public class SystemInfoFragment extends Fragment {
         if (ctx == null) {
             return;
         }
-        deviceBody.setText(buildDeviceText(ctx));
-        bindMemory(ctx);
-        bindStorage();
-        bindNetwork(ctx);
+        // System services and filesystem stats can throw transiently (e.g. /data remounting
+        // during an OTA); a refresh tick must never crash the launcher.
+        try {
+            deviceBody.setText(buildDeviceText(ctx));
+            bindMemory(ctx);
+            bindStorage(ctx);
+            bindNetwork(ctx);
+        } catch (Exception ignored) {
+            // Keep the last good values until the next tick.
+        }
     }
 
     private String buildDeviceText(Context ctx) {
@@ -108,74 +114,7 @@ public class SystemInfoFragment extends Fragment {
         } catch (PackageManager.NameNotFoundException e) {
             launcher = "";
         }
-        String body = model + "\n" + android + "\n" + uptime + "\n" + launcher;
-        // Temperature isn't exposed by a public API on a normal app, so this is best-effort:
-        // shown only when a thermal zone is actually readable on this device.
-        String temp = readDeviceTemperature();
-        if (temp != null) {
-            body += "\n" + getString(R.string.sys_temp, temp);
-        }
-        return body;
-    }
-
-    /**
-     * Best-effort device temperature read from {@code /sys/class/thermal}. Prefers a CPU/SoC
-     * zone and falls back to the hottest plausible zone. Returns null if nothing is readable
-     * (e.g. SELinux blocks access), so the caller can simply omit the line.
-     */
-    @Nullable
-    private static String readDeviceTemperature() {
-        File[] zones = new File("/sys/class/thermal").listFiles(
-                (dir, name) -> name.startsWith("thermal_zone"));
-        if (zones == null) {
-            return null;
-        }
-        double preferred = Double.NaN;
-        double hottest = Double.NaN;
-        for (File zone : zones) {
-            Double celsius = parseTemp(new File(zone, "temp"));
-            if (celsius == null || celsius < 0 || celsius > 150) {
-                continue;
-            }
-            if (Double.isNaN(hottest) || celsius > hottest) {
-                hottest = celsius;
-            }
-            String type = readFirstLine(new File(zone, "type"));
-            if (type != null) {
-                String t = type.toLowerCase(Locale.US);
-                if (t.contains("cpu") || t.contains("soc") || t.contains("tsens")
-                        || t.contains("ap")) {
-                    if (Double.isNaN(preferred) || celsius > preferred) {
-                        preferred = celsius;
-                    }
-                }
-            }
-        }
-        double chosen = !Double.isNaN(preferred) ? preferred : hottest;
-        return Double.isNaN(chosen) ? null : Math.round(chosen) + "°C";
-    }
-
-    /** Parses a thermal zone temp file, normalising milli-°C (e.g. 47000) to °C. */
-    private static Double parseTemp(File file) {
-        String line = readFirstLine(file);
-        if (line == null) {
-            return null;
-        }
-        try {
-            long raw = Long.parseLong(line.trim());
-            return raw > 1000 ? raw / 1000.0 : (double) raw;
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    @Nullable
-    private static String readFirstLine(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            return reader.readLine();
-        } catch (Exception e) {
-            return null;
-        }
+        return model + "\n" + android + "\n" + uptime + "\n" + launcher;
     }
 
     private void bindMemory(Context ctx) {
@@ -189,10 +128,20 @@ public class SystemInfoFragment extends Fragment {
         memoryValue.setText(formatGb(used) + " / " + formatGb(mi.totalMem) + " GB");
     }
 
-    private void bindStorage() {
-        StatFs fs = new StatFs(Environment.getDataDirectory().getPath());
-        storageValue.setText(
-                formatGb(fs.getAvailableBytes()) + " / " + formatGb(fs.getTotalBytes()) + " GB");
+    private void bindStorage(Context ctx) {
+        try {
+            // Matches the figures the user sees in system Settings (whole primary volume).
+            StorageStatsManager stats =
+                    (StorageStatsManager) ctx.getSystemService(Context.STORAGE_STATS_SERVICE);
+            long total = stats.getTotalBytes(StorageManager.UUID_DEFAULT);
+            long free = stats.getFreeBytes(StorageManager.UUID_DEFAULT);
+            storageValue.setText(formatGb(free) + " / " + formatGb(total) + " GB");
+        } catch (Exception e) {
+            // Fall back to the data partition figures if storage stats are unavailable.
+            StatFs fs = new StatFs(Environment.getDataDirectory().getPath());
+            storageValue.setText(
+                    formatGb(fs.getAvailableBytes()) + " / " + formatGb(fs.getTotalBytes()) + " GB");
+        }
     }
 
     private void bindNetwork(Context ctx) {
@@ -232,7 +181,7 @@ public class SystemInfoFragment extends Fragment {
     }
 
     private static String formatGb(long bytes) {
-        return String.format(Locale.US, "%.1f", bytes / GB);
+        return String.format(Locale.getDefault(), "%.1f", bytes / GB);
     }
 
     /** Human-readable uptime, e.g. "1d 3h 12m" (days dropped when zero). */

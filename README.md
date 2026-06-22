@@ -37,9 +37,8 @@ Swipe right from the home to reach the system-info page (`SystemInfoFragment` /
 `res/layout/fragment_system.xml`). It shows live, permission-free stats that refresh
 while the page is visible:
 
-- **Device**: manufacturer + model, Android version (release · API), uptime, the
-  installed launcher version, and — when a thermal zone is readable — device
-  temperature (best-effort, from `/sys/class/thermal`; omitted if unavailable).
+- **Device**: manufacturer + model, Android version (release · API), uptime, and the
+  installed launcher version.
 - **Memory**: used / total RAM.
 - **Storage**: free / total internal storage.
 - **Network**: active connection type (Wi-Fi / mobile / Ethernet / offline) and, on

@@ -37,6 +37,8 @@ public class HomeFragment extends Fragment {
     private View[] favoriteCards;
     private ImageView[] favoriteIcons;
     private TextView[] favoriteLabels;
+    private ImageView settingsIcon;
+    private ImageView filesIcon;
 
     @Nullable
     @Override
@@ -77,10 +79,8 @@ public class HomeFragment extends Fragment {
                 v -> openDrawer(AppDrawerActivity.MODE_ALL, -1));
 
         // Two fixed shortcuts to the Android 9 default Settings and Files apps.
-        ImageView settingsIcon = view.findViewById(R.id.icon_settings);
-        ImageView filesIcon = view.findViewById(R.id.icon_files);
-        bindFixedApp(settingsIcon, PKG_SETTINGS);
-        bindFixedApp(filesIcon, PKG_FILES);
+        settingsIcon = view.findViewById(R.id.icon_settings);
+        filesIcon = view.findViewById(R.id.icon_files);
         settingsIcon.setOnClickListener(v -> launch(PKG_SETTINGS));
         filesIcon.setOnClickListener(v -> launch(PKG_FILES));
     }
@@ -92,6 +92,9 @@ public class HomeFragment extends Fragment {
         for (int i = 0; i < PreferencesManager.FAVORITE_COUNT; i++) {
             bindFavorite(i);
         }
+        // Re-resolve the fixed shortcut icons too, in case a target app was installed/updated.
+        bindFixedApp(settingsIcon, PKG_SETTINGS);
+        bindFixedApp(filesIcon, PKG_FILES);
     }
 
     private void bindFavorite(int slot) {
@@ -119,11 +122,7 @@ public class HomeFragment extends Fragment {
             openDrawer(AppDrawerActivity.MODE_PICK, slot);
             return;
         }
-        Intent intent = requireContext().getPackageManager().getLaunchIntentForPackage(pkg);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
+        if (!AppLauncher.launch(requireContext(), pkg)) {
             // Not launchable anymore: let the user reassign the slot.
             Toast.makeText(requireContext(), pkg, Toast.LENGTH_SHORT).show();
             openDrawer(AppDrawerActivity.MODE_PICK, slot);
@@ -170,11 +169,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void launch(String pkg) {
-        Intent intent = requireContext().getPackageManager().getLaunchIntentForPackage(pkg);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
+        if (!AppLauncher.launch(requireContext(), pkg)) {
             Toast.makeText(requireContext(), pkg, Toast.LENGTH_SHORT).show();
         }
     }
