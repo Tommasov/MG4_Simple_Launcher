@@ -10,14 +10,48 @@ fits visually with the system, while providing a minimal, focused home screen.
 
 ## Features
 
-- **Three favorite cards**: three vertical cards, each launching one app of your
-  choice. Tap a card to open its app; **long-press** to assign or change it.
-- **Fourth column — app drawers**: split into two stacked cards:
-  - **All apps**: every launchable app, in a grid.
-  - **System apps**: only system apps (`FLAG_SYSTEM`).
+- **Swipeable two-page home**: a horizontal carousel (`ViewPager2`). Swipe left/right
+  between the launcher home (page 1) and a **system-info** screen (page 2). A
+  SAIC-style bar indicator at the bottom centre shows the current page.
+- **Three favorite cards** (page 1): three vertical cards, each launching one app of
+  your choice. Tap a card to open its app; **long-press** to assign or change it.
+- **Fourth column**:
+  - **All apps** (top card): every launchable app, in a grid.
+  - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
+    **Settings** apps, side by side as icons.
+- **System apps & updates**: inside the *All apps* drawer, the header carries a
+  **System apps** button (only system apps, `FLAG_SYSTEM`) next to **Check for
+  updates**, plus a **back** button to return home.
 - **Light / dark theme**: follows the system day/night mode automatically, using
   the original SAIC light and dark artwork.
 - **Persisted favorites**: the three chosen apps are saved across reboots.
+
+## Changing a pinned app
+
+**Long-press** one of the three big cards to open the app picker, then tap the app
+you want in that slot. Your choice is saved across reboots.
+
+## Second screen (system info)
+
+Swipe right from the home to reach the system-info page (`SystemInfoFragment` /
+`res/layout/fragment_system.xml`). It shows live, permission-free stats that refresh
+while the page is visible:
+
+- **Device**: manufacturer + model, Android version (release · API), uptime, the
+  installed launcher version, and — when a thermal zone is readable — device
+  temperature (best-effort, from `/sys/class/thermal`; omitted if unavailable).
+- **Memory**: used / total RAM.
+- **Storage**: free / total internal storage.
+- **Network**: active connection type (Wi-Fi / mobile / Ethernet / offline) and, on
+  Wi-Fi, the negotiated link speed.
+
+## Screenshots
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher_develop.png" alt="MG4 Simple Launcher — development screenshot" width="800" />
+</p>
+
+> Work-in-progress development screenshot.
 
 ## Build
 

@@ -1,146 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Home screen: three vertical favorite cards + a fourth column split into
-     "all apps" and "system apps". Landscape only (MG4 head unit, 1920x720). -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Swipeable two-page home carousel (page 1: launcher home, page 2: info cards) with a
+     SAIC-style bar pagination indicator pinned to the bottom centre. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false"
-    android:padding="@dimen/screen_padding">
+    android:layout_height="match_parent">
 
-    <!-- Favorite 1 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/home_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
-        android:id="@+id/card_fav_1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/bigcard_selector"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/page_indicator_margin_bottom"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/icon_fav_1"
-            android:layout_width="@dimen/favorite_icon_size"
-            android:layout_height="@dimen/favorite_icon_size"
-            android:contentDescription="@string/add_favorite" />
+        <View
+            android:id="@+id/page_bar_0"
+            android:layout_width="@dimen/page_indicator_active_width"
+            android:layout_height="@dimen/page_indicator_height"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/page_bar_active" />
 
-        <TextView
-            android:id="@+id/label_fav_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/add_favorite"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/favorite_label_size" />
+        <View
+            android:id="@+id/page_bar_1"
+            android:layout_width="@dimen/page_indicator_inactive_width"
+            android:layout_height="@dimen/page_indicator_height"
+            android:background="@drawable/page_bar_inactive" />
     </LinearLayout>
-
-    <!-- Favorite 2 -->
-    <LinearLayout
-        android:id="@+id/card_fav_2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/bigcard_selector"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/icon_fav_2"
-            android:layout_width="@dimen/favorite_icon_size"
-            android:layout_height="@dimen/favorite_icon_size"
-            android:contentDescription="@string/add_favorite" />
-
-        <TextView
-            android:id="@+id/label_fav_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/add_favorite"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/favorite_label_size" />
-    </LinearLayout>
-
-    <!-- Favorite 3 -->
-    <LinearLayout
-        android:id="@+id/card_fav_3"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/bigcard_selector"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/icon_fav_3"
-            android:layout_width="@dimen/favorite_icon_size"
-            android:layout_height="@dimen/favorite_icon_size"
-            android:contentDescription="@string/add_favorite" />
-
-        <TextView
-            android:id="@+id/label_fav_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/add_favorite"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/favorite_label_size" />
-    </LinearLayout>
-
-    <!-- Fourth column: all apps (top) + system apps (bottom) -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/card_all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="@dimen/card_gap"
-            android:background="@drawable/smallcard_selector"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/all_apps"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/card_system_apps"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/system_apps"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+</FrameLayout>

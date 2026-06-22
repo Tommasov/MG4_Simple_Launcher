@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,12 +57,27 @@ public class AppDrawerActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.drawer_title);
         title.setText(titleForMode());
 
+        // Explicit back affordance for the head unit, mirroring the system back gesture.
+        findViewById(R.id.drawer_back_button).setOnClickListener(v -> finish());
+
         // The manual update check belongs in the browsing drawers, not the favorite picker.
-        Button checkUpdates = findViewById(R.id.check_updates_button);
+        View checkUpdates = findViewById(R.id.check_updates_button);
         if (MODE_PICK.equals(mode)) {
             checkUpdates.setVisibility(View.GONE);
         } else {
             checkUpdates.setOnClickListener(v -> new UpdateManager(this).checkForUpdates(true));
+        }
+
+        // System apps are reached from the "all apps" drawer header; redundant elsewhere.
+        View systemApps = findViewById(R.id.system_apps_button);
+        if (MODE_ALL.equals(mode)) {
+            systemApps.setOnClickListener(v -> {
+                Intent intent = new Intent(this, AppDrawerActivity.class);
+                intent.putExtra(EXTRA_MODE, MODE_SYSTEM);
+                startActivity(intent);
+            });
+        } else {
+            systemApps.setVisibility(View.GONE);
         }
 
         RecyclerView grid = findViewById(R.id.app_grid);

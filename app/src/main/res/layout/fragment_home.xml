@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Home page (carousel page 1): three vertical favorite cards + a fourth column
+     with "all apps" and two fixed shortcuts. Landscape (MG4 head unit, 1920x720). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:padding="@dimen/screen_padding">
+
+    <!-- Favorite 1 -->
+    <LinearLayout
+        android:id="@+id/card_fav_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_1"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <!-- Favorite 2 -->
+    <LinearLayout
+        android:id="@+id/card_fav_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_2"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <!-- Favorite 3 -->
+    <LinearLayout
+        android:id="@+id/card_fav_3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_3"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <!-- Fourth column: all apps (top) + two fixed app shortcuts (bottom) -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/card_all_apps"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/all_apps"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/small_card_label_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Two fixed shortcuts (Files + Settings), icons only, side by side on a single card. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/icon_files"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/icon_press_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/cd_files"
+                android:padding="@dimen/fixed_app_padding"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:id="@+id/icon_settings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/icon_press_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/cd_settings"
+                android:padding="@dimen/fixed_app_padding"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

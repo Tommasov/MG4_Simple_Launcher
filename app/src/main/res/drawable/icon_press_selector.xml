@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Transparent at rest, subtle tonal highlight only while pressed: gives the two
+     fixed icons touch feedback without drawing a permanent tile inside the card. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/button_surface_pressed" />
+        </shape>
+    </item>
+    <item android:drawable="@android:color/transparent" />
+</selector>

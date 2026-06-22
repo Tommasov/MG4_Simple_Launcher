@@ -11,4 +11,15 @@
     <dimen name="drawer_button_size">20sp</dimen>
     <dimen name="drawer_icon_size">88dp</dimen>
     <dimen name="drawer_label_size">18sp</dimen>
+    <dimen name="fixed_app_padding">24dp</dimen>
+    <dimen name="native_button_radius">10dp</dimen>
+    <dimen name="native_button_padding_h">24dp</dimen>
+    <dimen name="native_button_padding_v">12dp</dimen>
+    <dimen name="info_card_padding">24dp</dimen>
+    <dimen name="info_card_body_size">22sp</dimen>
+    <dimen name="sys_value_size">32sp</dimen>
+    <dimen name="page_indicator_active_width">32dp</dimen>
+    <dimen name="page_indicator_inactive_width">16dp</dimen>
+    <dimen name="page_indicator_height">6dp</dimen>
+    <dimen name="page_indicator_margin_bottom">12dp</dimen>
 </resources>

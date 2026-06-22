@@ -6,4 +6,23 @@
     <string name="add_favorite">Appuyez pour choisir</string>
     <string name="pick_favorite_title">Choisir une application favorite</string>
     <string name="empty_favorite">Vide</string>
+    <string name="cd_settings">Paramètres</string>
+    <string name="cd_files">Fichiers</string>
+    <string name="cd_back">Retour</string>
+
+    <!-- Deuxième page du carrousel : infos système en direct -->
+    <string name="sys_device">Appareil</string>
+    <string name="sys_memory">Mémoire</string>
+    <string name="sys_storage">Stockage</string>
+    <string name="sys_network">Réseau</string>
+    <string name="sys_used_total">utilisé / total</string>
+    <string name="sys_free_total">libre / total</string>
+    <string name="net_wifi">Wi-Fi</string>
+    <string name="net_mobile">Mobile</string>
+    <string name="net_ethernet">Ethernet</string>
+    <string name="net_offline">Hors ligne</string>
+    <string name="sys_uptime">Allumé depuis %1$s</string>
+    <string name="sys_temp">Température %1$s</string>
+    <string name="sys_android">Android %1$s · API %2$d</string>
+    <string name="sys_launcher">Launcher %1$s (%2$d)</string>
 </resources>

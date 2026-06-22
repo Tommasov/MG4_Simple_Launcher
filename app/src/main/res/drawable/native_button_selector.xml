@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Native-style tonal button, mirroring the SAIC launcher's rounded surfaces
+     (pressed/normal selector + rounded-rect shape, no Material chrome). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/button_surface_pressed" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/button_surface" />
+        </shape>
+    </item>
+</selector>

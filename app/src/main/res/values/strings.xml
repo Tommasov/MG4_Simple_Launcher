@@ -5,6 +5,25 @@
     <string name="add_favorite">Tap to choose</string>
     <string name="pick_favorite_title">Choose a favorite app</string>
     <string name="empty_favorite">Empty</string>
+    <string name="cd_settings">Settings</string>
+    <string name="cd_files">Files</string>
+    <string name="cd_back">Back</string>
+
+    <!-- Second carousel page: live system info -->
+    <string name="sys_device">Device</string>
+    <string name="sys_memory">Memory</string>
+    <string name="sys_storage">Storage</string>
+    <string name="sys_network">Network</string>
+    <string name="sys_used_total">used / total</string>
+    <string name="sys_free_total">free / total</string>
+    <string name="net_wifi">Wi-Fi</string>
+    <string name="net_mobile">Mobile</string>
+    <string name="net_ethernet">Ethernet</string>
+    <string name="net_offline">Offline</string>
+    <string name="sys_uptime">Uptime %1$s</string>
+    <string name="sys_temp">Temp %1$s</string>
+    <string name="sys_android">Android %1$s · API %2$d</string>
+    <string name="sys_launcher">Launcher %1$s (%2$d)</string>
 
     <!-- In-app updater -->
     <string name="update_check_action">Check for updates</string>

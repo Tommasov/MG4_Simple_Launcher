@@ -12,6 +12,18 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <ImageView
+            android:id="@+id/drawer_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:contentDescription="@string/cd_back"
+            android:focusable="true"
+            android:padding="@dimen/native_button_padding_v"
+            android:src="@drawable/ic_back" />
+
         <TextView
             android:id="@+id/drawer_title"
             android:layout_width="0dp"
@@ -23,11 +35,31 @@
             tools:ignore="HardcodedText"
             xmlns:tools="http://schemas.android.com/tools" />
 
-        <Button
-            android:id="@+id/check_updates_button"
-            style="?attr/materialButtonOutlinedStyle"
+        <TextView
+            android:id="@+id/system_apps_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:text="@string/system_apps"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size" />
+
+        <TextView
+            android:id="@+id/check_updates_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
             android:text="@string/update_check_action"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/drawer_button_size" />

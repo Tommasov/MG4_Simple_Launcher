@@ -6,4 +6,23 @@
     <string name="add_favorite">Zum Auswählen tippen</string>
     <string name="pick_favorite_title">Lieblings-App auswählen</string>
     <string name="empty_favorite">Leer</string>
+    <string name="cd_settings">Einstellungen</string>
+    <string name="cd_files">Dateien</string>
+    <string name="cd_back">Zurück</string>
+
+    <!-- Zweite Karussellseite: Live-Systeminfos -->
+    <string name="sys_device">Gerät</string>
+    <string name="sys_memory">Speicher</string>
+    <string name="sys_storage">Speicherplatz</string>
+    <string name="sys_network">Netzwerk</string>
+    <string name="sys_used_total">belegt / gesamt</string>
+    <string name="sys_free_total">frei / gesamt</string>
+    <string name="net_wifi">WLAN</string>
+    <string name="net_mobile">Mobil</string>
+    <string name="net_ethernet">Ethernet</string>
+    <string name="net_offline">Offline</string>
+    <string name="sys_uptime">Laufzeit %1$s</string>
+    <string name="sys_temp">Temperatur %1$s</string>
+    <string name="sys_android">Android %1$s · API %2$d</string>
+    <string name="sys_launcher">Launcher %1$s (%2$d)</string>
 </resources>
