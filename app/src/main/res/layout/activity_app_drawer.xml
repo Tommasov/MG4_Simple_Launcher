@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/text_primary"
-            android:textSize="26sp"
+            android:textSize="@dimen/drawer_title_size"
             android:textStyle="bold"
             tools:ignore="HardcodedText"
             xmlns:tools="http://schemas.android.com/tools" />
@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/update_check_action"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

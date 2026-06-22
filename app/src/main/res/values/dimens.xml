@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Sizes are tuned for an automotive head unit (1920x720, viewed at arm's length),
+     so icons and text are deliberately large for legibility while driving. -->
 <resources>
     <dimen name="screen_padding">24dp</dimen>
     <dimen name="card_gap">16dp</dimen>
-    <dimen name="favorite_icon_size">96dp</dimen>
-    <dimen name="favorite_label_size">22sp</dimen>
-    <dimen name="small_card_label_size">20sp</dimen>
-    <dimen name="drawer_icon_size">64dp</dimen>
-    <dimen name="drawer_label_size">14sp</dimen>
+    <dimen name="favorite_icon_size">160dp</dimen>
+    <dimen name="favorite_label_size">30sp</dimen>
+    <dimen name="small_card_label_size">28sp</dimen>
+    <dimen name="drawer_title_size">30sp</dimen>
+    <dimen name="drawer_button_size">20sp</dimen>
+    <dimen name="drawer_icon_size">88dp</dimen>
+    <dimen name="drawer_label_size">18sp</dimen>
 </resources>

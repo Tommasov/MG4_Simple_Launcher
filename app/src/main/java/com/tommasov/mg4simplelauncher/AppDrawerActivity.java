@@ -102,7 +102,6 @@ public class AppDrawerActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
 
-        boolean systemOnly = MODE_SYSTEM.equals(mode);
         String ownPackage = getPackageName();
         List<AppInfo> apps = new ArrayList<>();
         for (ResolveInfo ri : resolveInfos) {
@@ -111,10 +110,20 @@ public class AppDrawerActivity extends AppCompatActivity {
             if (pkg.equals(ownPackage)) {
                 continue;
             }
-            boolean system = (ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-            if (systemOnly && !system) {
-                continue;
+            // An updated system app (e.g. preinstalled Maps the user updated) counts as
+            // a user app, so it shows up in "all apps" rather than the system drawer.
+            boolean system = (ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0
+                    && (ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0;
+            if (MODE_SYSTEM.equals(mode)) {
+                if (!system) {
+                    continue;
+                }
+            } else if (MODE_ALL.equals(mode)) {
+                if (system) {
+                    continue;
+                }
             }
+            // MODE_PICK keeps every app so any can be assigned as a favorite.
             String label = ri.loadLabel(pm).toString();
             apps.add(new AppInfo(label, pkg, ri.loadIcon(pm), system));
         }
