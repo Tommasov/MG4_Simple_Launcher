@@ -1,5 +1,9 @@
 # MG4 Simple Launcher
 
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher.png" alt="MG4 Simple Launcher" width="200" />
+</p>
+
 MG4 Simple Launcher is a simple custom home launcher designed for the MG4 head
 unit (1920×720, landscape). It reuses the original SAIC launcher artwork so it
 fits visually with the system, while providing a minimal, focused home screen.
