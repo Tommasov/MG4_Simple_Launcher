@@ -1,0 +1,139 @@
+package com.tommasov.mg4simplelauncher;
+
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Full-screen drawer that lists launchable apps. Three modes:
+ *  - ALL: every launchable app, tap to launch.
+ *  - SYSTEM: only system apps, tap to launch.
+ *  - PICK: every launchable app, tap to assign it to a favorite slot, then return.
+ */
+public class AppDrawerActivity extends AppCompatActivity {
+
+    public static final String EXTRA_MODE = "mode";
+    public static final String EXTRA_SLOT = "slot";
+    public static final String MODE_ALL = "all";
+    public static final String MODE_SYSTEM = "system";
+    public static final String MODE_PICK = "pick";
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    private String mode;
+    private int slot;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_app_drawer);
+
+        mode = getIntent().getStringExtra(EXTRA_MODE);
+        if (mode == null) {
+            mode = MODE_ALL;
+        }
+        slot = getIntent().getIntExtra(EXTRA_SLOT, -1);
+
+        TextView title = findViewById(R.id.drawer_title);
+        title.setText(titleForMode());
+
+        RecyclerView grid = findViewById(R.id.app_grid);
+        int span = Math.max(4, getResources().getConfiguration().screenWidthDp / 130);
+        grid.setLayoutManager(new GridLayoutManager(this, span));
+
+        loadApps(grid);
+    }
+
+    private String titleForMode() {
+        switch (mode) {
+            case MODE_SYSTEM:
+                return getString(R.string.system_apps);
+            case MODE_PICK:
+                return getString(R.string.pick_favorite_title);
+            default:
+                return getString(R.string.all_apps);
+        }
+    }
+
+    private void loadApps(RecyclerView grid) {
+        executor.execute(() -> {
+            List<AppInfo> apps = queryApps();
+            mainHandler.post(() -> {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                grid.setAdapter(new AppListAdapter(apps, this::onAppClick));
+            });
+        });
+    }
+
+    private List<AppInfo> queryApps() {
+        PackageManager pm = getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
+
+        boolean systemOnly = MODE_SYSTEM.equals(mode);
+        String ownPackage = getPackageName();
+        List<AppInfo> apps = new ArrayList<>();
+        for (ResolveInfo ri : resolveInfos) {
+            ApplicationInfo ai = ri.activityInfo.applicationInfo;
+            String pkg = ri.activityInfo.packageName;
+            if (pkg.equals(ownPackage)) {
+                continue;
+            }
+            boolean system = (ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            if (systemOnly && !system) {
+                continue;
+            }
+            String label = ri.loadLabel(pm).toString();
+            apps.add(new AppInfo(label, pkg, ri.loadIcon(pm), system));
+        }
+        Collections.sort(apps, (a, b) -> a.label.compareToIgnoreCase(b.label));
+        return apps;
+    }
+
+    private void onAppClick(AppInfo app) {
+        if (MODE_PICK.equals(mode)) {
+            if (slot >= 0) {
+                new PreferencesManager(this).setFavorite(slot, app.packageName);
+            }
+            finish();
+            return;
+        }
+        launch(app.packageName);
+    }
+
+    private void launch(String packageName) {
+        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, packageName, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
+    }
+}

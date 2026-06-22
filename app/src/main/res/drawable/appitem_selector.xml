@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for a single app tile inside the drawer grid. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/app_press_bg" />
+    <item android:drawable="@drawable/app_normal_bg" />
+</selector>

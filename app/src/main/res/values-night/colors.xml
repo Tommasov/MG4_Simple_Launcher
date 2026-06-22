@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark-mode palette: light text on the charcoal SAIC night artwork. -->
+    <color name="text_primary">#f2f5f7</color>
+    <color name="text_secondary">#99ffffff</color>
+    <color name="accent">#056eff</color>
+    <color name="scrim">#99000000</color>
+    <color name="drawer_background">#f21e1f22</color>
+</resources>

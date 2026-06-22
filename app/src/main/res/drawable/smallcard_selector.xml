@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for the two stacked cards in the fourth column (all apps / system apps). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/bg_clicked" />
+    <item android:drawable="@drawable/bg_normal" />
+</selector>

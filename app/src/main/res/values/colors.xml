@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Carried over from the original SAIC launcher palette for visual consistency. -->
+    <color name="text_primary">#3c4143</color>
+    <color name="text_secondary">#7f3c4143</color>
+    <color name="accent">#056eff</color>
+    <color name="scrim">#66000000</color>
+    <color name="drawer_background">#f2ffffff</color>
+</resources>

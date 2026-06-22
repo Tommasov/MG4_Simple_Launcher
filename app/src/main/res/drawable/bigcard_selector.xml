@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for the three vertical favorite cards. Reuses the original SAIC
+     big-card art, swapping to the "clicked" variant while pressed. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/bigcard_bg_clicked" />
+    <item android:drawable="@drawable/bigcard_bg_normal" />
+</selector>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_padding">24dp</dimen>
+    <dimen name="card_gap">16dp</dimen>
+    <dimen name="favorite_icon_size">96dp</dimen>
+    <dimen name="favorite_label_size">22sp</dimen>
+    <dimen name="small_card_label_size">20sp</dimen>
+    <dimen name="drawer_icon_size">64dp</dimen>
+    <dimen name="drawer_label_size">14sp</dimen>
+</resources>
