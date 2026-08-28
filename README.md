@@ -58,6 +58,23 @@ while the page is visible:
   <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/Screenshot_1782141854.png" alt="MG4 Simple Launcher — system info screen" width="800" />
 </p>
 
+## Videoguida in italiano
+
+Una guida video dedicata al pubblico italiano, che mostra il launcher in funzione
+sulla MG4:
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=XDgJUkOuVAg">
+    <img src="https://img.youtube.com/vi/XDgJUkOuVAg/maxresdefault.jpg" alt="MG4 Swipe, e le nuove APP compaiono!!! — videoguida in italiano" width="640" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=XDgJUkOuVAg"><strong>MG4 Swipe, e le nuove APP compaiono!!!</strong></a>
+</p>
+
+> 🇬🇧 *Italian-language video guide showing the launcher running on the MG4 head unit.*
+
 ## Build
 
 Standard Android project (Java, AGP 8.6, Gradle 8.7, `minSdk 28` / `targetSdk 34`).
