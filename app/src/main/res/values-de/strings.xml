@@ -9,6 +9,13 @@
     <string name="cd_settings">Einstellungen</string>
     <string name="cd_files">Dateien</string>
     <string name="cd_back">Zurück</string>
+    <string name="app_info_unavailable">App-Info ist auf diesem System nicht verfügbar</string>
+
+    <!-- Dritte Karussellseite: Raster mit zuweisbaren Verknüpfungen -->
+    <string name="grid_favorites_title">Verknüpfungen</string>
+    <string name="grid_favorites_hint">Kachel lange drücken, um sie zuzuweisen oder zu ändern</string>
+    <string name="grid_slot_change">App ändern</string>
+    <string name="grid_slot_remove">Entfernen</string>
 
     <!-- Zweite Karussellseite: Live-Systeminfos -->
     <string name="sys_device">Gerät</string>
@@ -24,4 +31,20 @@
     <string name="sys_uptime">Laufzeit %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
+
+    <!-- In-App-Update -->
+    <string name="update_check_action">Nach Updates suchen</string>
+    <string name="update_up_to_date">Du hast bereits die neueste Version</string>
+    <string name="update_check_failed">Suche nach Updates fehlgeschlagen</string>
+    <string name="update_available_title">Update verfügbar</string>
+    <string name="update_available_message">Version %1$s ist verfügbar.</string>
+    <string name="update_action_install">Aktualisieren</string>
+    <string name="update_action_later">Später</string>
+    <string name="update_permission_title">Berechtigung erforderlich</string>
+    <string name="update_permission_message">Erlaube dieser App, unbekannte Apps zu installieren, um das Update zu installieren.</string>
+    <string name="update_permission_open_settings">Einstellungen öffnen</string>
+    <string name="update_downloading_title">Update wird heruntergeladen</string>
+    <string name="update_downloading">Wird heruntergeladen… %1$d%%</string>
+    <string name="update_download_failed">Download fehlgeschlagen</string>
+    <string name="update_verify_failed">Überprüfung des Updates fehlgeschlagen</string>
 </resources>

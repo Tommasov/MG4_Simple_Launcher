@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Carousel page 2: live system information, refreshed while the page is visible.
+<!-- Carousel page 3: live system information, refreshed while the page is visible.
      All values are read without dangerous permissions. Landscape (MG4 head unit). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

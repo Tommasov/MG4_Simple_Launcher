@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 /**
- * Carousel page 2: live system information (device, memory, storage, network, uptime).
+ * Carousel page 3: live system information (device, memory, storage, network, uptime).
  * Every value is read without dangerous permissions; the view refreshes while visible.
  */
 public class SystemInfoFragment extends Fragment {

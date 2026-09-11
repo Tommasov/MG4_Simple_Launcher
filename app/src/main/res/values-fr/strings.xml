@@ -9,6 +9,13 @@
     <string name="cd_settings">Paramètres</string>
     <string name="cd_files">Fichiers</string>
     <string name="cd_back">Retour</string>
+    <string name="app_info_unavailable">Les infos de l\'application ne sont pas disponibles sur ce système</string>
+
+    <!-- Troisième page du carrousel : grille de raccourcis attribuables -->
+    <string name="grid_favorites_title">Raccourcis</string>
+    <string name="grid_favorites_hint">Appui long sur une case pour l\'attribuer ou la changer</string>
+    <string name="grid_slot_change">Changer d\'application</string>
+    <string name="grid_slot_remove">Retirer</string>
 
     <!-- Deuxième page du carrousel : infos système en direct -->
     <string name="sys_device">Appareil</string>
@@ -24,4 +31,20 @@
     <string name="sys_uptime">Allumé depuis %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
+
+    <!-- Mise à jour dans l'application -->
+    <string name="update_check_action">Rechercher des mises à jour</string>
+    <string name="update_up_to_date">Vous avez déjà la dernière version</string>
+    <string name="update_check_failed">Impossible de rechercher les mises à jour</string>
+    <string name="update_available_title">Mise à jour disponible</string>
+    <string name="update_available_message">La version %1$s est disponible.</string>
+    <string name="update_action_install">Mettre à jour</string>
+    <string name="update_action_later">Plus tard</string>
+    <string name="update_permission_title">Autorisation requise</string>
+    <string name="update_permission_message">Pour installer la mise à jour, autorisez cette application à installer des applications inconnues.</string>
+    <string name="update_permission_open_settings">Ouvrir les paramètres</string>
+    <string name="update_downloading_title">Téléchargement de la mise à jour</string>
+    <string name="update_downloading">Téléchargement… %1$d%%</string>
+    <string name="update_download_failed">Échec du téléchargement</string>
+    <string name="update_verify_failed">Échec de la vérification de la mise à jour</string>
 </resources>

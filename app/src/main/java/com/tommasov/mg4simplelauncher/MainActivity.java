@@ -10,8 +10,8 @@ import com.tommasov.mg4simplelauncher.update.ApkDownloader;
 import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
 /**
- * Hosts the two-page home carousel ({@link HomePagerAdapter}) and the bottom pagination
- * bars. Page 1 is the launcher home, page 2 the useful-info screen.
+ * Hosts the three-page home carousel ({@link HomePagerAdapter}) and the bottom pagination
+ * bars. Page 1 is the launcher home, page 2 the shortcut grid, page 3 the useful-info screen.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
         pageBars = new View[]{
                 findViewById(R.id.page_bar_0),
-                findViewById(R.id.page_bar_1)};
+                findViewById(R.id.page_bar_1),
+                findViewById(R.id.page_bar_2)};
         pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

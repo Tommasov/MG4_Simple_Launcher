@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-/** Two-page horizontal carousel: the home (page 0) and the system-info screen (page 1). */
+/**
+ * Three-page horizontal carousel: the home (page 0), the shortcut grid (page 1) and
+ * the system-info screen (page 2).
+ */
 public class HomePagerAdapter extends FragmentStateAdapter {
 
-    public static final int PAGE_COUNT = 2;
+    public static final int PAGE_COUNT = 3;
 
     public HomePagerAdapter(@NonNull FragmentActivity activity) {
         super(activity);
@@ -17,10 +20,14 @@ public class HomePagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (position == 1) {
-            return new SystemInfoFragment();
+        switch (position) {
+            case 1:
+                return new FavoritesGridFragment();
+            case 2:
+                return new SystemInfoFragment();
+            default:
+                return new HomeFragment();
         }
-        return new HomeFragment();
     }
 
     @Override

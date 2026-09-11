@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -20,10 +21,14 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
 
     private final List<AppInfo> apps;
     private final OnAppClickListener listener;
+    @Nullable
+    private final OnAppClickListener longClickListener;
 
-    public AppListAdapter(List<AppInfo> apps, OnAppClickListener listener) {
+    public AppListAdapter(List<AppInfo> apps, OnAppClickListener listener,
+                          @Nullable OnAppClickListener longClickListener) {
         this.apps = apps;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -40,6 +45,16 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
         holder.icon.setImageDrawable(app.icon);
         holder.label.setText(app.label);
         holder.itemView.setOnClickListener(v -> listener.onAppClick(app));
+        if (longClickListener != null) {
+            holder.itemView.setOnLongClickListener(v -> {
+                longClickListener.onAppClick(app);
+                return true;
+            });
+        } else {
+            // Recycled rows must not keep a long-press from another adapter configuration.
+            holder.itemView.setOnLongClickListener(null);
+            holder.itemView.setLongClickable(false);
+        }
     }
 
     @Override

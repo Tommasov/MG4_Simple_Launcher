@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Swipeable two-page home carousel (page 1: launcher home, page 2: info cards) with a
-     SAIC-style bar pagination indicator pinned to the bottom centre. -->
+<!-- Swipeable three-page home carousel (page 1: launcher home, page 2: shortcut grid,
+     page 3: info cards) with a SAIC-style bar pagination indicator pinned to the
+     bottom centre. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -26,6 +27,13 @@
 
         <View
             android:id="@+id/page_bar_1"
+            android:layout_width="@dimen/page_indicator_inactive_width"
+            android:layout_height="@dimen/page_indicator_height"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/page_bar_inactive" />
+
+        <View
+            android:id="@+id/page_bar_2"
             android:layout_width="@dimen/page_indicator_inactive_width"
             android:layout_height="@dimen/page_indicator_height"
             android:background="@drawable/page_bar_inactive" />

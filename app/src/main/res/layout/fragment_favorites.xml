@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carousel page 2: a grid of assignable shortcuts. Landscape (MG4 head unit).
+     The bottom padding keeps the last tile row clear of the pagination indicator. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/screen_padding"
+    android:paddingTop="@dimen/screen_padding"
+    android:paddingEnd="@dimen/screen_padding"
+    android:paddingBottom="@dimen/grid_padding_bottom">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/grid_favorites_title"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/drawer_title_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/grid_favorites_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/info_card_body_size" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favorites_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/card_gap"
+        android:clipToPadding="false" />
+</LinearLayout>

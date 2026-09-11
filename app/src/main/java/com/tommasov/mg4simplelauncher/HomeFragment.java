@@ -2,13 +2,9 @@ package com.tommasov.mg4simplelauncher;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Process;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import java.util.List;
 
 /**
  * Carousel page 1: the launcher home. Three vertical cards each launch one chosen favorite
@@ -104,7 +98,7 @@ public class HomeFragment extends Fragment {
             try {
                 ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
                 CharSequence label = pm.getApplicationLabel(ai);
-                favoriteIcons[slot].setImageDrawable(highResIcon(pkg));
+                favoriteIcons[slot].setImageDrawable(AppIcons.highRes(requireContext(), pkg));
                 favoriteLabels[slot].setText(label);
                 return;
             } catch (PackageManager.NameNotFoundException e) {
@@ -131,40 +125,11 @@ public class HomeFragment extends Fragment {
 
     /** Shows the app's launcher icon, or a placeholder if it isn't installed on this build. */
     private void bindFixedApp(ImageView view, String pkg) {
-        Drawable icon = highResIcon(pkg);
+        Drawable icon = AppIcons.highRes(requireContext(), pkg);
         if (icon != null) {
             view.setImageDrawable(icon);
         } else {
             view.setImageResource(R.drawable.ic_add);
-        }
-    }
-
-    /**
-     * Loads the launcher icon at a high density bucket so it stays sharp when scaled up to
-     * the large card size, instead of upscaling the device-density icon. Falls back to the
-     * package manager's default icon, or null if the package isn't installed.
-     */
-    private Drawable highResIcon(String pkg) {
-        LauncherApps launcherApps = (LauncherApps)
-                requireContext().getSystemService(android.content.Context.LAUNCHER_APPS_SERVICE);
-        if (launcherApps != null) {
-            try {
-                List<LauncherActivityInfo> activities =
-                        launcherApps.getActivityList(pkg, Process.myUserHandle());
-                if (!activities.isEmpty()) {
-                    Drawable icon = activities.get(0).getIcon(DisplayMetrics.DENSITY_XXXHIGH);
-                    if (icon != null) {
-                        return icon;
-                    }
-                }
-            } catch (Exception ignored) {
-                // Fall back to the default-density icon below.
-            }
-        }
-        try {
-            return requireContext().getPackageManager().getApplicationIcon(pkg);
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
         }
     }
 

@@ -1,12 +1,15 @@
 package com.tommasov.mg4simplelauncher;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,14 +36,19 @@ public class AppDrawerActivity extends AppCompatActivity {
 
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_SLOT = "slot";
+    /** Which favorite set MODE_PICK writes into; defaults to {@link #TARGET_HOME}. */
+    public static final String EXTRA_TARGET = "target";
     public static final String MODE_ALL = "all";
     public static final String MODE_SYSTEM = "system";
     public static final String MODE_PICK = "pick";
+    public static final String TARGET_HOME = "home";
+    public static final String TARGET_GRID = "grid";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private String mode;
+    private String target;
     private int slot;
     private UpdateManager updateManager;
 
@@ -52,6 +60,10 @@ public class AppDrawerActivity extends AppCompatActivity {
         mode = getIntent().getStringExtra(EXTRA_MODE);
         if (mode == null) {
             mode = MODE_ALL;
+        }
+        target = getIntent().getStringExtra(EXTRA_TARGET);
+        if (target == null) {
+            target = TARGET_HOME;
         }
         slot = getIntent().getIntExtra(EXTRA_SLOT, -1);
 
@@ -107,7 +119,11 @@ public class AppDrawerActivity extends AppCompatActivity {
                 if (isFinishing() || isDestroyed()) {
                     return;
                 }
-                grid.setAdapter(new AppListAdapter(apps, this::onAppClick));
+                // In the picker a long-press would fight the tap-to-assign gesture, so the
+                // app-details shortcut only exists in the browsing drawers.
+                AppListAdapter.OnAppClickListener longClick =
+                        MODE_PICK.equals(mode) ? null : this::onAppLongClick;
+                grid.setAdapter(new AppListAdapter(apps, this::onAppClick, longClick));
             });
         });
     }
@@ -150,12 +166,29 @@ public class AppDrawerActivity extends AppCompatActivity {
     private void onAppClick(AppInfo app) {
         if (MODE_PICK.equals(mode)) {
             if (slot >= 0) {
-                new PreferencesManager(this).setFavorite(slot, app.packageName);
+                PreferencesManager prefs = new PreferencesManager(this);
+                if (TARGET_GRID.equals(target)) {
+                    prefs.setGridFavorite(slot, app.packageName);
+                } else {
+                    prefs.setFavorite(slot, app.packageName);
+                }
             }
             finish();
             return;
         }
         launch(app.packageName);
+    }
+
+    /** Long-press opens Android's app-details page (permissions, storage, uninstall). */
+    private void onAppLongClick(AppInfo app) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", app.packageName, null));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Some head-unit builds strip the Settings details screen.
+            Toast.makeText(this, R.string.app_info_unavailable, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launch(String packageName) {

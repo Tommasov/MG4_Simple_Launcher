@@ -8,6 +8,13 @@
     <string name="cd_settings">Settings</string>
     <string name="cd_files">Files</string>
     <string name="cd_back">Back</string>
+    <string name="app_info_unavailable">App info isn\'t available on this system</string>
+
+    <!-- Third carousel page: assignable shortcut grid -->
+    <string name="grid_favorites_title">Shortcuts</string>
+    <string name="grid_favorites_hint">Long-press a tile to assign or change it</string>
+    <string name="grid_slot_change">Change app</string>
+    <string name="grid_slot_remove">Remove</string>
 
     <!-- Second carousel page: live system info -->
     <string name="sys_device">Device</string>
