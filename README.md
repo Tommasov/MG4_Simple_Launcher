@@ -10,30 +10,50 @@ fits visually with the system, while providing a minimal, focused home screen.
 
 ## Features
 
-- **Swipeable two-page home**: a horizontal carousel (`ViewPager2`). Swipe left/right
-  between the launcher home (page 1) and a **system-info** screen (page 2). A
-  SAIC-style bar indicator at the bottom centre shows the current page.
+- **Swipeable three-page home**: a horizontal carousel (`ViewPager2`). Swipe left/right
+  between the launcher home (page 1), a **shortcuts** grid (page 2) and a
+  **system-info** screen (page 3). A SAIC-style bar indicator at the bottom centre
+  shows the current page.
 - **Three favorite cards** (page 1): three vertical cards, each launching one app of
   your choice. Tap a card to open its app; **long-press** to assign or change it.
 - **Fourth column**:
   - **All apps** (top card): every launchable app, in a grid.
   - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
     **Settings** apps, side by side as icons.
+- **Shortcuts grid** (page 2): twelve assignable tiles for the apps that don't fit on
+  the three home cards. Tap to launch, long-press to change or clear a tile.
 - **System apps & updates**: inside the *All apps* drawer, the header carries a
   **System apps** button (only system apps, `FLAG_SYSTEM`) next to **Check for
   updates**, plus a **back** button to return home.
+- **App info shortcut**: **long-press** any app in the *All apps* or *System apps*
+  drawer to jump straight to Android's app-details screen (permissions, storage,
+  uninstall).
 - **Light / dark theme**: follows the system day/night mode automatically, using
   the original SAIC light and dark artwork.
-- **Persisted favorites**: the three chosen apps are saved across reboots.
+- **Persisted favorites**: the three home cards and the twelve grid tiles are saved
+  across reboots, in separate slots that never overwrite each other.
 
 ## Changing a pinned app
 
 **Long-press** one of the three big cards to open the app picker, then tap the app
 you want in that slot. Your choice is saved across reboots.
 
-## Second screen (system info)
+## Second screen (shortcuts)
 
-Swipe right from the home to reach the system-info page (`SystemInfoFragment` /
+Swipe right from the home to reach the shortcuts grid (`FavoritesGridFragment` /
+`res/layout/fragment_favorites.xml`): twelve tiles in six columns, sized for the
+head unit's 1920×720 display.
+
+- **Tap** a tile to launch its app. An empty tile opens the app picker.
+- **Long-press** a filled tile to *change* the app or *remove* it, leaving the tile
+  empty again.
+
+These twelve slots are stored separately from the three home cards, so assigning an
+app here never disturbs the home page.
+
+## Third screen (system info)
+
+Swipe right once more to reach the system-info page (`SystemInfoFragment` /
 `res/layout/fragment_system.xml`). It shows live, permission-free stats that refresh
 while the page is visible:
 
@@ -84,6 +104,11 @@ Standard Android project (Java, AGP 8.6, Gradle 8.7, `minSdk 28` / `targetSdk 34
 ```
 
 The debug APK is produced under `app/build/outputs/apk/debug/`.
+
+**JDK**: Gradle 8.7 runs on JDK 17–21 and fails on newer ones with a bare
+`IllegalArgumentException: <version>` from the Kotlin DSL compiler. Recent Android
+Studio releases bundle a JBR newer than that, so set *Settings → Build Tools →
+Gradle → Gradle JDK* (or `JAVA_HOME` on the command line) to a JDK 17 or 21.
 
 ## Disclaimer (English)
 
