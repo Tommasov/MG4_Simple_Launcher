@@ -6,7 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 /** Shared helper for launching an installed package from its launcher intent. */
-final class AppLauncher {
+public final class AppLauncher {
 
     private AppLauncher() {
     }
@@ -15,7 +15,7 @@ final class AppLauncher {
      * Launches {@code pkg}'s main activity in a new task. Returns false if the package has no
      * launch intent (not installed / not launchable), leaving the fallback to the caller.
      */
-    static boolean launch(@NonNull Context context, @NonNull String pkg) {
+    public static boolean launch(@NonNull Context context, @NonNull String pkg) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(pkg);
         if (intent == null) {
             return false;

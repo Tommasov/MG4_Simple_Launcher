@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tommasov.mg4simplelauncher.AppLauncher;
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.R;
 
@@ -57,6 +58,17 @@ public class ChargingMapActivity extends AppCompatActivity
     /** Ceiling for the automatic fit, so a lone result keeps some surrounding context. */
     private static final double MAX_AUTO_ZOOM = 13.5;
     private static final int MAP_PADDING_PX = 80;
+
+    /**
+     * Navigation apps shipped on SAIC head units, by market: Telenav here in Europe, iGO in
+     * Hong Kong, SAIC's own in Israel. The factory launcher picks between exactly these
+     * three, so they are the ones worth trying.
+     */
+    private static final String[] FACTORY_NAVIGATORS = {
+            "com.telenav.app.arp",
+            "com.nng.igo.primong",
+            "com.saicmotor.navigation",
+    };
     /** Roomier for a selection: the vehicle beacon is tall and would clip at the edge. */
     private static final int SELECTION_PADDING_PX = 150;
     /** Two points a few hundred metres apart would otherwise fill the screen. */
@@ -386,17 +398,49 @@ public class ChargingMapActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Hands the station to the navigator, best channel first: the vehicle's own adapter
+     * service, which actually starts the route; then a geo: intent for any map app the owner
+     * installed; then simply opening the factory navigator. Each step only runs when the
+     * previous one is genuinely unavailable.
+     */
     @Override
     public void onNavigate(@NonNull ChargePoint point) {
-        // A geo: intent lets whatever navigation app the head unit ships handle the route.
+        FactoryNavigator.sendDestination(this, point.latitude, point.longitude, point.title,
+                new FactoryNavigator.Callback() {
+                    @Override
+                    public void onSent() {
+                        // The navigator takes over from here.
+                    }
+
+                    @Override
+                    public void onUnavailable() {
+                        navigateWithoutFactoryService(point);
+                    }
+                });
+    }
+
+    private void navigateWithoutFactoryService(@NonNull ChargePoint point) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        // A geo: intent still carries the destination, and any sideloaded map app takes it.
         Uri uri = Uri.parse("geo:" + point.latitude + "," + point.longitude
                 + "?q=" + point.latitude + "," + point.longitude
                 + "(" + Uri.encode(point.title) + ")");
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.charging_no_navigation, Toast.LENGTH_SHORT).show();
+            return;
+        } catch (ActivityNotFoundException ignored) {
+            // Falls through: the factory navigator does not answer geo:.
         }
+        // Last resort: open the navigator without a destination, which still beats an error.
+        for (String navigator : FACTORY_NAVIGATORS) {
+            if (AppLauncher.launch(this, navigator)) {
+                return;
+            }
+        }
+        Toast.makeText(this, R.string.charging_no_navigation, Toast.LENGTH_SHORT).show();
     }
 
     @Override
