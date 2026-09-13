@@ -66,10 +66,10 @@
                     android:id="@+id/charge_group_motorway"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@string/charging_filter_motorway"
                     android:textColor="@color/accent"
-                    android:textSize="@dimen/charge_item_detail_size"
+                    android:textSize="@dimen/secondary_text_size"
                     android:textStyle="bold" />
 
             <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
@@ -80,11 +80,11 @@
                     android:id="@+id/charge_group_supercharger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@string/charging_filter_supercharger"
                     android:textColor="@color/accent"
-                    android:textSize="@dimen/charge_item_detail_size"
+                    android:textSize="@dimen/secondary_text_size"
                     android:textStyle="bold" />
 
             <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/charging_attribution"
                 android:textColor="@color/text_tertiary"
-                android:textSize="@dimen/charge_item_detail_size" />
+                android:textSize="@dimen/secondary_text_size" />
         </LinearLayout>
     </FrameLayout>
 
@@ -181,7 +181,7 @@
                 android:layout_marginTop="16dp"
                 android:lineSpacingExtra="6dp"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <Space
                 android:layout_width="match_parent"
@@ -195,7 +195,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sys_memory"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <TextView
                 android:id="@+id/tv_memory_value"
@@ -210,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sys_used_total"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <Space
                 android:layout_width="match_parent"
@@ -224,7 +224,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sys_storage"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <TextView
                 android:id="@+id/tv_storage_value"
@@ -239,7 +239,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sys_free_total"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <Space
                 android:layout_width="match_parent"
@@ -253,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sys_network"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
 
             <TextView
                 android:id="@+id/tv_network_value"
@@ -268,7 +268,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
+                android:textSize="@dimen/secondary_text_size" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

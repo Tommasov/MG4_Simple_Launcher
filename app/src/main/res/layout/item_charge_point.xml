@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One charging station in the left-hand list. Same card artwork as the drawer tiles,
-     so the row highlights on press exactly like the rest of the launcher. -->
+<!-- One charging station in the left-hand list. Same card artwork as the drawer tiles, so
+     the row highlights on press exactly like the rest of the launcher.
+     Two lines, not three: the operator and the connectors share the second one. Kept apart
+     they crowded the row's lower edge, and the operator frequently just repeated the title
+     ("Enel X" under "Enel X"). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/charge_item_height"
@@ -38,17 +41,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_secondary"
-            android:textSize="@dimen/charge_item_detail_size" />
+            android:textSize="@dimen/secondary_text_size" />
 
-        <TextView
-            android:id="@+id/charge_connectors"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_tertiary"
-            android:textSize="@dimen/charge_item_detail_size" />
     </LinearLayout>
 
     <!-- Distance and power: the two numbers that decide whether to stop here. -->
@@ -73,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:textColor="@color/accent"
-            android:textSize="@dimen/charge_item_detail_size"
+            android:textSize="@dimen/secondary_text_size"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -63,8 +63,7 @@ public class ChargePointAdapter
     public void onBindViewHolder(@NonNull ChargePointViewHolder holder, int position) {
         ChargePoint point = points.get(position);
         holder.title.setText(point.title);
-        holder.operator.setText(point.operator);
-        holder.connectors.setText(point.connectors);
+        holder.operator.setText(describe(point));
 
         holder.distance.setText(point.hasDistance()
                 ? holder.itemView.getContext()
@@ -86,10 +85,25 @@ public class ChargePointAdapter
         return points.size();
     }
 
+    /**
+     * "Enel X · Type 2 (Socket Only)". The operator is dropped when it only repeats the
+     * station name, which OCM data does often.
+     */
+    private static String describe(@NonNull ChargePoint point) {
+        boolean operatorAddsNothing = point.operator.isEmpty()
+                || point.title.equalsIgnoreCase(point.operator);
+        if (operatorAddsNothing) {
+            return point.connectors;
+        }
+        if (point.connectors.isEmpty()) {
+            return point.operator;
+        }
+        return point.operator + " · " + point.connectors;
+    }
+
     static class ChargePointViewHolder extends RecyclerView.ViewHolder {
         final TextView title;
         final TextView operator;
-        final TextView connectors;
         final TextView distance;
         final TextView power;
         final ImageView navigate;
@@ -98,7 +112,6 @@ public class ChargePointAdapter
             super(itemView);
             title = itemView.findViewById(R.id.charge_title);
             operator = itemView.findViewById(R.id.charge_operator);
-            connectors = itemView.findViewById(R.id.charge_connectors);
             distance = itemView.findViewById(R.id.charge_distance);
             power = itemView.findViewById(R.id.charge_power);
             navigate = itemView.findViewById(R.id.charge_navigate);

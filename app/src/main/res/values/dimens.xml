@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Sizes are tuned for an automotive head unit (1920x720, viewed at arm's length),
-     so icons and text are deliberately large for legibility while driving. -->
+<!-- Sizes are tuned for an automotive head unit (1920x720, viewed at arm's length), so
+     icons and text are deliberately large for legibility while driving.
+
+     Text sizes follow the factory launcher's own vocabulary, read from its layouts: card
+     title 30, body/label 28, emphasised value 32, button 26, secondary 20. It declares
+     those in px and this app in sp, which coincide at the head unit's density and font
+     scale; sp additionally follows a system font-size setting, px does not. -->
 <resources>
     <dimen name="screen_padding">24dp</dimen>
     <dimen name="card_gap">16dp</dimen>
     <dimen name="favorite_icon_size">160dp</dimen>
     <dimen name="favorite_label_size">30sp</dimen>
-    <dimen name="small_card_label_size">28sp</dimen>
+    <dimen name="small_card_label_size">30sp</dimen>
     <dimen name="drawer_title_size">30sp</dimen>
-    <dimen name="drawer_button_size">20sp</dimen>
+    <dimen name="drawer_button_size">26sp</dimen>
     <dimen name="drawer_icon_size">88dp</dimen>
-    <dimen name="drawer_label_size">18sp</dimen>
+    <dimen name="drawer_label_size">20sp</dimen>
     <dimen name="fixed_app_padding">24dp</dimen>
     <dimen name="native_button_radius">10dp</dimen>
     <dimen name="native_button_padding_h">24dp</dimen>
     <dimen name="native_button_padding_v">12dp</dimen>
     <dimen name="info_card_padding">24dp</dimen>
-    <dimen name="info_card_body_size">22sp</dimen>
-    <dimen name="sys_value_size">32sp</dimen>
+    <dimen name="info_card_body_size">28sp</dimen>
+    <dimen name="secondary_text_size">20sp</dimen>
+    <!-- Technical details are reference material, not glanceable while driving, so
+         that card sits a tier below the rest of the launcher. -->
+    <dimen name="sys_value_size">26sp</dimen>
     <dimen name="grid_icon_size">140dp</dimen>
-    <dimen name="grid_label_size">26sp</dimen>
+    <dimen name="grid_label_size">28sp</dimen>
     <!-- Charging screen: tab height and text match the SAIC top tab bar. -->
     <dimen name="filter_tab_height">85dp</dimen>
     <dimen name="charge_list_width">640dp</dimen>
-    <dimen name="filter_tab_text_size">18sp</dimen>
+    <!-- The system tab bar sits at 28sp, and the settings tabs match it: they span a whole
+         card. The charging filters cannot — four long labels share 640dp there. -->
+    <dimen name="filter_tab_text_size">20sp</dimen>
+    <dimen name="settings_tab_text_size">28sp</dimen>
     <dimen name="settings_tab_height">72dp</dimen>
     <dimen name="settings_toggle_height">88dp</dimen>
     <!-- Charging card backdrop. The bolt never fills the box it is given — no scaleType
@@ -35,14 +46,13 @@
     <dimen name="charging_bolt_height">196dp</dimen>
     <dimen name="charging_bolt_margin_end">36dp</dimen>
     <dimen name="charging_bolt_margin_bottom">8dp</dimen>
-    <dimen name="charge_item_height">104dp</dimen>
+    <dimen name="charge_item_height">116dp</dimen>
     <!-- The row artwork paints its own shadow: the solid card face starts ~30dp in on the
          left and ends ~35dp before the right edge once stretched to the list width. These
          keep the content on the card rather than on the shadow. -->
     <dimen name="charge_item_padding_start">44dp</dimen>
     <dimen name="charge_item_padding_end">48dp</dimen>
-    <dimen name="charge_item_title_size">24sp</dimen>
-    <dimen name="charge_item_detail_size">18sp</dimen>
+    <dimen name="charge_item_title_size">28sp</dimen>
     <dimen name="page_indicator_active_width">32dp</dimen>
     <dimen name="page_indicator_inactive_width">16dp</dimen>
     <dimen name="page_indicator_height">6dp</dimen>

@@ -156,7 +156,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/charging_attribution"
             android:textColor="@color/text_tertiary"
-            android:textSize="@dimen/charge_item_detail_size" />
+            android:textSize="@dimen/secondary_text_size" />
     </LinearLayout>
 
     <!-- Right: the map, with the navigation action floating over it once a point is picked -->

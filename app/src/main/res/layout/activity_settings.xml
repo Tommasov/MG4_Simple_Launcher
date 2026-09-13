@@ -101,7 +101,7 @@
                     android:paddingEnd="8dp"
                     android:text="@string/settings_page_home"
                     android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/filter_tab_text_size" />
+                    android:textSize="@dimen/settings_tab_text_size" />
 
                 <RadioButton
                     android:id="@+id/home_page_shortcuts"
@@ -118,7 +118,7 @@
                     android:paddingEnd="8dp"
                     android:text="@string/settings_page_shortcuts"
                     android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/filter_tab_text_size" />
+                    android:textSize="@dimen/settings_tab_text_size" />
 
                 <RadioButton
                     android:id="@+id/home_page_system"
@@ -135,7 +135,7 @@
                     android:paddingEnd="8dp"
                     android:text="@string/settings_page_system"
                     android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/filter_tab_text_size" />
+                    android:textSize="@dimen/settings_tab_text_size" />
             </RadioGroup>
         </LinearLayout>
 
