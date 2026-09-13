@@ -45,4 +45,23 @@
     <string name="update_downloading">Wird heruntergeladen… %1$d%%</string>
     <string name="update_download_failed">Download fehlgeschlagen</string>
     <string name="update_verify_failed">Überprüfung des Updates fehlgeschlagen</string>
+
+    <!-- Ladepunkte (Karte Seite 3 + Kartenansicht) -->
+    <string name="charging_title">Ladepunkte</string>
+    <string name="charging_filter_all">Alle</string>
+    <string name="charging_filter_motorway">Autobahn</string>
+    <string name="charging_filter_supercharger">Supercharger</string>
+    <string name="charging_filter_fast">Schnellladen</string>
+    <string name="charging_attribution">Daten © Open Charge Map</string>
+    <string name="charging_no_key">Ladedaten nicht verfügbar: kein API-Schlüssel</string>
+    <string name="charging_no_location">Warte auf Positionsbestimmung…</string>
+    <string name="charging_permission_needed">Für Ladepunkte in der Nähe wird der Standortzugriff benötigt</string>
+    <string name="charging_empty">Keine Ladesäule passt zu diesem Filter</string>
+    <string name="charging_error">Ladepunkte konnten nicht geladen werden</string>
+    <string name="charging_distance_km">%1$.1f km</string>
+    <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_navigate">Navigieren</string>
+    <string name="charging_loading">Ladepunkte werden geladen…</string>
+    <string name="charging_no_navigation">Keine Navigations-App verfügbar</string>
+    <string name="charging_you_are_here">Dein Standort</string>
 </resources>

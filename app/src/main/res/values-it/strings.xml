@@ -45,4 +45,23 @@
     <string name="update_downloading">Download… %1$d%%</string>
     <string name="update_download_failed">Download non riuscito</string>
     <string name="update_verify_failed">Verifica dell\'aggiornamento non riuscita</string>
+
+    <!-- Punti di ricarica (card pagina 3 + schermata mappa) -->
+    <string name="charging_title">Punti di ricarica</string>
+    <string name="charging_filter_all">Tutti</string>
+    <string name="charging_filter_motorway">Autostrada</string>
+    <string name="charging_filter_supercharger">Supercharger</string>
+    <string name="charging_filter_fast">Ricarica rapida</string>
+    <string name="charging_attribution">Dati © Open Charge Map</string>
+    <string name="charging_no_key">Dati ricarica non disponibili: manca la chiave API</string>
+    <string name="charging_no_location">In attesa della posizione…</string>
+    <string name="charging_permission_needed">Per trovare le colonnine vicine serve la posizione</string>
+    <string name="charging_empty">Nessuna colonnina corrisponde a questo filtro</string>
+    <string name="charging_error">Impossibile caricare i punti di ricarica</string>
+    <string name="charging_distance_km">%1$.1f km</string>
+    <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_navigate">Naviga</string>
+    <string name="charging_loading">Caricamento punti di ricarica…</string>
+    <string name="charging_no_navigation">Nessuna app di navigazione disponibile</string>
+    <string name="charging_you_are_here">La tua posizione</string>
 </resources>

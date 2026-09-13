@@ -46,6 +46,9 @@ captures/
 *.keystore
 keystore.properties
 
+# API keys (do NOT commit)
+apikeys.properties
+
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild/
 .cxx/

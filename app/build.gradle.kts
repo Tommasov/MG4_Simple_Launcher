@@ -14,6 +14,15 @@ val keystoreProperties = Properties().apply {
     }
 }
 
+// Third-party API keys live in apikeys.properties (git-ignored). A missing key is not a
+// build error: the features that need it degrade instead, so a fresh clone still builds.
+val apiKeysFile = rootProject.file("apikeys.properties")
+val apiKeys = Properties().apply {
+    if (apiKeysFile.exists()) {
+        load(FileInputStream(apiKeysFile))
+    }
+}
+
 android {
     namespace = "com.tommasov.mg4simplelauncher"
     compileSdk = 34
@@ -30,6 +39,13 @@ android {
             "String",
             "UPDATE_BASE_URL",
             "\"https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/\""
+        )
+
+        // Open Charge Map key; empty when apikeys.properties is absent.
+        buildConfigField(
+            "String",
+            "OCM_API_KEY",
+            "\"${apiKeys.getProperty("ocm.apiKey", "")}\""
         )
     }
 
@@ -71,4 +87,5 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
     implementation(libs.viewpager2)
+    implementation(libs.osmdroid)
 }

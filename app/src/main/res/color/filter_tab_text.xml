@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tab label colour: full strength when selected, dimmed otherwise, matching the SAIC
+     top tab bar. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/text_primary" />
+    <item android:color="@color/text_tertiary" />
+</selector>

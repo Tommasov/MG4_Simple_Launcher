@@ -20,6 +20,18 @@
     <dimen name="sys_value_size">32sp</dimen>
     <dimen name="grid_icon_size">140dp</dimen>
     <dimen name="grid_label_size">26sp</dimen>
+    <!-- Charging screen: tab height and text match the SAIC top tab bar. -->
+    <dimen name="filter_tab_height">85dp</dimen>
+    <dimen name="charge_list_width">640dp</dimen>
+    <dimen name="filter_tab_text_size">18sp</dimen>
+    <dimen name="charge_item_height">104dp</dimen>
+    <!-- The row artwork paints its own shadow: the solid card face starts ~30dp in on the
+         left and ends ~35dp before the right edge once stretched to the list width. These
+         keep the content on the card rather than on the shadow. -->
+    <dimen name="charge_item_padding_start">44dp</dimen>
+    <dimen name="charge_item_padding_end">48dp</dimen>
+    <dimen name="charge_item_title_size">24sp</dimen>
+    <dimen name="charge_item_detail_size">18sp</dimen>
     <dimen name="page_indicator_active_width">32dp</dimen>
     <dimen name="page_indicator_inactive_width">16dp</dimen>
     <dimen name="page_indicator_height">6dp</dimen>

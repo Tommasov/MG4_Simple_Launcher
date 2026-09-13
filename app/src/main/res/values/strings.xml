@@ -44,4 +44,23 @@
     <string name="update_downloading">Downloading… %1$d%%</string>
     <string name="update_download_failed">Download failed</string>
     <string name="update_verify_failed">Update verification failed</string>
+
+    <!-- Charging points (page 3 card + map screen) -->
+    <string name="charging_title">Charging points</string>
+    <string name="charging_filter_all">All</string>
+    <string name="charging_filter_motorway">Motorway</string>
+    <string name="charging_filter_supercharger">Supercharger</string>
+    <string name="charging_filter_fast">Fast DC</string>
+    <string name="charging_attribution">Data © Open Charge Map</string>
+    <string name="charging_no_key">Charging data unavailable: no API key</string>
+    <string name="charging_no_location">Waiting for a position fix…</string>
+    <string name="charging_permission_needed">Location access is needed to find nearby stations</string>
+    <string name="charging_empty">No station matches this filter</string>
+    <string name="charging_error">Unable to load charging points</string>
+    <string name="charging_distance_km">%1$.1f km</string>
+    <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_navigate">Navigate</string>
+    <string name="charging_loading">Loading charging points…</string>
+    <string name="charging_no_navigation">No navigation app available</string>
+    <string name="charging_you_are_here">Your position</string>
 </resources>

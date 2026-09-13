@@ -133,15 +133,70 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Free slot 1 -->
+    <!-- Charging points: the nearest few, tap to open the map screen.
+         Entries sit together at the top; the charging bolt fills the space below so the
+         card reads as a graphic rather than as three lines adrift in white space. -->
     <LinearLayout
+        android:id="@+id/charging_card"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
-        android:gravity="center"
-        android:orientation="vertical" />
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/info_card_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/charging_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/small_card_label_size"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/charging_card_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
+
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
+
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/charging_card_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/info_card_body_size" />
+
+        <!-- Fills the rest of the card; alpha keeps it a backdrop, not a second subject. -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:alpha="0.12"
+            android:contentDescription="@null"
+            android:scaleType="fitEnd"
+            android:src="@drawable/ic_charging_bolt" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/charging_attribution"
+            android:textColor="@color/text_tertiary"
+            android:textSize="@dimen/charge_item_detail_size" />
+    </LinearLayout>
 
     <!-- Free slot 2 -->
     <LinearLayout

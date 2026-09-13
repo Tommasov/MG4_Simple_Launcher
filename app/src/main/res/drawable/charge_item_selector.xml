@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for a charging row. Unlike the drawer tiles this also has an "activated"
+     state, so the row matching the highlighted map pin stays lit after the finger lifts. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/app_press_bg" />
+    <item android:state_activated="true" android:drawable="@drawable/app_press_bg" />
+    <item android:drawable="@drawable/app_normal_bg" />
+</selector>

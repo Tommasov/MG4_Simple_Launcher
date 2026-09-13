@@ -27,6 +27,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tommasov.mg4simplelauncher.charging.ChargingCardBinder;
+
 import java.util.Locale;
 import java.util.UUID;
 
@@ -46,6 +48,7 @@ public class SystemInfoFragment extends Fragment {
     private TextView storageValue;
     private TextView networkValue;
     private TextView networkDetail;
+    private ChargingCardBinder chargingCard;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -70,18 +73,27 @@ public class SystemInfoFragment extends Fragment {
         storageValue = view.findViewById(R.id.tv_storage_value);
         networkValue = view.findViewById(R.id.tv_network_value);
         networkDetail = view.findViewById(R.id.tv_network_detail);
+        chargingCard = new ChargingCardBinder(view);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         handler.post(ticker);
+        // Deliberately outside the ticker: Open Charge Map bans callers that poll it.
+        chargingCard.loadOnce();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         handler.removeCallbacks(ticker);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        chargingCard.cancel();
     }
 
     private void refresh() {
