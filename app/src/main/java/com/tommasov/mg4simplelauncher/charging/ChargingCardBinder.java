@@ -16,11 +16,19 @@ import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.R;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * Drives the charging card on carousel page 3: the nearest few stations, and a tap that
- * opens {@link ChargingMapActivity}.
+ * Drives the charging card on carousel page 3: the nearest motorway and Supercharger
+ * sites, and a tap that opens {@link ChargingMapActivity}.
+ *
+ * <p>Two queries rather than one, because these are the two networks worth planning a long
+ * drive around and neither shows up among the nearest stations in town — around Florence,
+ * the closest few dozen are all city chargers. They run one after the other, not in
+ * parallel, to keep a single connection open at a time.
  *
  * <p>Deliberately separate from the fragment that owns the page. That page refreshes its
  * readings every few seconds, and Open Charge Map bans callers who poll; keeping this out
@@ -29,7 +37,9 @@ import java.util.List;
  */
 public class ChargingCardBinder {
 
-    private static final int SUMMARY_COUNT = 3;
+    /** Three per network: motorway first, then Superchargers. */
+    private static final int PER_GROUP = 3;
+    private static final int SUMMARY_COUNT = PER_GROUP * 2;
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
     private final View card;
@@ -46,7 +56,8 @@ public class ChargingCardBinder {
         results = page.findViewById(R.id.charging_card_results);
         status = page.findViewById(R.id.charging_card_status);
 
-        int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2};
+        int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2,
+                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5};
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);
@@ -81,35 +92,55 @@ public class ChargingCardBinder {
             return;
         }
         showStatus(R.string.charging_loading);
-        client.nearby(origin.getLatitude(), origin.getLongitude(), ChargingFilter.ALL,
-                SUMMARY_COUNT, new OpenChargeMapClient.Callback() {
+        fetch(origin, ChargingFilter.MOTORWAY, motorway ->
+                fetch(origin, ChargingFilter.SUPERCHARGER, superchargers -> {
+                    if (motorway.isEmpty() && superchargers.isEmpty()) {
+                        showStatus(R.string.charging_empty);
+                        return;
+                    }
+                    bind(motorway, superchargers);
+                    loaded = true;
+                }));
+    }
+
+    /** Runs one query, handing back an empty list rather than failing the whole card. */
+    private void fetch(@NonNull Location origin, @NonNull ChargingFilter filter,
+                       @NonNull Consumer<List<ChargePoint>> then) {
+        client.nearby(origin.getLatitude(), origin.getLongitude(), filter, PER_GROUP,
+                new OpenChargeMapClient.Callback() {
                     @Override
                     public void onResult(@NonNull List<ChargePoint> points) {
-                        if (points.isEmpty()) {
-                            showStatus(R.string.charging_empty);
-                            return;
-                        }
-                        bind(points);
-                        loaded = true;
+                        then.accept(points);
                     }
 
                     @Override
                     public void onError(@NonNull Exception e) {
-                        showStatus(R.string.charging_error);
+                        // One network missing is not worth blanking the other.
+                        then.accept(Collections.emptyList());
                     }
                 });
     }
 
-    private void bind(@NonNull List<ChargePoint> points) {
+    private void bind(@NonNull List<ChargePoint> motorway,
+                      @NonNull List<ChargePoint> superchargers) {
         Context context = card.getContext();
+        List<ChargePoint> slots = new ArrayList<>();
+        // Fixed slots: the first three belong to the motorway heading, the rest to the
+        // Supercharger one, so a short group leaves a gap instead of shifting the headings.
+        for (int i = 0; i < PER_GROUP; i++) {
+            slots.add(i < motorway.size() ? motorway.get(i) : null);
+        }
+        for (int i = 0; i < PER_GROUP; i++) {
+            slots.add(i < superchargers.size() ? superchargers.get(i) : null);
+        }
         for (int i = 0; i < SUMMARY_COUNT; i++) {
-            boolean present = i < points.size();
+            boolean present = slots.get(i) != null;
             names[i].setVisibility(present ? View.VISIBLE : View.GONE);
             details[i].setVisibility(present ? View.VISIBLE : View.GONE);
             if (!present) {
                 continue;
             }
-            ChargePoint point = points.get(i);
+            ChargePoint point = slots.get(i);
             names[i].setText(point.title);
             details[i].setText(summarise(context, point));
         }
@@ -117,7 +148,7 @@ public class ChargingCardBinder {
         results.setVisibility(View.VISIBLE);
     }
 
-    /** "7.6 km · 300 kW · Free To X", skipping whatever OCM does not know. */
+    /** "7.6 km · 300 kW". The operator is omitted: the group heading already says it. */
     private static String summarise(@NonNull Context context, @NonNull ChargePoint point) {
         StringBuilder sb = new StringBuilder();
         if (point.hasDistance()) {
@@ -128,12 +159,6 @@ public class ChargingCardBinder {
                 sb.append(" · ");
             }
             sb.append(context.getString(R.string.charging_power_kw, point.maxPowerKw));
-        }
-        if (!point.operator.isEmpty()) {
-            if (sb.length() > 0) {
-                sb.append(" · ");
-            }
-            sb.append(point.operator);
         }
         return sb.toString();
     }

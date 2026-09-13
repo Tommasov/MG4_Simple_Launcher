@@ -6,6 +6,7 @@
     <!-- Dimmed tone the SAIC tab bar uses for unselected tabs. -->
     <color name="text_tertiary">#503c4143</color>
     <color name="accent">#056eff</color>
+    <color name="accent_pressed">#0455cc</color>
     <color name="scrim">#66000000</color>
     <color name="drawer_background">#f2ffffff</color>
 

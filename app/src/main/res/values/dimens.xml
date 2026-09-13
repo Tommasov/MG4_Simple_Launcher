@@ -24,6 +24,15 @@
     <dimen name="filter_tab_height">85dp</dimen>
     <dimen name="charge_list_width">640dp</dimen>
     <dimen name="filter_tab_text_size">18sp</dimen>
+    <!-- Charging card backdrop. The bolt never fills the box it is given — no scaleType
+         nor a background drawable made it do so — so these numbers were tuned by eye on the
+         head-unit emulator rather than derived. The two margins differ because the card
+         artwork paints a much heavier shadow along its bottom edge than down its side, so
+         equal values look lopsided; these leave a comparable visible gap on both. -->
+    <dimen name="charging_bolt_width">150dp</dimen>
+    <dimen name="charging_bolt_height">196dp</dimen>
+    <dimen name="charging_bolt_margin_end">36dp</dimen>
+    <dimen name="charging_bolt_margin_bottom">8dp</dimen>
     <dimen name="charge_item_height">104dp</dimen>
     <!-- The row artwork paints its own shadow: the solid card face starts ~30dp in on the
          left and ends ~35dp before the right edge once stretched to the list width. These

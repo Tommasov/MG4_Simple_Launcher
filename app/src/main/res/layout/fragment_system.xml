@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Carousel page 3: live system information, refreshed while the page is visible.
      All values are read without dangerous permissions. Landscape (MG4 head unit).
-     Every reading lives in a single "technical details" card; the other three slots
-     are free for features still to be designed. The card scrolls only if its content
+     Charging points come first; the "technical details" card closes the row, with two
+     slots still free for features to be designed. The card scrolls only if its content
      ever outgrows it — fillViewport keeps the weighted spacing when it doesn't. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -11,12 +11,129 @@
     android:baselineAligned="false"
     android:padding="@dimen/screen_padding">
 
+    <!-- Charging points: the nearest motorway and Supercharger sites, tap for the map.
+         The bolt sits behind the text rather than below it, so six entries fit without
+         giving up the graphic backdrop. -->
+    <FrameLayout
+        android:id="@+id/charging_card"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/smallcard_selector"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Explicit size: at wrap_content the bolt would stay at the drawable's intrinsic
+             36dp. Set as the background rather than the src: a background always fills the
+             view bounds exactly, while every scaleType left slack inside the box and the
+             bolt floated well above where the margins said it should sit. The box keeps the
+             source 36:47 ratio to within 0.1%, so nothing is visibly stretched. -->
+        <ImageView
+            android:layout_width="@dimen/charging_bolt_width"
+            android:layout_height="@dimen/charging_bolt_height"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/charging_bolt_margin_end"
+            android:layout_marginBottom="@dimen/charging_bolt_margin_bottom"
+            android:alpha="0.12"
+            android:background="@drawable/ic_charging_bolt"
+            android:contentDescription="@null" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/info_card_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/charging_title"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/small_card_label_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/charging_card_results"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/charge_group_motorway"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/charging_filter_motorway"
+                    android:textColor="@color/accent"
+                    android:textSize="@dimen/charge_item_detail_size"
+                    android:textStyle="bold" />
+
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
+
+                <TextView
+                    android:id="@+id/charge_group_supercharger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/charging_filter_supercharger"
+                    android:textColor="@color/accent"
+                    android:textSize="@dimen/charge_item_detail_size"
+                    android:textStyle="bold" />
+
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
+            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/charging_card_status"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/info_card_body_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/charging_attribution"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/charge_item_detail_size" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Free slot 2 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/smallcard_selector"
+        android:gravity="center"
+        android:orientation="vertical" />
+
+    <!-- Free slot 3 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/smallcard_selector"
+        android:gravity="center"
+        android:orientation="vertical" />
     <!-- Technical details: device, memory, storage, network -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
         android:fillViewport="true"
         android:padding="@dimen/info_card_padding"
@@ -132,88 +249,4 @@
                 android:textSize="@dimen/info_card_body_size" />
         </LinearLayout>
     </ScrollView>
-
-    <!-- Charging points: the nearest few, tap to open the map screen.
-         Entries sit together at the top; the charging bolt fills the space below so the
-         card reads as a graphic rather than as three lines adrift in white space. -->
-    <LinearLayout
-        android:id="@+id/charging_card"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/smallcard_selector"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical"
-        android:padding="@dimen/info_card_padding">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/charging_title"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/small_card_label_size"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/charging_card_results"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
-
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
-
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/charging_card_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/info_card_body_size" />
-
-        <!-- Fills the rest of the card; alpha keeps it a backdrop, not a second subject. -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:alpha="0.12"
-            android:contentDescription="@null"
-            android:scaleType="fitEnd"
-            android:src="@drawable/ic_charging_bolt" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/charging_attribution"
-            android:textColor="@color/text_tertiary"
-            android:textSize="@dimen/charge_item_detail_size" />
-    </LinearLayout>
-
-    <!-- Free slot 2 -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/smallcard_selector"
-        android:gravity="center"
-        android:orientation="vertical" />
-
-    <!-- Free slot 3 -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/smallcard_selector"
-        android:gravity="center"
-        android:orientation="vertical" />
 </LinearLayout>

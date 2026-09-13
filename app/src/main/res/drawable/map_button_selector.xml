@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Floating action over the map. Same rounded shape and radius as the launcher's other
+     native buttons, but opaque in the accent colour: the tonal surface used elsewhere is
+     12% alpha and would let the map bleed through the label. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/accent_pressed" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/accent" />
+        </shape>
+    </item>
+</selector>

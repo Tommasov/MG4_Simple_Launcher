@@ -5,6 +5,7 @@
     <color name="text_secondary">#99ffffff</color>
     <color name="text_tertiary">#52ffffff</color>
     <color name="accent">#056eff</color>
+    <color name="accent_pressed">#0455cc</color>
     <color name="scrim">#99000000</color>
     <color name="drawer_background">#f21e1f22</color>
 </resources>

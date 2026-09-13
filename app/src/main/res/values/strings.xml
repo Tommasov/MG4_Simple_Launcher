@@ -63,4 +63,5 @@
     <string name="charging_loading">Loading charging points…</string>
     <string name="charging_no_navigation">No navigation app available</string>
     <string name="charging_you_are_here">Your position</string>
+    <string name="charging_send_to_navigation">Send to navigation</string>
 </resources>

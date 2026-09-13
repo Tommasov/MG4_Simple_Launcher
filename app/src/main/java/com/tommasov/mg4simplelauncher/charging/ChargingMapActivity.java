@@ -80,6 +80,10 @@ public class ChargingMapActivity extends AppCompatActivity
     /** Straight line from the car to the selected station. */
     @Nullable
     private Polyline link;
+    /** Floating action over the map; only meaningful once a station is picked. */
+    private View navigateButton;
+    @Nullable
+    private ChargePoint selectedPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +109,13 @@ public class ChargingMapActivity extends AppCompatActivity
         list.setAdapter(adapter);
 
         findViewById(R.id.charging_back_button).setOnClickListener(v -> finish());
+
+        navigateButton = findViewById(R.id.charging_navigate_button);
+        navigateButton.setOnClickListener(v -> {
+            if (selectedPoint != null) {
+                onNavigate(selectedPoint);
+            }
+        });
 
         RadioGroup filters = findViewById(R.id.charging_filters);
         filters.setOnCheckedChangeListener((group, checkedId) -> {
@@ -228,6 +239,8 @@ public class ChargingMapActivity extends AppCompatActivity
         markers.clear();
         selectedMarker = null;
         link = null;
+        selectedPoint = null;
+        navigateButton.setVisibility(View.GONE);
 
         Drawable pin = ContextCompat.getDrawable(this, R.drawable.ic_map_marker);
         for (ChargePoint point : points) {
@@ -338,6 +351,8 @@ public class ChargingMapActivity extends AppCompatActivity
             map.getOverlays().add(0, link);
         }
 
+        selectedPoint = point;
+        navigateButton.setVisibility(View.VISIBLE);
         adapter.setSelected(point);
         frameSelection(target);
         map.invalidate();

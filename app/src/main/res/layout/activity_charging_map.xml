@@ -158,10 +158,51 @@
             android:textSize="@dimen/charge_item_detail_size" />
     </LinearLayout>
 
-    <!-- Right: the map -->
-    <org.osmdroid.views.MapView
-        android:id="@+id/charging_map"
+    <!-- Right: the map, with the navigation action floating over it once a point is picked -->
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/charging_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/charging_navigate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/map_button_selector"
+            android:clickable="true"
+            android:elevation="6dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_navigate"
+                android:tint="@android:color/white" />
+
+            <TextView
+                android:id="@+id/charging_navigate_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/charging_send_to_navigation"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/drawer_button_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
