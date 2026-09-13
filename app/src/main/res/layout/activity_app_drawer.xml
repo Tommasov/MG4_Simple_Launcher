@@ -39,7 +39,6 @@
             android:id="@+id/system_apps_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
             android:background="@drawable/native_button_selector"
             android:clickable="true"
             android:focusable="true"
@@ -50,19 +49,6 @@
             android:textColor="@color/text_primary"
             android:textSize="@dimen/drawer_button_size" />
 
-        <TextView
-            android:id="@+id/check_updates_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/native_button_selector"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/native_button_padding_h"
-            android:paddingVertical="@dimen/native_button_padding_v"
-            android:text="@string/update_check_action"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/drawer_button_size" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

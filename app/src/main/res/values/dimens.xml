@@ -24,6 +24,8 @@
     <dimen name="filter_tab_height">85dp</dimen>
     <dimen name="charge_list_width">640dp</dimen>
     <dimen name="filter_tab_text_size">18sp</dimen>
+    <dimen name="settings_tab_height">72dp</dimen>
+    <dimen name="settings_toggle_height">88dp</dimen>
     <!-- Charging card backdrop. The bolt never fills the box it is given — no scaleType
          nor a background drawable made it do so — so these numbers were tuned by eye on the
          head-unit emulator rather than derived. The two margins differ because the card

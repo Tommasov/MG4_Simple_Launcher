@@ -42,6 +42,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Launcher settings, opened from the app drawer header. -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
         <!-- Charging points: list + OpenStreetMap map, launched from the system page. -->
         <activity
             android:name=".charging.ChargingMapActivity"

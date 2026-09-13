@@ -12,6 +12,8 @@ public class PreferencesManager {
     private static final String PREFS_NAME = "mg4_system_launcher";
     private static final String KEY_FAVORITE_PREFIX = "favorite_";
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
+    private static final String KEY_HOME_PAGE = "home_page";
+    private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     public static final int FAVORITE_COUNT = 3;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
@@ -48,6 +50,28 @@ public class PreferencesManager {
 
     public void clearGridFavorite(int slot) {
         prefs.edit().remove(KEY_GRID_FAVORITE_PREFIX + slot).apply();
+    }
+
+    /**
+     * Which carousel page opens on launch, as one of the {@code HomePagerAdapter.PAGE_*}
+     * kinds. Stored by kind rather than by position, so the value survives the shortcuts
+     * page being switched off and back on.
+     */
+    public int getHomePage() {
+        return prefs.getInt(KEY_HOME_PAGE, HomePagerAdapter.PAGE_HOME);
+    }
+
+    public void setHomePage(int pageKind) {
+        prefs.edit().putInt(KEY_HOME_PAGE, pageKind).apply();
+    }
+
+    /** Whether the shortcuts page appears in the carousel at all. */
+    public boolean isShortcutsPageEnabled() {
+        return prefs.getBoolean(KEY_SHORTCUTS_ENABLED, true);
+    }
+
+    public void setShortcutsPageEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_SHORTCUTS_ENABLED, enabled).apply();
     }
 
     /**

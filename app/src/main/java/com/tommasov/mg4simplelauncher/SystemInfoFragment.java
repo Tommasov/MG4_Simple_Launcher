@@ -3,6 +3,7 @@ package com.tommasov.mg4simplelauncher;
 import android.app.ActivityManager;
 import android.app.usage.StorageStatsManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -49,6 +50,7 @@ public class SystemInfoFragment extends Fragment {
     private TextView networkValue;
     private TextView networkDetail;
     private ChargingCardBinder chargingCard;
+    private TextView settingsSummary;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -74,6 +76,10 @@ public class SystemInfoFragment extends Fragment {
         networkValue = view.findViewById(R.id.tv_network_value);
         networkDetail = view.findViewById(R.id.tv_network_detail);
         chargingCard = new ChargingCardBinder(view);
+
+        settingsSummary = view.findViewById(R.id.settings_card_summary);
+        view.findViewById(R.id.settings_card).setOnClickListener(
+                v -> startActivity(new Intent(requireContext(), SettingsActivity.class)));
     }
 
     @Override
@@ -82,6 +88,7 @@ public class SystemInfoFragment extends Fragment {
         handler.post(ticker);
         // Deliberately outside the ticker: Open Charge Map bans callers that poll it.
         chargingCard.loadOnce();
+        bindSettingsSummary();
     }
 
     @Override
@@ -94,6 +101,26 @@ public class SystemInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         chargingCard.cancel();
+    }
+
+    /** Restated on every resume, so returning from settings shows the new choices. */
+    private void bindSettingsSummary() {
+        PreferencesManager preferences = new PreferencesManager(requireContext());
+        int launchPage = preferences.getHomePage();
+        int launchName;
+        if (launchPage == HomePagerAdapter.PAGE_SHORTCUTS) {
+            launchName = R.string.settings_page_shortcuts;
+        } else if (launchPage == HomePagerAdapter.PAGE_SYSTEM) {
+            launchName = R.string.settings_page_system;
+        } else {
+            launchName = R.string.settings_page_home;
+        }
+        String shortcuts = getString(preferences.isShortcutsPageEnabled()
+                ? R.string.settings_card_shortcuts_on
+                : R.string.settings_card_shortcuts_off);
+        settingsSummary.setText(
+                getString(R.string.settings_card_launch, getString(launchName))
+                        + System.lineSeparator() + shortcuts);
     }
 
     private void refresh() {

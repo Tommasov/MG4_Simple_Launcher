@@ -2,6 +2,7 @@
 <!-- Charging points: list on the left, map on the right. Landscape (MG4 head unit).
      The filter tabs reuse the SAIC top-tab artwork so the screen reads as native. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_home"
@@ -190,7 +191,7 @@
                 android:layout_height="32dp"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_navigate"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white" />
 
             <TextView
                 android:id="@+id/charging_navigate_label"

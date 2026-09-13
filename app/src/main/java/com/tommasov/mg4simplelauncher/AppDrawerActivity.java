@@ -18,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tommasov.mg4simplelauncher.update.UpdateManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +48,6 @@ public class AppDrawerActivity extends AppCompatActivity {
     private String mode;
     private String target;
     private int slot;
-    private UpdateManager updateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +69,6 @@ public class AppDrawerActivity extends AppCompatActivity {
 
         // Explicit back affordance for the head unit, mirroring the system back gesture.
         findViewById(R.id.drawer_back_button).setOnClickListener(v -> finish());
-
-        // The manual update check belongs in the browsing drawers, not the favorite picker.
-        View checkUpdates = findViewById(R.id.check_updates_button);
-        if (MODE_PICK.equals(mode)) {
-            checkUpdates.setVisibility(View.GONE);
-        } else {
-            updateManager = new UpdateManager(this);
-            checkUpdates.setOnClickListener(v -> updateManager.checkForUpdates(true));
-        }
 
         // System apps are reached from the "all apps" drawer header; redundant elsewhere.
         View systemApps = findViewById(R.id.system_apps_button);
@@ -201,9 +189,5 @@ public class AppDrawerActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdownNow();
-        // Tear down any in-flight download/dialog started from the update button.
-        if (updateManager != null) {
-            updateManager.cancel();
-        }
     }
 }

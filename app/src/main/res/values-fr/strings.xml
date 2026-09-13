@@ -65,4 +65,20 @@
     <string name="charging_no_navigation">Aucune application de navigation</string>
     <string name="charging_you_are_here">Votre position</string>
     <string name="charging_send_to_navigation">Envoyer à la navigation</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">ParamÃ¨tres</string>
+    <string name="settings_home_page">Page de dÃ©marrage</string>
+    <string name="settings_home_page_hint">Quelle page ouvre le launcher</string>
+    <string name="settings_page_home">Accueil</string>
+    <string name="settings_page_shortcuts">Raccourcis</string>
+    <string name="settings_page_system">Outils</string>
+    <string name="settings_shortcuts_page">Page des raccourcis</string>
+    <string name="settings_shortcuts_page_hint">Afficher la page des raccourcis dans le carrousel</string>
+    <string name="settings_updates">Mises Ã  jour</string>
+    <string name="settings_version">InstallÃ©e : %1$s (%2$d)</string>
+    <string name="settings_card_launch">Ouvre sur %1$s</string>
+    <string name="settings_card_shortcuts_on">Page des raccourcis activÃ©e</string>
+    <string name="settings_card_shortcuts_off">Page des raccourcis dÃ©sactivÃ©e</string>
+    <string name="settings_features">Fonctions</string>
 </resources>

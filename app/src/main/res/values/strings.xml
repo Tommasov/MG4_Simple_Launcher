@@ -64,4 +64,20 @@
     <string name="charging_no_navigation">No navigation app available</string>
     <string name="charging_you_are_here">Your position</string>
     <string name="charging_send_to_navigation">Send to navigation</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_home_page">Launch page</string>
+    <string name="settings_home_page_hint">Which page the launcher opens on</string>
+    <string name="settings_page_home">Home</string>
+    <string name="settings_page_shortcuts">Shortcuts</string>
+    <string name="settings_page_system">Tools</string>
+    <string name="settings_shortcuts_page">Shortcuts page</string>
+    <string name="settings_shortcuts_page_hint">Show the shortcuts page in the carousel</string>
+    <string name="settings_updates">Updates</string>
+    <string name="settings_version">Installed: %1$s (%2$d)</string>
+    <string name="settings_card_launch">Opens on %1$s</string>
+    <string name="settings_card_shortcuts_on">Shortcuts page on</string>
+    <string name="settings_card_shortcuts_off">Shortcuts page off</string>
+    <string name="settings_features">Features</string>
 </resources>

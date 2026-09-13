@@ -65,4 +65,20 @@
     <string name="charging_no_navigation">No hay ninguna app de navegación</string>
     <string name="charging_you_are_here">Tu posición</string>
     <string name="charging_send_to_navigation">Enviar a la navegación</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_home_page">Pantalla inicial</string>
+    <string name="settings_home_page_hint">QuÃ© pÃ¡gina abre el launcher</string>
+    <string name="settings_page_home">Inicio</string>
+    <string name="settings_page_shortcuts">Accesos directos</string>
+    <string name="settings_page_system">Herramientas</string>
+    <string name="settings_shortcuts_page">PÃ¡gina de accesos</string>
+    <string name="settings_shortcuts_page_hint">Mostrar la pÃ¡gina de accesos en el carrusel</string>
+    <string name="settings_updates">Actualizaciones</string>
+    <string name="settings_version">Instalada: %1$s (%2$d)</string>
+    <string name="settings_card_launch">Se abre en %1$s</string>
+    <string name="settings_card_shortcuts_on">PÃ¡gina de accesos activa</string>
+    <string name="settings_card_shortcuts_off">PÃ¡gina de accesos desactivada</string>
+    <string name="settings_features">Funciones</string>
 </resources>

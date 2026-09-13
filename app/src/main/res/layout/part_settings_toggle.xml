@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One switchable feature in the settings list. No card artwork behind it: these are rows
+     inside a card, not cards themselves, so they sit flush with the card's own padding and
+     the label lines up with the title above. The press ripple is the only background.
+     The whole row is the touch target, not just the switch: a thumb-sized control is a poor
+     thing to aim at from the driver's seat. Included once per feature, so the ids live on
+     the <include> tag. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settings_toggle_height"
+    android:background="?attr/selectableItemBackground"
+    android:baselineAligned="false"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/toggle_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/charge_item_title_size" />
+
+        <TextView
+            android:id="@+id/toggle_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/charge_item_detail_size" />
+    </LinearLayout>
+
+    <!-- Track and thumb come from the vehicle's system-settings app, already drawn at the
+         head unit's size (104x58dp), so the control needs no scaling: the earlier scale and
+         its spacer frame existed only to enlarge the stock phone-sized switch. -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/toggle_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@null"
+        android:clickable="false"
+        android:focusable="false"
+        android:thumb="@drawable/switch_thumb_selector"
+        app:track="@drawable/switch_track_selector" />
+</LinearLayout>
