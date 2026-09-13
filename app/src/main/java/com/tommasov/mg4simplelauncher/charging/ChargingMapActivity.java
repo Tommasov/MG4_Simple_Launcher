@@ -242,11 +242,13 @@ public class ChargingMapActivity extends AppCompatActivity
         selectedPoint = null;
         navigateButton.setVisibility(View.GONE);
 
-        Drawable pin = ContextCompat.getDrawable(this, R.drawable.ic_map_marker);
+        Drawable pin = ContextCompat.getDrawable(this, R.drawable.ic_charge_pin);
         for (ChargePoint point : points) {
             Marker marker = new Marker(map);
             marker.setPosition(new GeoPoint(point.latitude, point.longitude));
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            // The native pin is a round badge, so it centres on the station rather than
+            // standing on it the way a teardrop would.
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
             marker.setIcon(pin);
             marker.setTitle(point.title);
             marker.setSnippet(point.operator);
@@ -259,8 +261,9 @@ public class ChargingMapActivity extends AppCompatActivity
     }
 
     /**
-     * Puts the car on the map using the native navigation beacon, so every distance in the
-     * list has a visible origin. Added last, so it draws on top of the station pins.
+     * Puts the car on the map using the stock navigator's own current-position pin, so every
+     * distance in the list has a visible origin. Added last, so it draws on top of the
+     * station pins.
      */
     private void addVehicleMarker() {
         if (origin == null) {
@@ -268,8 +271,8 @@ public class ChargingMapActivity extends AppCompatActivity
         }
         Marker vehicle = new Marker(map);
         vehicle.setPosition(new GeoPoint(origin.getLatitude(), origin.getLongitude()));
-        // The beacon's ellipse sits at 80% of the artwork height; that is the ground point.
-        vehicle.setAnchor(Marker.ANCHOR_CENTER, 0.80f);
+        // Arrow above a disc: the disc's centre is the position, at 55% of the artwork.
+        vehicle.setAnchor(Marker.ANCHOR_CENTER, 0.55f);
         vehicle.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_vehicle_position));
         vehicle.setTitle(getString(R.string.charging_you_are_here));
         map.getOverlays().add(vehicle);
@@ -332,9 +335,9 @@ public class ChargingMapActivity extends AppCompatActivity
             return;
         }
         if (selectedMarker != null) {
-            selectedMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_map_marker));
+            selectedMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_charge_pin));
         }
-        marker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_map_marker_selected));
+        marker.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_charge_pin_selected));
         selectedMarker = marker;
 
         GeoPoint target = new GeoPoint(point.latitude, point.longitude);
