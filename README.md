@@ -124,8 +124,21 @@ safety-related consequences — arising from the installation or use of this app
 You use it entirely **at your own risk**. Do not interact with the app while
 driving.
 
-All graphic resources, trademarks, and brand names belong to their respective
-owners and are used here for study purposes only.
+### Graphic resources
+
+This launcher deliberately reuses graphic resources taken from the vehicle's own
+system software — card backgrounds, tab artwork, switches, map pins — so that it
+looks and behaves like part of the native interface rather than a foreign app.
+That visual continuity is the point of the project.
+
+Those resources are **not licensed to this project**. They remain the property of
+SAIC/MG and their respective owners, and are included here only so that the app
+can match the system on a vehicle that already contains them. No ownership is
+claimed over them, and their presence implies no permission, endorsement, or
+affiliation. Anyone who redistributes this project, or builds on it, does so under
+their own responsibility.
+
+The same applies to trademarks and brand names, used here descriptively only.
 
 ## Avvertenze (Italiano)
 
@@ -141,5 +154,18 @@ dati, perdita di funzionalità o conseguenze relative alla sicurezza — derivan
 dall'installazione o dall'uso di questa app. L'utilizzo avviene interamente **a
 proprio rischio**. Non interagire con l'app durante la guida.
 
-Tutte le risorse grafiche, i marchi e i nomi commerciali appartengono ai
-rispettivi proprietari e sono utilizzati qui solo a scopo di studio.
+### Risorse grafiche
+
+Questo launcher riusa deliberatamente risorse grafiche prese dal software di
+sistema del veicolo — sfondi delle card, grafica dei tab, interruttori, segnaposto
+della mappa — perché appaia e si comporti come parte dell'interfaccia nativa e non
+come un'app estranea. Questa continuità visiva è lo scopo del progetto.
+
+Tali risorse **non sono concesse in licenza a questo progetto**. Restano di
+proprietà di SAIC/MG e dei rispettivi titolari, e sono incluse qui solo affinché
+l'app possa uniformarsi al sistema su un veicolo che già le contiene. Non se ne
+rivendica la titolarità e la loro presenza non implica alcuna autorizzazione,
+approvazione o affiliazione. Chi ridistribuisce questo progetto, o vi costruisce
+sopra, lo fa sotto la propria responsabilità.
+
+Lo stesso vale per marchi e nomi commerciali, qui usati a soli fini descrittivi.
