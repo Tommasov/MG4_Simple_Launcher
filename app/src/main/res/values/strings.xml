@@ -15,7 +15,7 @@
     <string name="grid_slot_remove">Remove</string>
 
     <!-- Second carousel page: live system info -->
-    <string name="sys_device">Device</string>
+    <string name="sys_technical">Technical details</string>
     <string name="sys_memory">Memory</string>
     <string name="sys_storage">Storage</string>
     <string name="sys_network">Network</string>
