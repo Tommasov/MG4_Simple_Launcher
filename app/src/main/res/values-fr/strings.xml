@@ -12,8 +12,6 @@
     <string name="app_info_unavailable">Les infos de l\'application ne sont pas disponibles sur ce système</string>
 
     <!-- Troisième page du carrousel : grille de raccourcis attribuables -->
-    <string name="grid_favorites_title">Raccourcis</string>
-    <string name="grid_favorites_hint">Appui long sur une case pour l\'attribuer ou la changer</string>
     <string name="grid_slot_change">Changer d\'application</string>
     <string name="grid_slot_remove">Retirer</string>
 

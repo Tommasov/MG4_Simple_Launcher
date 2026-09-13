@@ -12,8 +12,6 @@
     <string name="app_info_unavailable">App-Info ist auf diesem System nicht verfügbar</string>
 
     <!-- Dritte Karussellseite: Raster mit zuweisbaren Verknüpfungen -->
-    <string name="grid_favorites_title">Verknüpfungen</string>
-    <string name="grid_favorites_hint">Kachel lange drücken, um sie zuzuweisen oder zu ändern</string>
     <string name="grid_slot_change">App ändern</string>
     <string name="grid_slot_remove">Entfernen</string>
 

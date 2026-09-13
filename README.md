@@ -20,7 +20,7 @@ fits visually with the system, while providing a minimal, focused home screen.
   - **All apps** (top card): every launchable app, in a grid.
   - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
     **Settings** apps, side by side as icons.
-- **Shortcuts grid** (page 2): twelve assignable tiles for the apps that don't fit on
+- **Shortcuts grid** (page 2): eight assignable tiles for the apps that don't fit on
   the three home cards. Tap to launch, long-press to change or clear a tile.
 - **System apps & updates**: inside the *All apps* drawer, the header carries a
   **System apps** button (only system apps, `FLAG_SYSTEM`) next to **Check for
@@ -30,7 +30,7 @@ fits visually with the system, while providing a minimal, focused home screen.
   uninstall).
 - **Light / dark theme**: follows the system day/night mode automatically, using
   the original SAIC light and dark artwork.
-- **Persisted favorites**: the three home cards and the twelve grid tiles are saved
+- **Persisted favorites**: the three home cards and the eight grid tiles are saved
   across reboots, in separate slots that never overwrite each other.
 
 ## Changing a pinned app
@@ -41,14 +41,14 @@ you want in that slot. Your choice is saved across reboots.
 ## Second screen (shortcuts)
 
 Swipe right from the home to reach the shortcuts grid (`FavoritesGridFragment` /
-`res/layout/fragment_favorites.xml`): twelve tiles in six columns, sized for the
-head unit's 1920×720 display.
+`res/layout/fragment_favorites.xml`): eight tiles laid out as four columns of two,
+each with the same proportions as the half cards in the home page's fourth column.
 
 - **Tap** a tile to launch its app. An empty tile opens the app picker.
 - **Long-press** a filled tile to *change* the app or *remove* it, leaving the tile
   empty again.
 
-These twelve slots are stored separately from the three home cards, so assigning an
+These eight slots are stored separately from the three home cards, so assigning an
 app here never disturbs the home page.
 
 ## Third screen (system info)

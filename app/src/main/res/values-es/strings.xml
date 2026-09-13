@@ -12,8 +12,6 @@
     <string name="app_info_unavailable">La info de la app no está disponible en este sistema</string>
 
     <!-- Tercera página del carrusel: cuadrícula de accesos directos asignables -->
-    <string name="grid_favorites_title">Accesos directos</string>
-    <string name="grid_favorites_hint">Mantén pulsada una casilla para asignarla o cambiarla</string>
     <string name="grid_slot_change">Cambiar app</string>
     <string name="grid_slot_remove">Quitar</string>
 

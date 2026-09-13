@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         // (state restore doesn't reliably fire onPageSelected for the initial position).
         pager.post(() -> updateIndicator(pager.getCurrentItem()));
 
+        // Forget shortcut slots that no longer have a tile after the 1.5 grid was resized.
+        new PreferencesManager(this).pruneGridFavorites();
+
         // Remove any APK left over from a previous (completed or cancelled) update.
         ApkDownloader.clearDownloads(this);
 

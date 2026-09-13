@@ -12,8 +12,6 @@
     <string name="app_info_unavailable">Info app non disponibili su questo sistema</string>
 
     <!-- Terza pagina del carousel: griglia di scorciatoie assegnabili -->
-    <string name="grid_favorites_title">Scorciatoie</string>
-    <string name="grid_favorites_hint">Tieni premuto un riquadro per assegnarlo o cambiarlo</string>
     <string name="grid_slot_change">Cambia app</string>
     <string name="grid_slot_remove">Rimuovi</string>
 

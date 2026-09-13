@@ -1,36 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Carousel page 2: a grid of assignable shortcuts. Landscape (MG4 head unit).
-     The bottom padding keeps the last tile row clear of the pagination indicator. -->
+<!-- Carousel page 2: eight assignable shortcuts. Four columns of two stacked cards,
+     so every tile has the same proportions as the half cards in the home page's
+     fourth column. Landscape (MG4 head unit, 1920x720).
+     Slots read left to right: 0-3 on the top row, 4-7 on the bottom row. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/screen_padding"
-    android:paddingTop="@dimen/screen_padding"
-    android:paddingEnd="@dimen/screen_padding"
-    android:paddingBottom="@dimen/grid_padding_bottom">
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:padding="@dimen/screen_padding">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/grid_favorites_title"
-        android:textColor="@color/text_primary"
-        android:textSize="@dimen/drawer_title_size"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/grid_favorites_hint"
-        android:textColor="@color/text_secondary"
-        android:textSize="@dimen/info_card_body_size" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorites_grid"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <!-- Column 1: slots 0 / 4 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/card_gap"
-        android:clipToPadding="false" />
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/slot_0"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_0"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slot_4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_4"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Column 2: slots 1 / 5 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/slot_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_1"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slot_5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_5"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Column 3: slots 2 / 6 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/slot_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_2"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slot_6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_6"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Column 4: slots 3 / 7 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/slot_3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_3"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slot_7"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/slot_icon_7"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/slot_label_7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/add_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

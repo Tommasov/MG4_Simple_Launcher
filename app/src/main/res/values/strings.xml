@@ -11,8 +11,6 @@
     <string name="app_info_unavailable">App info isn\'t available on this system</string>
 
     <!-- Third carousel page: assignable shortcut grid -->
-    <string name="grid_favorites_title">Shortcuts</string>
-    <string name="grid_favorites_hint">Long-press a tile to assign or change it</string>
     <string name="grid_slot_change">Change app</string>
     <string name="grid_slot_remove">Remove</string>
 

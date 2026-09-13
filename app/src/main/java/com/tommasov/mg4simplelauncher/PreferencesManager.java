@@ -13,8 +13,10 @@ public class PreferencesManager {
     private static final String KEY_FAVORITE_PREFIX = "favorite_";
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
     public static final int FAVORITE_COUNT = 3;
-    /** Two rows of six tiles, matching the 1920x720 head unit. */
-    public static final int GRID_FAVORITE_COUNT = 12;
+    /** Four columns of two half cards, matching the 1920x720 head unit. */
+    public static final int GRID_FAVORITE_COUNT = 8;
+    /** Tile count shipped in 1.5, before the grid was resized to half cards. */
+    private static final int LEGACY_GRID_FAVORITE_COUNT = 12;
 
     private final SharedPreferences prefs;
 
@@ -35,7 +37,7 @@ public class PreferencesManager {
         prefs.edit().remove(KEY_FAVORITE_PREFIX + slot).apply();
     }
 
-    /** Returns the package saved for the given grid slot (0..11), or null if empty. */
+    /** Returns the package saved for the given grid slot (0..7), or null if empty. */
     public String getGridFavorite(int slot) {
         return prefs.getString(KEY_GRID_FAVORITE_PREFIX + slot, null);
     }
@@ -46,5 +48,18 @@ public class PreferencesManager {
 
     public void clearGridFavorite(int slot) {
         prefs.edit().remove(KEY_GRID_FAVORITE_PREFIX + slot).apply();
+    }
+
+    /**
+     * Drops shortcut assignments past the current tile count, left behind by users who
+     * filled the twelve-tile grid in 1.5. Without this they stay in storage unseen and
+     * would reappear if the grid ever grew again.
+     */
+    public void pruneGridFavorites() {
+        SharedPreferences.Editor editor = prefs.edit();
+        for (int slot = GRID_FAVORITE_COUNT; slot < LEGACY_GRID_FAVORITE_COUNT; slot++) {
+            editor.remove(KEY_GRID_FAVORITE_PREFIX + slot);
+        }
+        editor.apply();
     }
 }
