@@ -24,7 +24,9 @@ import java.util.concurrent.Executors;
 public class UpdateChecker {
 
     private static final String TAG = "UpdateChecker";
-    private static final String MANIFEST_FILE = "version.json";
+    /** Release channels, each published as its own manifest next to the other. */
+    public static final String MANIFEST_STABLE = "version.json";
+    public static final String MANIFEST_BETA = "version-beta.json";
     private static final int TIMEOUT_MS = 15_000;
 
     public interface Callback {
@@ -48,11 +50,14 @@ public class UpdateChecker {
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
-    /** Runs the check off the main thread; the callback is always invoked on the main thread. */
-    public void check(@NonNull Callback callback) {
+    /**
+     * Runs the check off the main thread; the callback is always invoked on the main
+     * thread. {@code manifestFile} selects the channel.
+     */
+    public void check(@NonNull String manifestFile, @NonNull Callback callback) {
         executor.execute(() -> {
             try {
-                JSONObject json = new JSONObject(download(baseUrl + MANIFEST_FILE));
+                JSONObject json = new JSONObject(download(baseUrl + manifestFile));
                 UpdateInfo info = UpdateInfo.fromJson(json, baseUrl);
                 long current = currentVersionCode();
                 Log.i(TAG, "current=" + current + " remote=" + info.versionCode);
