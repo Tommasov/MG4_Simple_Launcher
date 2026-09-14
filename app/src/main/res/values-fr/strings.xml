@@ -99,4 +99,15 @@
         <item quantity="one">%d ligne</item>
         <item quantity="other">%d lignes</item>
     </plurals>
+
+    <!-- Air quality card, read from the vehicle sensors -->
+    <string name="air_title">Qualité de l’air</string>
+    <string name="air_cabin">Habitacle</string>
+    <string name="air_outside">Extérieur</string>
+    <string name="air_temperature">Température</string>
+    <string name="air_reading">Lecture des capteurs…</string>
+    <string name="air_unavailable">Non disponible sur ce véhicule</string>
+    <string name="air_no_value">—</string>
+    <string name="air_pm25">%1$d µg/m³</string>
+    <string name="air_celsius">%1$d °C</string>
 </resources>

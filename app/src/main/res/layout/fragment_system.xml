@@ -110,6 +110,112 @@
         </LinearLayout>
     </FrameLayout>
 
+    <!-- Air quality, read from the vehicle's own sensors through the adapter service.
+         Blank on anything that is not this car, so the card states that rather than
+         showing empty rows. -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/smallcard_selector"
+        android:orientation="vertical"
+        android:padding="@dimen/info_card_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/air_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/small_card_label_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/air_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/info_card_body_size" />
+
+        <LinearLayout
+            android:id="@+id/air_readings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/air_cabin"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <TextView
+                android:id="@+id/air_cabin_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/sys_value_size"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/air_outside"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <TextView
+                android:id="@+id/air_outside_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/sys_value_size"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/air_temperature"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <TextView
+                android:id="@+id/air_temperature_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/sys_value_size"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+        </LinearLayout>
+    </LinearLayout>
     <!-- Launcher settings. Summarises what is on so the card says something before it is
          tapped, the way the other cards on this page do. -->
     <LinearLayout
@@ -142,15 +248,6 @@
             android:textSize="@dimen/info_card_body_size" />
     </LinearLayout>
 
-    <!-- Free slot 3 -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/smallcard_selector"
-        android:gravity="center"
-        android:orientation="vertical" />
     <!-- Technical details: device, memory, storage, network -->
     <ScrollView
         android:layout_width="0dp"

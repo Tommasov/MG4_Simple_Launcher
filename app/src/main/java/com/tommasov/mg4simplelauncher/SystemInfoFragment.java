@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tommasov.mg4simplelauncher.charging.ChargingCardBinder;
+import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -51,6 +52,13 @@ public class SystemInfoFragment extends Fragment {
     private TextView networkDetail;
     private ChargingCardBinder chargingCard;
     private TextView settingsSummary;
+    private View airReadings;
+    private TextView airStatus;
+    private TextView airCabin;
+    private TextView airOutside;
+    private TextView airTemperature;
+    /** One reading per visit: these are sensors, not a live feed. */
+    private boolean airLoaded;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -77,6 +85,12 @@ public class SystemInfoFragment extends Fragment {
         networkDetail = view.findViewById(R.id.tv_network_detail);
         chargingCard = new ChargingCardBinder(view);
 
+        airReadings = view.findViewById(R.id.air_readings);
+        airStatus = view.findViewById(R.id.air_status);
+        airCabin = view.findViewById(R.id.air_cabin_value);
+        airOutside = view.findViewById(R.id.air_outside_value);
+        airTemperature = view.findViewById(R.id.air_temperature_value);
+
         settingsSummary = view.findViewById(R.id.settings_card_summary);
         view.findViewById(R.id.settings_card).setOnClickListener(
                 v -> startActivity(new Intent(requireContext(), SettingsActivity.class)));
@@ -89,6 +103,7 @@ public class SystemInfoFragment extends Fragment {
         // Deliberately outside the ticker: Open Charge Map bans callers that poll it.
         chargingCard.loadOnce();
         bindSettingsSummary();
+        loadAirOnce();
     }
 
     @Override
@@ -101,6 +116,54 @@ public class SystemInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         chargingCard.cancel();
+    }
+
+    /**
+     * Asks the car for its air sensors once per visit. Deliberately not on the refresh
+     * ticker: this crosses a Binder into another app, which is a different weight of call
+     * from reading /proc.
+     */
+    private void loadAirOnce() {
+        if (airLoaded) {
+            return;
+        }
+        airStatus.setText(R.string.air_reading);
+        VehicleData.readAir(requireContext(), new VehicleData.Callback() {
+            @Override
+            public void onAir(@NonNull VehicleData.Air air) {
+                if (!isAdded()) {
+                    return;
+                }
+                airCabin.setText(formatPm25(air.inCarPm25));
+                airOutside.setText(formatPm25(air.outsidePm25));
+                airTemperature.setText(formatTemperature(air.temperature));
+                airStatus.setVisibility(View.GONE);
+                airReadings.setVisibility(View.VISIBLE);
+                airLoaded = true;
+            }
+
+            @Override
+            public void onUnavailable() {
+                if (!isAdded()) {
+                    return;
+                }
+                airStatus.setText(R.string.air_unavailable);
+                airStatus.setVisibility(View.VISIBLE);
+                airReadings.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private String formatPm25(int value) {
+        return value == VehicleData.UNKNOWN
+                ? getString(R.string.air_no_value)
+                : getString(R.string.air_pm25, value);
+    }
+
+    private String formatTemperature(int value) {
+        return value == VehicleData.UNKNOWN
+                ? getString(R.string.air_no_value)
+                : getString(R.string.air_celsius, value);
     }
 
     /** Restated on every resume, so returning from settings shows the new choices. */
