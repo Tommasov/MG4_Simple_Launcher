@@ -419,6 +419,7 @@ public class ChargingMapActivity extends AppCompatActivity
     @Override
     public void onNavigate(@NonNull ChargePoint point) {
         FactoryNavigator.sendDestination(this, point.latitude, point.longitude, point.title,
+                point.address,
                 new FactoryNavigator.Callback() {
                     @Override
                     public void onSent() {

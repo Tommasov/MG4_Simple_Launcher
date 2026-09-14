@@ -110,9 +110,10 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- Air quality, read from the vehicle's own sensors through the adapter service.
-         Blank on anything that is not this car, so the card states that rather than
-         showing empty rows. -->
+    <!-- What the car says about itself, through the adapter service. The values here are
+         the ones with a real implementation behind them: the air-quality getters that used
+         to fill this card are empty stubs in the firmware. Blank on anything that is not
+         this car, so the card states that rather than showing empty rows. -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -125,13 +126,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/air_title"
+            android:text="@string/vehicle_title"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/small_card_label_size"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/air_status"
+            android:id="@+id/vehicle_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -139,7 +140,7 @@
             android:textSize="@dimen/info_card_body_size" />
 
         <LinearLayout
-            android:id="@+id/air_readings"
+            android:id="@+id/vehicle_readings"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -153,14 +154,15 @@
                 android:minHeight="16dp" />
 
             <TextView
+                android:id="@+id/vehicle_battery_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/air_cabin"
+                android:text="@string/vehicle_battery"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/secondary_text_size" />
 
             <TextView
-                android:id="@+id/air_cabin_value"
+                android:id="@+id/vehicle_battery_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_primary"
@@ -176,12 +178,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/air_outside"
+                android:text="@string/vehicle_range"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/secondary_text_size" />
 
             <TextView
-                android:id="@+id/air_outside_value"
+                android:id="@+id/vehicle_range_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_primary"
@@ -197,12 +199,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/air_temperature"
+                android:text="@string/vehicle_odometer"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/secondary_text_size" />
 
             <TextView
-                android:id="@+id/air_temperature_value"
+                android:id="@+id/vehicle_odometer_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_primary"

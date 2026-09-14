@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
 import com.tommasov.mg4simplelauncher.charging.ChargingCardBinder;
@@ -52,13 +53,12 @@ public class SystemInfoFragment extends Fragment {
     private TextView networkDetail;
     private ChargingCardBinder chargingCard;
     private TextView settingsSummary;
-    private View airReadings;
-    private TextView airStatus;
-    private TextView airCabin;
-    private TextView airOutside;
-    private TextView airTemperature;
-    /** One reading per visit: these are sensors, not a live feed. */
-    private boolean airLoaded;
+    private View vehicleReadings;
+    private TextView vehicleStatus;
+    private TextView vehicleBatteryLabel;
+    private TextView vehicleBattery;
+    private TextView vehicleRange;
+    private TextView vehicleOdometer;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -85,11 +85,12 @@ public class SystemInfoFragment extends Fragment {
         networkDetail = view.findViewById(R.id.tv_network_detail);
         chargingCard = new ChargingCardBinder(view);
 
-        airReadings = view.findViewById(R.id.air_readings);
-        airStatus = view.findViewById(R.id.air_status);
-        airCabin = view.findViewById(R.id.air_cabin_value);
-        airOutside = view.findViewById(R.id.air_outside_value);
-        airTemperature = view.findViewById(R.id.air_temperature_value);
+        vehicleReadings = view.findViewById(R.id.vehicle_readings);
+        vehicleStatus = view.findViewById(R.id.vehicle_status);
+        vehicleBatteryLabel = view.findViewById(R.id.vehicle_battery_label);
+        vehicleBattery = view.findViewById(R.id.vehicle_battery_value);
+        vehicleRange = view.findViewById(R.id.vehicle_range_value);
+        vehicleOdometer = view.findViewById(R.id.vehicle_odometer_value);
 
         settingsSummary = view.findViewById(R.id.settings_card_summary);
         view.findViewById(R.id.settings_card).setOnClickListener(
@@ -103,7 +104,7 @@ public class SystemInfoFragment extends Fragment {
         // Deliberately outside the ticker: Open Charge Map bans callers that poll it.
         chargingCard.loadOnce();
         bindSettingsSummary();
-        loadAirOnce();
+        loadVehicle();
     }
 
     @Override
@@ -119,27 +120,27 @@ public class SystemInfoFragment extends Fragment {
     }
 
     /**
-     * Asks the car for its air sensors once per visit. Deliberately not on the refresh
-     * ticker: this crosses a Binder into another app, which is a different weight of call
-     * from reading /proc.
+     * Asks the car about itself once per visit. Deliberately not on the refresh ticker: this
+     * crosses a Binder into another app, which is a different weight of call from reading
+     * /proc. Once per visit is also enough for what it reads — charge and range move over
+     * minutes, not seconds — while still being fresh every time the page is opened.
      */
-    private void loadAirOnce() {
-        if (airLoaded) {
-            return;
-        }
-        airStatus.setText(R.string.air_reading);
-        VehicleData.readAir(requireContext(), new VehicleData.Callback() {
+    private void loadVehicle() {
+        vehicleStatus.setText(R.string.vehicle_reading);
+        VehicleData.read(requireContext(), new VehicleData.Callback() {
             @Override
-            public void onAir(@NonNull VehicleData.Air air) {
+            public void onState(@NonNull VehicleData.State state) {
                 if (!isAdded()) {
                     return;
                 }
-                airCabin.setText(formatPm25(air.inCarPm25));
-                airOutside.setText(formatPm25(air.outsidePm25));
-                airTemperature.setText(formatTemperature(air.temperature));
-                airStatus.setVisibility(View.GONE);
-                airReadings.setVisibility(View.VISIBLE);
-                airLoaded = true;
+                vehicleBatteryLabel.setText(state.charging
+                        ? R.string.vehicle_battery_charging
+                        : R.string.vehicle_battery);
+                vehicleBattery.setText(format(R.string.vehicle_percent, state.batteryPercent));
+                vehicleRange.setText(format(R.string.vehicle_km, state.rangeKm));
+                vehicleOdometer.setText(format(R.string.vehicle_km, state.odometerKm));
+                vehicleStatus.setVisibility(View.GONE);
+                vehicleReadings.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -147,23 +148,18 @@ public class SystemInfoFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                airStatus.setText(R.string.air_unavailable);
-                airStatus.setVisibility(View.VISIBLE);
-                airReadings.setVisibility(View.GONE);
+                vehicleStatus.setText(R.string.vehicle_unavailable);
+                vehicleStatus.setVisibility(View.VISIBLE);
+                vehicleReadings.setVisibility(View.GONE);
             }
         });
     }
 
-    private String formatPm25(int value) {
+    /** A reading in its unit, or a dash where the car had nothing to say. */
+    private String format(@StringRes int unit, int value) {
         return value == VehicleData.UNKNOWN
-                ? getString(R.string.air_no_value)
-                : getString(R.string.air_pm25, value);
-    }
-
-    private String formatTemperature(int value) {
-        return value == VehicleData.UNKNOWN
-                ? getString(R.string.air_no_value)
-                : getString(R.string.air_celsius, value);
+                ? getString(R.string.vehicle_no_value)
+                : getString(unit, value);
     }
 
     /** Restated on every resume, so returning from settings shows the new choices. */

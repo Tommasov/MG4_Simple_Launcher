@@ -101,14 +101,15 @@
         <item quantity="other">%d líneas</item>
     </plurals>
 
-    <!-- Air quality card, read from the vehicle sensors -->
-    <string name="air_title">Calidad del aire</string>
-    <string name="air_cabin">Habitáculo</string>
-    <string name="air_outside">Exterior</string>
-    <string name="air_temperature">Temperatura</string>
-    <string name="air_reading">Leyendo los sensores…</string>
-    <string name="air_unavailable">No disponible en este vehículo</string>
-    <string name="air_no_value">—</string>
-    <string name="air_pm25">%1$d µg/m³</string>
-    <string name="air_celsius">%1$d °C</string>
+    <!-- Tarjeta del vehículo, leída del coche mediante el adapter service -->
+    <string name="vehicle_title">Vehículo</string>
+    <string name="vehicle_battery">Batería</string>
+    <string name="vehicle_battery_charging">Batería · cargando</string>
+    <string name="vehicle_range">Autonomía</string>
+    <string name="vehicle_odometer">Cuentakilómetros</string>
+    <string name="vehicle_reading">Leyendo el vehículo…</string>
+    <string name="vehicle_unavailable">No disponible en este vehículo</string>
+    <string name="vehicle_no_value">—</string>
+    <string name="vehicle_percent">%1$d %%</string>
+    <string name="vehicle_km">%1$d km</string>
 </resources>

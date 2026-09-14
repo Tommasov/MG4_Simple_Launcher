@@ -21,14 +21,17 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
  * own private actions — so the supported route is the one the car's own EV route planner
  * uses: bind SAIC's adapter service and hand it the stop over Binder.
  *
- * <p>The wire format below was read out of the firmware's own binaries rather than guessed:
- * {@code IGeneralService$Stub$Proxy.startNavFromEVRout} writes the interface token, then two
- * typed lists of {@code EVRoutPoiInfo}, and transacts on code 48; {@code
- * EVRoutPoiInfo.writeToParcel} writes latitude, longitude and name in that order and
- * nothing else. The parcel is written by hand instead of through a regenerated AIDL: only
- * these three values and one transaction matter, and reproducing the whole interface would
- * mean mirroring several dozen methods in their exact declaration order just to keep the
- * transaction numbering aligned.
+ * <p>The call used is the one behind the voice assistant's "take me to" — {@code
+ * IVoiceVuiService.goToPoi} — rather than the EV planner's {@code startNavFromEVRout}. The
+ * planner's entry point accepts the call without complaint and then does nothing, which is
+ * worse than an error: it reports success while the driver sees no route. goToPoi is the
+ * path that actually starts one.
+ *
+ * <p>The wire format was read out of the firmware with dexdump: interface token, three
+ * strings, then latitude and longitude, on transaction 17. Written by hand rather than
+ * through a regenerated AIDL, because reproducing the whole interface would mean mirroring
+ * dozens of methods in their exact declaration order just to keep transaction numbers
+ * aligned, for the sake of one call.
  *
  * <p>None of this is a published API. It can disappear with a firmware update, so every
  * failure path falls back to the caller rather than surfacing an error.
@@ -39,9 +42,9 @@ final class FactoryNavigator {
 
     private static final String ADAPTER_PACKAGE = "com.saicmotor.adapterservice";
     private static final String ADAPTER_SERVICE =
-            "com.saicmotor.adapterservice.services.GeneralService";
+            "com.saicmotor.adapterservice.services.VoiceVuiService";
     private static final String INTERFACE_TOKEN =
-            "com.saicmotor.adapterservice.IGeneralService";
+            "com.saicmotor.adapterservice.IVoiceVuiService";
     /**
      * Navigation apps shipped on SAIC head units, by market: Telenav here in Europe, iGO in
      * Hong Kong, SAIC's own in Israel. Only the trims with the full infotainment package
@@ -53,8 +56,8 @@ final class FactoryNavigator {
             "com.saicmotor.navigation",
     };
 
-    /** {@code startNavFromEVRout(List, List)} sits at this transaction code. */
-    private static final int TRANSACTION_START_NAV_FROM_EV_ROUTE = 48;
+    /** {@code goToPoi(String, String, String, double, double)} sits at this code. */
+    private static final int TRANSACTION_GO_TO_POI = 17;
 
     interface Callback {
         /** The stop reached the navigator. */
@@ -91,7 +94,8 @@ final class FactoryNavigator {
      * arrives through {@code callback}; the connection is dropped as soon as the call lands.
      */
     static void sendDestination(@NonNull Context context, double latitude, double longitude,
-                                @NonNull String name, @NonNull Callback callback) {
+                                @NonNull String name, @NonNull String address,
+                                @NonNull Callback callback) {
         Context appContext = context.getApplicationContext();
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(ADAPTER_PACKAGE, ADAPTER_SERVICE));
@@ -99,15 +103,18 @@ final class FactoryNavigator {
         ServiceConnection connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName component, IBinder binder) {
-                boolean sent = transact(binder, latitude, longitude, name);
+                boolean sent = transact(binder, latitude, longitude, name, address);
                 try {
                     appContext.unbindService(this);
                 } catch (IllegalArgumentException ignored) {
                     // Already gone; nothing to release.
                 }
+                // Worded for what it actually proves: the call landed without an exception.
+                // The previous entry point, startNavFromEVRout, accepted it just as quietly
+                // and started no route, so "sent" is not the same as "routing".
                 DiagnosticsLog.log(appContext, TAG,
-                        sent ? "destination sent to the factory navigator"
-                             : "the navigator refused the destination");
+                        sent ? "goToPoi accepted the destination"
+                             : "goToPoi refused the destination");
                 if (sent) {
                     callback.onSent();
                 } else {
@@ -145,26 +152,22 @@ final class FactoryNavigator {
     }
 
     private static boolean transact(@NonNull IBinder binder, double latitude, double longitude,
-                                    @NonNull String name) {
+                                    @NonNull String name, @NonNull String address) {
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
         try {
             data.writeInterfaceToken(INTERFACE_TOKEN);
 
-            // First typed list: the stops. Parcel.writeTypedList's format is the element
-            // count, then per element a 1 marker followed by the element's own fields.
-            data.writeInt(1);
-            data.writeInt(1);
+            // Three strings then the coordinates. What each string means is not recoverable
+            // from the binaries; name and address are the two the navigator can plausibly
+            // show, and the third is left empty rather than filled with a guess.
+            data.writeString(name);
+            data.writeString(address);
+            data.writeString("");
             data.writeDouble(latitude);
             data.writeDouble(longitude);
-            data.writeString(name);
 
-            // Second list: the planner passes two, and which is which is not recoverable
-            // from the binaries. An empty list is the harmless choice — worst case the
-            // navigator ignores it.
-            data.writeInt(0);
-
-            binder.transact(TRANSACTION_START_NAV_FROM_EV_ROUTE, data, reply, 0);
+            binder.transact(TRANSACTION_GO_TO_POI, data, reply, 0);
             // Throws if the far side reported an exception, so a rejected call is not
             // mistaken for a delivered one.
             reply.readException();
