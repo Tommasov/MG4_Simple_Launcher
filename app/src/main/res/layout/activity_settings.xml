@@ -133,7 +133,7 @@
                     android:maxLines="1"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="@string/settings_page_system"
+                    android:text="@string/settings_page_charging"
                     android:textColor="@color/filter_tab_text"
                     android:textSize="@dimen/settings_tab_text_size" />
             </RadioGroup>

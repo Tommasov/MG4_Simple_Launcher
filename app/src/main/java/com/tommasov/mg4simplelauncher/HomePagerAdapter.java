@@ -19,7 +19,7 @@ public class HomePagerAdapter extends FragmentStateAdapter {
 
     public static final int PAGE_HOME = 0;
     public static final int PAGE_SHORTCUTS = 1;
-    public static final int PAGE_SYSTEM = 2;
+    public static final int PAGE_CHARGING = 2;
 
     private final List<Integer> pages = new ArrayList<>(3);
 
@@ -47,7 +47,7 @@ public class HomePagerAdapter extends FragmentStateAdapter {
         if (shortcutsEnabled) {
             kinds.add(PAGE_SHORTCUTS);
         }
-        kinds.add(PAGE_SYSTEM);
+        kinds.add(PAGE_CHARGING);
         return kinds;
     }
 
@@ -63,8 +63,8 @@ public class HomePagerAdapter extends FragmentStateAdapter {
         switch (pages.get(position)) {
             case PAGE_SHORTCUTS:
                 return new FavoritesGridFragment();
-            case PAGE_SYSTEM:
-                return new SystemInfoFragment();
+            case PAGE_CHARGING:
+                return new ChargingFragment();
             default:
                 return new HomeFragment();
         }

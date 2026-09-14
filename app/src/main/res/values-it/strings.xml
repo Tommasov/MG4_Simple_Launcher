@@ -77,14 +77,11 @@
     <string name="settings_home_page_hint">Quale pagina si apre all’avvio</string>
     <string name="settings_page_home">Home</string>
     <string name="settings_page_shortcuts">Scorciatoie</string>
-    <string name="settings_page_system">Strumenti</string>
+    <string name="settings_page_charging">Punti di ricarica</string>
     <string name="settings_shortcuts_page">Pagina scorciatoie</string>
     <string name="settings_shortcuts_page_hint">Mostra la pagina delle scorciatoie nel carosello</string>
     <string name="settings_updates">Aggiornamenti</string>
     <string name="settings_version">Installata: %1$s (%2$d)</string>
-    <string name="settings_card_launch">Si apre su %1$s</string>
-    <string name="settings_card_shortcuts_on">Pagina scorciatoie attiva</string>
-    <string name="settings_card_shortcuts_off">Pagina scorciatoie disattivata</string>
     <string name="settings_features">Funzioni</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Canale beta</string>

@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Carousel page 3: charging points and launcher settings, landscape (MG4 head unit).
-     Two cards, not four. The charging card takes two thirds of the row because it is the
-     one with something to say while driving, and its two networks sit side by side rather
-     than stacked, which is what let the entries grow to a size readable at a glance. The
-     technical details that used to close the row now live inside the settings screen: they
-     are something you go and look at, not something you watch. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Carousel page 3: charging points, landscape (MG4 head unit).
+     One card across the whole width. This page held four cards, then two; what survived the
+     pruning is the only thing on it worth reading while driving, so it stopped sharing. The
+     three columns are the same three networks the map screen filters by. Settings keep the
+     round button, now floating in the page corner rather than owning a card of their own. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false"
     android:padding="@dimen/screen_padding">
 
-    <!-- Charging points: the nearest motorway and Supercharger sites, tap for the map.
-         The bolt sits behind the text rather than below it, so both columns fit without
-         giving up the graphic backdrop. -->
     <FrameLayout
         android:id="@+id/charging_card"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
         android:clickable="true"
         android:focusable="true">
@@ -94,6 +86,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/card_gap"
                     android:orientation="vertical">
 
                     <TextView
@@ -110,6 +103,28 @@
                     <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
                     <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_6" />
                     <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_7" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/charge_group_fast"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/charging_filter_fast"
+                        android:textColor="@color/accent"
+                        android:textSize="@dimen/charge_detail_size"
+                        android:textStyle="bold" />
+
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_8" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_9" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_10" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_11" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -131,53 +146,20 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- Launcher settings. Summarises what is on, so the card says something before anyone
-         touches it, and carries the round button that opens the settings screen. The whole
-         card stays tappable too: in a moving car the larger target is the kinder one. -->
-    <FrameLayout
-        android:id="@+id/settings_card"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/smallcard_selector"
+    <!-- Settings, in the page corner. Inset by the same padding as the card's own text so it
+         lines up with the title across the way, and so it clears the shadow the card art
+         paints inside its own bounds. -->
+    <ImageView
+        android:id="@+id/settings_card_button"
+        android:layout_width="@dimen/round_button_size"
+        android:layout_height="@dimen/round_button_size"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="@dimen/info_card_padding"
+        android:layout_marginEnd="@dimen/charging_card_padding_h"
+        android:background="@drawable/round_button_selector"
         android:clickable="true"
-        android:focusable="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_title"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/settings_card_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="6dp"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/settings_card_button"
-            android:layout_width="@dimen/round_button_size"
-            android:layout_height="@dimen/round_button_size"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/info_card_padding"
-            android:background="@drawable/round_button_selector"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/settings_title"
-            android:padding="@dimen/round_button_icon_padding"
-            android:src="@drawable/ic_gear" />
-    </FrameLayout>
-</LinearLayout>
+        android:focusable="true"
+        android:contentDescription="@string/settings_title"
+        android:padding="@dimen/round_button_icon_padding"
+        android:src="@drawable/ic_gear" />
+</FrameLayout>

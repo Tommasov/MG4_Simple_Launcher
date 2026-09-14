@@ -76,12 +76,13 @@
     <dimen name="round_button_size">72dp</dimen>
     <dimen name="round_button_icon_padding">18dp</dimen>
 
-    <!-- Horizontal padding for the wide charging card. The card art (bg_normal.png, 429x298)
+    <!-- Horizontal padding for the charging card. The card art (bg_normal.png, 429x298)
          paints its own drop shadow inside the bitmap: 11px on the left, 10px on the right.
          It is a plain PNG, not a nine-patch, so that band is stretched with the view instead
-         of staying put. On this card, 1237dp across on the head unit, 11/429 works out at
-         31.7dp and 10/429 at 28.8dp, which is why text at the usual 24dp sat on the shadow.
-         40dp clears the wider side and leaves a little air. The narrower cards keep
-         info_card_padding: at half the width their shadow is only 16dp. -->
-    <dimen name="charging_card_padding_h">40dp</dimen>
+         of staying put — the wider the card, the wider its shadow. Across the full 1872dp of
+         the head unit that works out at 48dp on the left and 44dp on the right, which is why
+         text at the usual 24dp sat on the shadow. 56dp clears the wider side with a little
+         air to spare. Narrower cards elsewhere keep info_card_padding: at a third of this
+         width their shadow is only 16dp. -->
+    <dimen name="charging_card_padding_h">56dp</dimen>
 </resources>

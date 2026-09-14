@@ -167,7 +167,7 @@ public class SettingsActivity extends AppCompatActivity {
         switch (pageKind) {
             case HomePagerAdapter.PAGE_SHORTCUTS:
                 return R.id.home_page_shortcuts;
-            case HomePagerAdapter.PAGE_SYSTEM:
+            case HomePagerAdapter.PAGE_CHARGING:
                 return R.id.home_page_system;
             default:
                 return R.id.home_page_main;
@@ -179,7 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
             return HomePagerAdapter.PAGE_SHORTCUTS;
         }
         if (checkedId == R.id.home_page_system) {
-            return HomePagerAdapter.PAGE_SYSTEM;
+            return HomePagerAdapter.PAGE_CHARGING;
         }
         return HomePagerAdapter.PAGE_HOME;
     }

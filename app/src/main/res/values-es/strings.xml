@@ -77,14 +77,11 @@
     <string name="settings_home_page_hint">Qué página abre el launcher</string>
     <string name="settings_page_home">Inicio</string>
     <string name="settings_page_shortcuts">Accesos directos</string>
-    <string name="settings_page_system">Herramientas</string>
+    <string name="settings_page_charging">Puntos de recarga</string>
     <string name="settings_shortcuts_page">Página de accesos</string>
     <string name="settings_shortcuts_page_hint">Mostrar la página de accesos en el carrusel</string>
     <string name="settings_updates">Actualizaciones</string>
     <string name="settings_version">Instalada: %1$s (%2$d)</string>
-    <string name="settings_card_launch">Se abre en %1$s</string>
-    <string name="settings_card_shortcuts_on">Página de accesos activa</string>
-    <string name="settings_card_shortcuts_off">Página de accesos desactivada</string>
     <string name="settings_features">Funciones</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Canal beta</string>

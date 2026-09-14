@@ -25,10 +25,11 @@ import java.util.function.Consumer;
  * Drives the charging card on carousel page 3: the nearest motorway and Supercharger
  * sites, and a tap that opens {@link ChargingMapActivity}.
  *
- * <p>Two queries rather than one, because these are the two networks worth planning a long
- * drive around and neither shows up among the nearest stations in town — around Florence,
- * the closest few dozen are all city chargers. They run one after the other, not in
- * parallel, to keep a single connection open at a time.
+ * <p>One query per column rather than one for the lot, because a plain "nearest stations"
+ * search answers with the wrong thing: around Florence the closest few dozen are all city
+ * chargers, and neither the motorway network nor the Superchargers — the two you plan a long
+ * drive around — appear at all. They run one after the other, not in parallel, to keep a
+ * single connection open at a time.
  *
  * <p>Deliberately separate from the fragment that owns the page. That page refreshes its
  * readings every few seconds, and Open Charge Map bans callers who poll; keeping this out
@@ -37,9 +38,12 @@ import java.util.function.Consumer;
  */
 public class ChargingCardBinder {
 
-    /** Four per network: motorway first, then Superchargers. */
+    /** The three columns, in the order they are drawn. */
+    private static final ChargingFilter[] GROUPS = {
+            ChargingFilter.MOTORWAY, ChargingFilter.SUPERCHARGER, ChargingFilter.FAST};
+    /** Four stations under each heading. */
     private static final int PER_GROUP = 4;
-    private static final int SUMMARY_COUNT = PER_GROUP * 2;
+    private static final int SUMMARY_COUNT = PER_GROUP * GROUPS.length;
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
     private final LocationResolver locationResolver = new LocationResolver();
@@ -59,7 +63,8 @@ public class ChargingCardBinder {
 
         int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2,
                 R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5,
-                R.id.charge_row_6, R.id.charge_row_7};
+                R.id.charge_row_6, R.id.charge_row_7, R.id.charge_row_8,
+                R.id.charge_row_9, R.id.charge_row_10, R.id.charge_row_11};
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);
@@ -110,15 +115,36 @@ public class ChargingCardBinder {
 
     private void loadAround(@NonNull Context context, @NonNull Location origin) {
         showStatus(R.string.charging_loading);
-        fetch(origin, ChargingFilter.MOTORWAY, motorway ->
-                fetch(origin, ChargingFilter.SUPERCHARGER, superchargers -> {
-                    if (motorway.isEmpty() && superchargers.isEmpty()) {
-                        showStatus(R.string.charging_empty);
-                        return;
-                    }
-                    bind(motorway, superchargers);
-                    loaded = true;
-                }));
+        fetchGroup(origin, 0, new ArrayList<>());
+    }
+
+    /**
+     * Walks the three queries one after another, carrying the results collected so far.
+     *
+     * <p>One at a time rather than three at once: this runs on a head unit sharing a phone's
+     * hotspot as often as not, and Open Charge Map is being asked a favour, not paid for a
+     * service. Recursion rather than a loop because each call only starts when the one
+     * before it has answered.
+     */
+    private void fetchGroup(@NonNull Location origin, int index,
+                            @NonNull List<List<ChargePoint>> collected) {
+        if (index == GROUPS.length) {
+            boolean anything = false;
+            for (List<ChargePoint> group : collected) {
+                anything |= !group.isEmpty();
+            }
+            if (!anything) {
+                showStatus(R.string.charging_empty);
+                return;
+            }
+            bind(collected);
+            loaded = true;
+            return;
+        }
+        fetch(origin, GROUPS[index], points -> {
+            collected.add(points);
+            fetchGroup(origin, index + 1, collected);
+        });
     }
 
     /** Runs one query, handing back an empty list rather than failing the whole card. */
@@ -139,17 +165,15 @@ public class ChargingCardBinder {
                 });
     }
 
-    private void bind(@NonNull List<ChargePoint> motorway,
-                      @NonNull List<ChargePoint> superchargers) {
+    private void bind(@NonNull List<List<ChargePoint>> groups) {
         Context context = card.getContext();
         List<ChargePoint> slots = new ArrayList<>();
-        // Fixed slots: the first three belong to the motorway heading, the rest to the
-        // Supercharger one, so a short group leaves a gap instead of shifting the headings.
-        for (int i = 0; i < PER_GROUP; i++) {
-            slots.add(i < motorway.size() ? motorway.get(i) : null);
-        }
-        for (int i = 0; i < PER_GROUP; i++) {
-            slots.add(i < superchargers.size() ? superchargers.get(i) : null);
+        // Fixed slots: each heading owns its own block of four, so a short group leaves a
+        // gap at the bottom of its column instead of pulling the next one up into it.
+        for (List<ChargePoint> group : groups) {
+            for (int i = 0; i < PER_GROUP; i++) {
+                slots.add(i < group.size() ? group.get(i) : null);
+            }
         }
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             boolean present = slots.get(i) != null;

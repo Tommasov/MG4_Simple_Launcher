@@ -76,14 +76,11 @@
     <string name="settings_home_page_hint">Which page the launcher opens on</string>
     <string name="settings_page_home">Home</string>
     <string name="settings_page_shortcuts">Shortcuts</string>
-    <string name="settings_page_system">Tools</string>
+    <string name="settings_page_charging">Charging points</string>
     <string name="settings_shortcuts_page">Shortcuts page</string>
     <string name="settings_shortcuts_page_hint">Show the shortcuts page in the carousel</string>
     <string name="settings_updates">Updates</string>
     <string name="settings_version">Installed: %1$s (%2$d)</string>
-    <string name="settings_card_launch">Opens on %1$s</string>
-    <string name="settings_card_shortcuts_on">Shortcuts page on</string>
-    <string name="settings_card_shortcuts_off">Shortcuts page off</string>
     <string name="settings_features">Features</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Beta channel</string>
