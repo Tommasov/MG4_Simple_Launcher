@@ -82,8 +82,7 @@
     <string name="settings_features">Features</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Beta channel</string>
-    <string name="beta_channel_on">Beta: on</string>
-    <string name="beta_channel_off">Beta: off</string>
+    <string name="beta_channel_hint">Receive pre-release builds over the network</string>
     <string name="beta_channel_join">Join the beta</string>
     <string name="beta_channel_warning">Beta builds arrive before the stable ones and may be unstable. Leaving is not immediate: Android refuses to install an older version over a newer one, so you will stay on the beta until a stable release overtakes it.</string>
 </resources>

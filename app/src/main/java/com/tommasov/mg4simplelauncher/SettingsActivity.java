@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -43,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         bindHomePage();
         bindFeatures();
+        bindBetaChannel();
         bindUpdates();
     }
 
@@ -72,6 +74,38 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     updateShortcutsOptionVisibility(checked);
                 });
+    }
+
+    private void bindBetaChannel() {
+        bindToggle(R.id.toggle_beta_channel,
+                R.string.beta_channel_title,
+                R.string.beta_channel_hint,
+                preferences.isBetaChannelEnabled(),
+                checked -> {
+                    if (!checked) {
+                        preferences.setBetaChannelEnabled(false);
+                        return;
+                    }
+                    // Warn on the way in, never on the way out: joining is what has a
+                    // one-way consequence, since Android will not install the older stable
+                    // build over a newer beta.
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.beta_channel_title)
+                            .setMessage(R.string.beta_channel_warning)
+                            .setPositiveButton(R.string.beta_channel_join,
+                                    (dialog, which) -> preferences.setBetaChannelEnabled(true))
+                            .setNegativeButton(R.string.update_action_later,
+                                    (dialog, which) -> revertToggle(R.id.toggle_beta_channel))
+                            .setOnCancelListener(
+                                    dialog -> revertToggle(R.id.toggle_beta_channel))
+                            .show();
+                });
+    }
+
+    /** Puts a switch back after the user declined the dialog it opened. */
+    private void revertToggle(int rowId) {
+        SwitchCompat toggle = findViewById(rowId).findViewById(R.id.toggle_switch);
+        toggle.setChecked(false);
     }
 
     /**

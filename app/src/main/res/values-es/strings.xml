@@ -83,8 +83,7 @@
     <string name="settings_features">Funciones</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Canal beta</string>
-    <string name="beta_channel_on">Beta: activo</string>
-    <string name="beta_channel_off">Beta: inactivo</string>
+    <string name="beta_channel_hint">Recibe versiones previas por la red</string>
     <string name="beta_channel_join">Participar</string>
     <string name="beta_channel_warning">Las versiones beta llegan antes que las estables y pueden ser inestables. Salir no es inmediato: Android no instala una versión anterior sobre una más reciente, así que seguirás en la beta hasta que una estable la supere.</string>
 </resources>
