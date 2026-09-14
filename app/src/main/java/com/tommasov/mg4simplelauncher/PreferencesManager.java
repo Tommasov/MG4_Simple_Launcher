@@ -12,6 +12,7 @@ public class PreferencesManager {
     private static final String PREFS_NAME = "mg4_system_launcher";
     private static final String KEY_FAVORITE_PREFIX = "favorite_";
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
+    private static final String KEY_BETA_CHANNEL = "beta_channel";
     public static final int FAVORITE_COUNT = 3;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
@@ -48,6 +49,19 @@ public class PreferencesManager {
 
     public void clearGridFavorite(int slot) {
         prefs.edit().remove(KEY_GRID_FAVORITE_PREFIX + slot).apply();
+    }
+
+    /**
+     * Whether this install follows the beta channel. Opt-in and off by default: a beta can
+     * be broken, and Android will not install an older versionCode over a newer one, so a
+     * tester cannot simply step back to the stable build.
+     */
+    public boolean isBetaChannelEnabled() {
+        return prefs.getBoolean(KEY_BETA_CHANNEL, false);
+    }
+
+    public void setBetaChannelEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_BETA_CHANNEL, enabled).apply();
     }
 
     /**

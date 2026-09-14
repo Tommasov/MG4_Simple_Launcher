@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,6 +84,15 @@ public class AppDrawerActivity extends AppCompatActivity {
             checkUpdates.setOnClickListener(v -> updateManager.checkForUpdates(true));
         }
 
+        // Opting into pre-release builds lives beside the update check, since that is what
+        // it changes. Hidden in the picker, like the update button itself.
+        TextView betaButton = findViewById(R.id.beta_channel_button);
+        if (MODE_PICK.equals(mode)) {
+            betaButton.setVisibility(View.GONE);
+        } else {
+            bindBetaChannelButton(betaButton);
+        }
+
         // System apps are reached from the "all apps" drawer header; redundant elsewhere.
         View systemApps = findViewById(R.id.system_apps_button);
         if (MODE_ALL.equals(mode)) {
@@ -99,6 +110,35 @@ public class AppDrawerActivity extends AppCompatActivity {
         grid.setLayoutManager(new GridLayoutManager(this, span));
 
         loadApps(grid);
+    }
+
+    private void bindBetaChannelButton(@NonNull TextView button) {
+        PreferencesManager preferences = new PreferencesManager(this);
+        updateBetaButtonLabel(button, preferences.isBetaChannelEnabled());
+        button.setOnClickListener(v -> {
+            boolean enabling = !preferences.isBetaChannelEnabled();
+            if (!enabling) {
+                preferences.setBetaChannelEnabled(false);
+                updateBetaButtonLabel(button, false);
+                return;
+            }
+            // Ask before joining, never before leaving: the consequence is one-way. Android
+            // refuses to install a lower versionCode, so a tester who wants out has to wait
+            // for a stable release that overtakes the beta they are on.
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.beta_channel_title)
+                    .setMessage(R.string.beta_channel_warning)
+                    .setPositiveButton(R.string.beta_channel_join, (dialog, which) -> {
+                        preferences.setBetaChannelEnabled(true);
+                        updateBetaButtonLabel(button, true);
+                    })
+                    .setNegativeButton(R.string.update_action_later, null)
+                    .show();
+        });
+    }
+
+    private void updateBetaButtonLabel(@NonNull TextView button, boolean enabled) {
+        button.setText(enabled ? R.string.beta_channel_on : R.string.beta_channel_off);
     }
 
     private String titleForMode() {

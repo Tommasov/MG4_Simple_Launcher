@@ -63,6 +63,20 @@
             android:text="@string/update_check_action"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/drawer_button_size" />
+
+        <TextView
+            android:id="@+id/beta_channel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

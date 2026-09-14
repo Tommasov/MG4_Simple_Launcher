@@ -45,4 +45,11 @@
     <string name="update_downloading">Téléchargement… %1$d%%</string>
     <string name="update_download_failed">Échec du téléchargement</string>
     <string name="update_verify_failed">Échec de la vérification de la mise à jour</string>
+
+    <!-- Beta release channel -->
+    <string name="beta_channel_title">Canal bêta</string>
+    <string name="beta_channel_on">Bêta : activé</string>
+    <string name="beta_channel_off">Bêta : désactivé</string>
+    <string name="beta_channel_join">Participer</string>
+    <string name="beta_channel_warning">Les versions bêta arrivent avant les stables et peuvent être instables. La sortie n’est pas immédiate : Android refuse d’installer une version antérieure sur une plus récente, vous resterez donc sur la bêta jusqu’à ce qu’une version stable la dépasse.</string>
 </resources>

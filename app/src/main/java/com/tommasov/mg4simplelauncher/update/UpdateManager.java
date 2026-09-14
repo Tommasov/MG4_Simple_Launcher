@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.tommasov.mg4simplelauncher.BuildConfig;
+import com.tommasov.mg4simplelauncher.PreferencesManager;
 import com.tommasov.mg4simplelauncher.R;
 
 import java.io.File;
@@ -26,6 +27,7 @@ public class UpdateManager {
 
     private final Activity activity;
     private final UpdateChecker checker;
+    private final PreferencesManager preferences;
 
     private ApkDownloader downloader;
     private AlertDialog progressDialog;
@@ -35,6 +37,7 @@ public class UpdateManager {
     public UpdateManager(@NonNull Activity activity) {
         this.activity = activity;
         this.checker = new UpdateChecker(activity, BuildConfig.UPDATE_BASE_URL);
+        this.preferences = new PreferencesManager(activity);
     }
 
     /**
@@ -42,7 +45,37 @@ public class UpdateManager {
      *                      unless an update is actually found.
      */
     public void checkForUpdates(boolean userInitiated) {
-        checker.check(new UpdateChecker.Callback() {
+        if (preferences.isBetaChannelEnabled()) {
+            // Betas are not always published. When the beta manifest is missing the check
+            // would simply fail, leaving testers with no updates at all, so fall back to the
+            // stable channel rather than treating an absent beta as an error.
+            checker.check(UpdateChecker.MANIFEST_BETA, new UpdateChecker.Callback() {
+                @Override
+                public void onUpdateAvailable(@NonNull UpdateInfo info) {
+                    if (!activity.isFinishing()) {
+                        showUpdateDialog(info);
+                    }
+                }
+
+                @Override
+                public void onUpToDate() {
+                    if (userInitiated) {
+                        toast(R.string.update_up_to_date);
+                    }
+                }
+
+                @Override
+                public void onError(@NonNull Exception e) {
+                    checkStable(userInitiated);
+                }
+            });
+            return;
+        }
+        checkStable(userInitiated);
+    }
+
+    private void checkStable(boolean userInitiated) {
+        checker.check(UpdateChecker.MANIFEST_STABLE, new UpdateChecker.Callback() {
             @Override
             public void onUpdateAvailable(@NonNull UpdateInfo info) {
                 if (!activity.isFinishing()) {

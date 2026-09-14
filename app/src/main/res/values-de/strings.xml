@@ -45,4 +45,11 @@
     <string name="update_downloading">Wird heruntergeladen… %1$d%%</string>
     <string name="update_download_failed">Download fehlgeschlagen</string>
     <string name="update_verify_failed">Überprüfung des Updates fehlgeschlagen</string>
+
+    <!-- Beta release channel -->
+    <string name="beta_channel_title">Beta-Kanal</string>
+    <string name="beta_channel_on">Beta: an</string>
+    <string name="beta_channel_off">Beta: aus</string>
+    <string name="beta_channel_join">Teilnehmen</string>
+    <string name="beta_channel_warning">Beta-Versionen erscheinen vor den stabilen und können instabil sein. Der Ausstieg wirkt nicht sofort: Android installiert keine ältere über eine neuere Version, du bleibst also auf der Beta, bis eine stabile Version sie überholt.</string>
 </resources>
