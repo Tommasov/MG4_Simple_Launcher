@@ -153,6 +153,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void bindDiagnostics() {
+        findViewById(R.id.settings_open_technical).setOnClickListener(
+                v -> startActivity(new Intent(this, TechnicalDetailsActivity.class)));
         TextView summary = findViewById(R.id.settings_diagnostics_summary);
         int lines = DiagnosticsLog.lineCount(DiagnosticsLog.read(this));
         summary.setText(getResources().getQuantityString(

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Circular twin of native_button_selector: same tonal surface and pressed state, an oval
+     instead of a rounded rectangle. Used where a card carries a single action and the shape
+     has to read as a button without a label next to it. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/button_surface_pressed" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/button_surface" />
+        </shape>
+    </item>
+</selector>

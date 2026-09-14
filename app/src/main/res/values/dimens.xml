@@ -65,4 +65,23 @@
     <dimen name="page_indicator_inactive_width">16dp</dimen>
     <dimen name="page_indicator_height">6dp</dimen>
     <dimen name="page_indicator_margin_bottom">12dp</dimen>
+
+    <!-- Charging card: station names carry the system body size, their distance and power
+         one step below it. Both were 20sp, which read as fine print next to a 30sp title. -->
+    <dimen name="charge_name_size">28sp</dimen>
+    <dimen name="charge_detail_size">24sp</dimen>
+
+    <!-- Round action button sitting in a card corner. Sized like the settings tabs so it is
+         the same target a gloved hand already hits elsewhere. -->
+    <dimen name="round_button_size">72dp</dimen>
+    <dimen name="round_button_icon_padding">18dp</dimen>
+
+    <!-- Horizontal padding for the wide charging card. The card art (bg_normal.png, 429x298)
+         paints its own drop shadow inside the bitmap: 11px on the left, 10px on the right.
+         It is a plain PNG, not a nine-patch, so that band is stretched with the view instead
+         of staying put. On this card, 1237dp across on the head unit, 11/429 works out at
+         31.7dp and 10/429 at 28.8dp, which is why text at the usual 24dp sat on the shadow.
+         40dp clears the wider side and leaves a little air. The narrower cards keep
+         info_card_padding: at half the width their shadow is only 16dp. -->
+    <dimen name="charging_card_padding_h">40dp</dimen>
 </resources>

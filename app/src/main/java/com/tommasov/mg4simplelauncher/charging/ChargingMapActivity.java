@@ -166,14 +166,17 @@ public class ChargingMapActivity extends AppCompatActivity
         return ChargingFilter.ALL;
     }
 
+    /**
+     * Asks for the permission if it is missing. The search itself is left to {@link #onStart()},
+     * which runs moments later and is also where it resumes after the screen goes away, so
+     * there is exactly one place that starts it.
+     */
     private void requestLocationThenLoad() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-            return;
         }
-        resolveOrigin();
     }
 
     @Override
@@ -193,11 +196,12 @@ public class ChargingMapActivity extends AppCompatActivity
     /**
      * Finds where the car is, then loads. The cached fix is used when present; otherwise this
      * waits for a real one rather than reporting failure, because right after the permission
-     * is granted there is usually nothing cached yet.
+     * is granted there is usually nothing cached yet. The wait lasts as long as the screen
+     * is open: the resolver stops when {@link #onDestroy()} cancels it.
      */
     private void resolveOrigin() {
         showStatus(R.string.charging_no_location);
-        locationResolver.resolve(this, new LocationResolver.Callback() {
+        locationResolver.resolveUntilCancelled(this, new LocationResolver.Callback() {
             @Override
             public void onLocation(@NonNull Location location) {
                 if (isFinishing() || isDestroyed()) {
@@ -209,6 +213,14 @@ public class ChargingMapActivity extends AppCompatActivity
                 map.getController().setCenter(
                         new GeoPoint(location.getLatitude(), location.getLongitude()));
                 load();
+            }
+
+            @Override
+            public void onStillSearching() {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                showStatus(R.string.charging_slow_fix);
             }
 
             @Override
@@ -466,6 +478,33 @@ public class ChargingMapActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         map.onPause();
+    }
+
+    /**
+     * Picks the search back up when the screen returns without a position. Nothing to do once
+     * there is one: the list is already built and a charging point does not move.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (origin == null && OpenChargeMapClient.hasApiKey()
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            resolveOrigin();
+        }
+    }
+
+    /**
+     * Stops listening while the screen is not in front of anyone. The wait lasts as long as
+     * the driver is looking at it, not as long as the activity happens to stay in memory —
+     * a satellite search left running behind the driver's back is not what was asked for.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (origin == null) {
+            locationResolver.cancel();
+        }
     }
 
     @Override

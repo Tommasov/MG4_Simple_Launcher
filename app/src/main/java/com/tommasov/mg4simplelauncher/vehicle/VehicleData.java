@@ -30,6 +30,13 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
  *
  * <p>Nothing here is a published API. Every failure resolves to {@link Callback#onUnavailable()}
  * so a car that answers differently, or no car at all, simply shows nothing.
+ *
+ * <p>Nothing calls this yet. It briefly fed a card on the tools page, which was dropped
+ * because charge and odometer are already on the instrument cluster a glance away — the
+ * launcher was repeating what the car already said. It is kept because it is verified
+ * against the real vehicle and because the value it reads that the cluster cannot put to
+ * use is {@code getEnduranceMileage}: the car's own range estimate, which is what marking
+ * the charging points still within reach will be built on.
  */
 public final class VehicleData {
 

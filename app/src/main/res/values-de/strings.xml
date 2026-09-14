@@ -17,6 +17,8 @@
 
     <!-- Zweite Karussellseite: Live-Systeminfos -->
     <string name="sys_technical">Technische Daten</string>
+    <string name="sys_device">Gerät</string>
+    <string name="settings_system">System</string>
     <string name="sys_memory">Speicher</string>
     <string name="sys_storage">Speicherplatz</string>
     <string name="sys_network">Netzwerk</string>
@@ -56,6 +58,7 @@
     <string name="charging_no_key">Ladedaten nicht verfügbar: kein API-Schlüssel</string>
     <string name="charging_location_failed">Keine Position verfügbar. Prüfe, ob die Ortung aktiv ist, und öffne erneut.</string>
     <string name="charging_no_location">Warte auf Positionsbestimmung…</string>
+    <string name="charging_slow_fix">Position wird weiter gesucht. Ohne die eigene Datenverbindung des Fahrzeugs kann die erste Ortung einige Minuten dauern.</string>
     <string name="charging_permission_card">Standort erforderlich. Zum Erlauben tippen.</string>
     <string name="charging_permission_needed">Für Ladepunkte in der Nähe wird der Standortzugriff benötigt</string>
     <string name="charging_empty">Keine Ladesäule passt zu diesem Filter</string>
@@ -101,15 +104,4 @@
         <item quantity="other">%d Zeilen</item>
     </plurals>
 
-    <!-- Fahrzeugkarte, über den Adapter Service aus dem Auto gelesen -->
-    <string name="vehicle_title">Fahrzeug</string>
-    <string name="vehicle_battery">Batterie</string>
-    <string name="vehicle_battery_charging">Batterie · lädt</string>
-    <string name="vehicle_range">Reichweite</string>
-    <string name="vehicle_odometer">Kilometerstand</string>
-    <string name="vehicle_reading">Fahrzeug wird ausgelesen…</string>
-    <string name="vehicle_unavailable">Auf diesem Fahrzeug nicht verfügbar</string>
-    <string name="vehicle_no_value">—</string>
-    <string name="vehicle_percent">%1$d %%</string>
-    <string name="vehicle_km">%1$d km</string>
 </resources>

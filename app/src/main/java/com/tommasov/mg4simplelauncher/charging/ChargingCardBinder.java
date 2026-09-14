@@ -37,8 +37,8 @@ import java.util.function.Consumer;
  */
 public class ChargingCardBinder {
 
-    /** Three per network: motorway first, then Superchargers. */
-    private static final int PER_GROUP = 3;
+    /** Four per network: motorway first, then Superchargers. */
+    private static final int PER_GROUP = 4;
     private static final int SUMMARY_COUNT = PER_GROUP * 2;
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
@@ -58,7 +58,8 @@ public class ChargingCardBinder {
         status = page.findViewById(R.id.charging_card_status);
 
         int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2,
-                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5};
+                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5,
+                R.id.charge_row_6, R.id.charge_row_7};
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);

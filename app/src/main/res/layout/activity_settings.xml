@@ -227,7 +227,9 @@
                 android:textSize="@dimen/drawer_button_size" />
         </LinearLayout>
 
-        <!-- Diagnostics: the only way to see what went wrong in a car with no adb -->
+        <!-- System: the two screens you only open when something wants looking at. They
+             share a card because they answer the same question — what is this thing doing —
+             and because neither is worth a carousel page nobody reads while driving. -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -239,7 +241,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/diagnostics_title"
+                android:text="@string/settings_system"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/small_card_label_size"
                 android:textStyle="bold" />
@@ -259,9 +261,22 @@
                 android:minHeight="16dp" />
 
             <TextView
+                android:id="@+id/settings_open_technical"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_tab_height"
+                android:background="@drawable/native_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/sys_technical"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/drawer_button_size" />
+
+            <TextView
                 android:id="@+id/settings_open_diagnostics"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_tab_height"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/native_button_selector"
                 android:clickable="true"
                 android:focusable="true"

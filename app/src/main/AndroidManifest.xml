@@ -51,6 +51,11 @@
 
         <!-- Launcher settings, opened from the app drawer header. -->
         <activity
+            android:name=".TechnicalDetailsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />

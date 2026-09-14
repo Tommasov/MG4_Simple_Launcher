@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Carousel page 3: live system information, refreshed while the page is visible.
-     All values are read without dangerous permissions. Landscape (MG4 head unit).
-     Charging points come first; the "technical details" card closes the row, with two
-     slots still free for features to be designed. The card scrolls only if its content
-     ever outgrows it — fillViewport keeps the weighted spacing when it doesn't. -->
+<!-- Carousel page 3: charging points and launcher settings, landscape (MG4 head unit).
+     Two cards, not four. The charging card takes two thirds of the row because it is the
+     one with something to say while driving, and its two networks sit side by side rather
+     than stacked, which is what let the entries grow to a size readable at a glance. The
+     technical details that used to close the row now live inside the settings screen: they
+     are something you go and look at, not something you watch. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,13 +13,13 @@
     android:padding="@dimen/screen_padding">
 
     <!-- Charging points: the nearest motorway and Supercharger sites, tap for the map.
-         The bolt sits behind the text rather than below it, so six entries fit without
+         The bolt sits behind the text rather than below it, so both columns fit without
          giving up the graphic backdrop. -->
     <FrameLayout
         android:id="@+id/charging_card"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
         android:clickable="true"
@@ -43,7 +44,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
+            android:paddingStart="@dimen/charging_card_padding_h"
+            android:paddingEnd="@dimen/charging_card_padding_h"
+            android:paddingTop="@dimen/info_card_padding"
+            android:paddingBottom="@dimen/info_card_padding">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,37 +63,54 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="14dp"
-                android:orientation="vertical"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
                 android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/charge_group_motorway"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/charging_filter_motorway"
-                    android:textColor="@color/accent"
-                    android:textSize="@dimen/secondary_text_size"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/card_gap"
+                    android:orientation="vertical">
 
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
+                    <TextView
+                        android:id="@+id/charge_group_motorway"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/charging_filter_motorway"
+                        android:textColor="@color/accent"
+                        android:textSize="@dimen/charge_detail_size"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/charge_group_supercharger"
-                    android:layout_width="match_parent"
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/charging_filter_supercharger"
-                    android:textColor="@color/accent"
-                    android:textSize="@dimen/secondary_text_size"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
-            <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
+                    <TextView
+                        android:id="@+id/charge_group_supercharger"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/charging_filter_supercharger"
+                        android:textColor="@color/accent"
+                        android:textSize="@dimen/charge_detail_size"
+                        android:textStyle="bold" />
+
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_6" />
+                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_7" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
@@ -110,264 +131,53 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- What the car says about itself, through the adapter service. The values here are
-         the ones with a real implementation behind them: the air-quality getters that used
-         to fill this card are empty stubs in the firmware. Blank on anything that is not
-         this car, so the card states that rather than showing empty rows. -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
-        android:background="@drawable/smallcard_selector"
-        android:orientation="vertical"
-        android:padding="@dimen/info_card_padding">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/vehicle_title"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/small_card_label_size"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/vehicle_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/info_card_body_size" />
-
-        <LinearLayout
-            android:id="@+id/vehicle_readings"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <TextView
-                android:id="@+id/vehicle_battery_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vehicle_battery"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/vehicle_battery_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vehicle_range"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/vehicle_range_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/vehicle_odometer"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/vehicle_odometer_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-        </LinearLayout>
-    </LinearLayout>
-    <!-- Launcher settings. Summarises what is on so the card says something before it is
-         tapped, the way the other cards on this page do. -->
-    <LinearLayout
+    <!-- Launcher settings. Summarises what is on, so the card says something before anyone
+         touches it, and carries the round button that opens the settings screen. The whole
+         card stays tappable too: in a moving car the larger target is the kinder one. -->
+    <FrameLayout
         android:id="@+id/settings_card"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
         android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical"
-        android:padding="@dimen/info_card_padding">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_title"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/small_card_label_size"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/settings_card_summary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:lineSpacingExtra="6dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/info_card_body_size" />
-    </LinearLayout>
-
-    <!-- Technical details: device, memory, storage, network -->
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/smallcard_selector"
-        android:fillViewport="true"
-        android:padding="@dimen/info_card_padding"
-        android:scrollbars="none">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/info_card_padding">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sys_technical"
+                android:text="@string/settings_title"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/small_card_label_size"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_device_body"
+                android:id="@+id/settings_card_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:lineSpacingExtra="6dp"
                 android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <!-- Memory -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_memory"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/tv_memory_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_used_total"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <!-- Storage -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_storage"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/tv_storage_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_free_total"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <!-- Network -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_network"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <TextView
-                android:id="@+id/tv_network_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_network_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
+                android:textSize="@dimen/info_card_body_size" />
         </LinearLayout>
-    </ScrollView>
+
+        <ImageView
+            android:id="@+id/settings_card_button"
+            android:layout_width="@dimen/round_button_size"
+            android:layout_height="@dimen/round_button_size"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/info_card_padding"
+            android:background="@drawable/round_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/settings_title"
+            android:padding="@dimen/round_button_icon_padding"
+            android:src="@drawable/ic_gear" />
+    </FrameLayout>
 </LinearLayout>

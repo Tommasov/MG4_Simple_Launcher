@@ -33,6 +33,10 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
  * dozens of methods in their exact declaration order just to keep transaction numbers
  * aligned, for the sake of one call.
  *
+ * <p>The adapter hands the call to whichever navigator registered as its listener, so what
+ * the three strings mean is settled on the far side. In Telenav's handler they fill an
+ * {@code Entity}: an id looked up in its own database, a name, and an address.
+ *
  * <p>None of this is a published API. It can disappear with a firmware update, so every
  * failure path falls back to the caller rather than surfacing an error.
  */
@@ -158,12 +162,15 @@ final class FactoryNavigator {
         try {
             data.writeInterfaceToken(INTERFACE_TOKEN);
 
-            // Three strings then the coordinates. What each string means is not recoverable
-            // from the binaries; name and address are the two the navigator can plausibly
-            // show, and the third is left empty rather than filled with a guess.
+            // goToPoi(entity_id, addressName, addressDesc, lat, lon). The names come from
+            // the adapter's own log line, and Telenav's handler shows what it does with
+            // them: entity_id is looked up as an id in its own POI database, addressName
+            // becomes the destination's name, addressDesc its address. An id we invent is
+            // not an id it knows, so that field goes empty — the coordinates are what the
+            // route is built from, and Telenav skips every string that is empty.
+            data.writeString("");
             data.writeString(name);
             data.writeString(address);
-            data.writeString("");
             data.writeDouble(latitude);
             data.writeDouble(longitude);
 

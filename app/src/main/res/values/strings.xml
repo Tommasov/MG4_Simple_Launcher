@@ -16,6 +16,8 @@
 
     <!-- Second carousel page: live system info -->
     <string name="sys_technical">Technical details</string>
+    <string name="sys_device">Device</string>
+    <string name="settings_system">System</string>
     <string name="sys_memory">Memory</string>
     <string name="sys_storage">Storage</string>
     <string name="sys_network">Network</string>
@@ -55,6 +57,7 @@
     <string name="charging_no_key">Charging data unavailable: no API key</string>
     <string name="charging_location_failed">No position available. Check that location is on, then reopen.</string>
     <string name="charging_no_location">Waiting for a position fix…</string>
+    <string name="charging_slow_fix">Still looking for a position. Without the car’s own data connection the first fix can take a few minutes.</string>
     <string name="charging_permission_card">Location is needed. Tap to allow.</string>
     <string name="charging_permission_needed">Location access is needed to find nearby stations</string>
     <string name="charging_empty">No station matches this filter</string>
@@ -100,15 +103,4 @@
         <item quantity="other">%d lines</item>
     </plurals>
 
-    <!-- Vehicle card, read from the car through the adapter service -->
-    <string name="vehicle_title">Vehicle</string>
-    <string name="vehicle_battery">Battery</string>
-    <string name="vehicle_battery_charging">Battery · charging</string>
-    <string name="vehicle_range">Range</string>
-    <string name="vehicle_odometer">Odometer</string>
-    <string name="vehicle_reading">Reading the vehicle…</string>
-    <string name="vehicle_unavailable">Not available on this vehicle</string>
-    <string name="vehicle_no_value">—</string>
-    <string name="vehicle_percent">%1$d %%</string>
-    <string name="vehicle_km">%1$d km</string>
 </resources>

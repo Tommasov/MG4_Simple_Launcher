@@ -1,10 +1,15 @@
 package com.tommasov.mg4simplelauncher.charging;
 
 import android.content.Context;
+import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -43,6 +48,14 @@ final class LocationResolver {
 
         /** No provider, no permission, or nothing arrived before the timeout. */
         void onUnavailable();
+
+        /**
+         * Called once, only when waiting without a deadline, at the point where a bounded
+         * wait would have given up. The search carries on; this exists so the screen can
+         * say why it is taking so long instead of looking stuck.
+         */
+        default void onStillSearching() {
+        }
     }
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -54,6 +67,14 @@ final class LocationResolver {
     @Nullable
     private Location best;
     private boolean settling;
+    /** When set, the wait has no deadline and ends only when the caller cancels. */
+    private boolean untilCancelled;
+    @Nullable
+    private GnssStatus.Callback gnssCallback;
+    /** Satellites the receiver can see, and how many of them are in the solution. */
+    private int satellitesInView;
+    private int satellitesUsed;
+    private long startedAt;
 
     /** Returns the freshest cached fix across providers, or null when there is none. */
     @Nullable
@@ -79,10 +100,35 @@ final class LocationResolver {
     }
 
     /**
+     * Keeps looking until the caller cancels, for a screen the driver is sitting in front of.
+     *
+     * <p>A bounded wait is wrong there. The head unit's assisted GPS rides on the car's own
+     * cellular connection, so with that modem off the receiver has to read the satellites'
+     * almanac itself, which takes minutes — and a screen that gives up at thirty seconds
+     * gives up exactly when it should be waiting. {@link Callback#onStillSearching()} fires
+     * at that thirty-second mark so the screen can explain itself, and the fix is delivered
+     * whenever it arrives.
+     */
+    void resolveUntilCancelled(@NonNull Context context, @NonNull Callback callback) {
+        untilCancelled = true;
+        resolve(context, callback);
+    }
+
+    /**
      * Hands back a position: the cached one when there is one, otherwise the first live fix
      * from any enabled provider. The callback runs once, on the main thread.
      */
     void resolve(@NonNull Context context, @NonNull Callback callback) {
+        // Start clean: the same resolver is used again when the screen comes back after
+        // being stopped mid-search, and the flags left behind by the previous attempt would
+        // otherwise swallow every callback of the new one.
+        finish();
+        finished = false;
+        best = null;
+        settling = false;
+        satellitesInView = 0;
+        satellitesUsed = 0;
+
         Location cached = lastKnown(context);
         if (cached != null) {
             callback.onLocation(cached);
@@ -101,13 +147,22 @@ final class LocationResolver {
         }
 
         Context appContext = context.getApplicationContext();
-        DiagnosticsLog.log(appContext, TAG, "waiting for a fix from " + providers);
+        startedAt = SystemClock.elapsedRealtime();
+        // The network in use is logged with the wait because assisted GPS is not carried by
+        // whichever network happens to be up: Android asks for a cellular connection with
+        // the SUPL capability. On Wi-Fi alone the receiver gets no assistance and has to
+        // read the satellites' own almanac, which takes minutes rather than seconds. The
+        // line below is what tells those two situations apart after the fact.
+        DiagnosticsLog.log(appContext, TAG, "waiting for a fix from " + providers
+                + ", network " + describeNetwork(appContext));
+        watchSatellites(appContext);
 
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 DiagnosticsLog.log(appContext, TAG, "fix from " + location.getProvider()
-                        + ", accuracy " + Math.round(location.getAccuracy()) + " m");
+                        + ", accuracy " + Math.round(location.getAccuracy()) + " m, after "
+                        + elapsedSeconds() + " s, " + satellites());
                 if (best == null || location.getAccuracy() < best.getAccuracy()) {
                     best = location;
                 }
@@ -167,14 +222,86 @@ final class LocationResolver {
             }
             // Out of time: a coarse fix still beats telling the driver there is none.
             Location fallback = best;
-            finish();
             if (fallback != null) {
+                finish();
                 callback.onLocation(fallback);
+                return;
+            }
+            DiagnosticsLog.log(appContext, TAG, "no fix within " + TIMEOUT_MS + " ms, "
+                    + satellites() + ", network " + describeNetwork(appContext));
+            if (untilCancelled) {
+                // Still listening. Only the wording changes.
+                callback.onStillSearching();
             } else {
-                DiagnosticsLog.log(appContext, TAG, "no fix within " + TIMEOUT_MS + " ms");
+                finish();
                 callback.onUnavailable();
             }
         }, TIMEOUT_MS);
+    }
+
+    /**
+     * Counts satellites while waiting. This is the measurement that separates a receiver with
+     * no sky from a receiver with no assistance: a car park shows few satellites in view,
+     * while an unassisted cold start shows plenty in view and none used in the fix.
+     */
+    private void watchSatellites(@NonNull Context appContext) {
+        if (manager == null) {
+            return;
+        }
+        gnssCallback = new GnssStatus.Callback() {
+            @Override
+            public void onSatelliteStatusChanged(@NonNull GnssStatus status) {
+                int used = 0;
+                for (int i = 0; i < status.getSatelliteCount(); i++) {
+                    if (status.usedInFix(i)) {
+                        used++;
+                    }
+                }
+                satellitesInView = status.getSatelliteCount();
+                satellitesUsed = used;
+            }
+        };
+        try {
+            manager.registerGnssStatusCallback(gnssCallback, handler);
+        } catch (SecurityException e) {
+            gnssCallback = null;
+        }
+    }
+
+    private String satellites() {
+        return satellitesInView + " satellites in view, " + satellitesUsed + " used";
+    }
+
+    private long elapsedSeconds() {
+        return (SystemClock.elapsedRealtime() - startedAt) / 1000;
+    }
+
+    /** Which transport is carrying data right now, in the words the log needs. */
+    private static String describeNetwork(@NonNull Context context) {
+        ConnectivityManager connectivity =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return "unknown";
+        }
+        NetworkInfo active = connectivity.getActiveNetworkInfo();
+        if (active == null || !active.isConnected()) {
+            return "none";
+        }
+        NetworkCapabilities capabilities =
+                connectivity.getNetworkCapabilities(connectivity.getActiveNetwork());
+        if (capabilities == null) {
+            return active.getTypeName();
+        }
+        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+            return "wifi";
+        }
+        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+            return "cellular";
+        }
+        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+            return "ethernet";
+        }
+        return active.getTypeName();
     }
 
     /** Stops listening. Safe to call more than once, and required when the screen goes away. */
@@ -195,6 +322,14 @@ final class LocationResolver {
                 // Permission withdrawn while listening; nothing left to release.
             }
         }
+        if (manager != null && gnssCallback != null) {
+            try {
+                manager.unregisterGnssStatusCallback(gnssCallback);
+            } catch (SecurityException ignored) {
+                // Same.
+            }
+        }
+        gnssCallback = null;
         listener = null;
     }
 }

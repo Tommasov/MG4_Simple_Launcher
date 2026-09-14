@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One station summarised on the page 3 charging card: name, then operator, distance and
-     power on a second line. Included three times, so the ids live on the <include> tag. -->
+<!-- One station summarised on the tools page charging card: name, then operator, distance
+     and power on a second line. Included six times, so the ids live on the <include> tag. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="10dp"
     android:orientation="vertical">
 
     <TextView
@@ -14,7 +14,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/text_primary"
-        android:textSize="@dimen/secondary_text_size"
+        android:textSize="@dimen/charge_name_size"
         android:textStyle="bold" />
 
     <TextView
@@ -25,5 +25,5 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/text_secondary"
-        android:textSize="@dimen/secondary_text_size" />
+        android:textSize="@dimen/charge_detail_size" />
 </LinearLayout>

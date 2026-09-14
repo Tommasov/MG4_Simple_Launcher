@@ -17,6 +17,8 @@
 
     <!-- Deuxième page du carrousel : infos système en direct -->
     <string name="sys_technical">Détails techniques</string>
+    <string name="sys_device">Appareil</string>
+    <string name="settings_system">Système</string>
     <string name="sys_memory">Mémoire</string>
     <string name="sys_storage">Stockage</string>
     <string name="sys_network">Réseau</string>
@@ -56,6 +58,7 @@
     <string name="charging_no_key">Données de recharge indisponibles : clé API manquante</string>
     <string name="charging_location_failed">Position indisponible. Vérifiez que la localisation est active, puis rouvrez.</string>
     <string name="charging_no_location">En attente de la position…</string>
+    <string name="charging_slow_fix">Recherche de la position en cours. Sans la connexion data de la voiture, la première localisation peut prendre quelques minutes.</string>
     <string name="charging_permission_card">Localisation requise. Touchez pour autoriser.</string>
     <string name="charging_permission_needed">La localisation est nécessaire pour trouver les bornes proches</string>
     <string name="charging_empty">Aucune borne ne correspond à ce filtre</string>
@@ -101,15 +104,4 @@
         <item quantity="other">%d lignes</item>
     </plurals>
 
-    <!-- Carte véhicule, lue depuis la voiture via l'adapter service -->
-    <string name="vehicle_title">Véhicule</string>
-    <string name="vehicle_battery">Batterie</string>
-    <string name="vehicle_battery_charging">Batterie · en charge</string>
-    <string name="vehicle_range">Autonomie</string>
-    <string name="vehicle_odometer">Compteur</string>
-    <string name="vehicle_reading">Lecture du véhicule…</string>
-    <string name="vehicle_unavailable">Non disponible sur ce véhicule</string>
-    <string name="vehicle_no_value">—</string>
-    <string name="vehicle_percent">%1$d %%</string>
-    <string name="vehicle_km">%1$d km</string>
 </resources>
