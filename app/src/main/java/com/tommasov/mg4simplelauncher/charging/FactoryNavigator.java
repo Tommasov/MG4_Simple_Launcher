@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
+
 /**
  * Sends a destination to the vehicle's factory navigator.
  *
@@ -71,6 +73,9 @@ final class FactoryNavigator {
                 } catch (IllegalArgumentException ignored) {
                     // Already gone; nothing to release.
                 }
+                DiagnosticsLog.log(appContext, TAG,
+                        sent ? "destination sent to the factory navigator"
+                             : "the navigator refused the destination");
                 if (sent) {
                     callback.onSent();
                 } else {
@@ -95,7 +100,9 @@ final class FactoryNavigator {
         };
 
         try {
+            DiagnosticsLog.log(appContext, TAG, "binding " + ADAPTER_SERVICE);
             if (!appContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)) {
+                DiagnosticsLog.log(appContext, TAG, "adapter service not present");
                 // No such service: any head unit that is not this vehicle's, emulator included.
                 callback.onUnavailable();
             }

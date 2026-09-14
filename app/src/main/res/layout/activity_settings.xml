@@ -186,6 +186,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/card_gap"
             android:layout_weight="1"
             android:background="@drawable/smallcard_selector"
             android:orientation="vertical"
@@ -222,6 +223,50 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/update_check_action"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/drawer_button_size" />
+        </LinearLayout>
+
+        <!-- Diagnostics: the only way to see what went wrong in a car with no adb -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:orientation="vertical"
+            android:padding="@dimen/info_card_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/diagnostics_title"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/small_card_label_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/settings_diagnostics_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/info_card_body_size" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <TextView
+                android:id="@+id/settings_open_diagnostics"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_tab_height"
+                android:background="@drawable/native_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/diagnostics_open"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/drawer_button_size" />
         </LinearLayout>

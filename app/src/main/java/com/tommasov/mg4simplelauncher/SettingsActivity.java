@@ -1,5 +1,6 @@
 package com.tommasov.mg4simplelauncher;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsActivity;
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
 import java.util.function.Consumer;
@@ -46,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         bindFeatures();
         bindBetaChannel();
         bindUpdates();
+        bindDiagnostics();
     }
 
     private void bindHomePage() {
@@ -146,6 +150,15 @@ public class SettingsActivity extends AppCompatActivity {
         }
         findViewById(R.id.settings_check_updates)
                 .setOnClickListener(v -> updateManager.checkForUpdates(true));
+    }
+
+    private void bindDiagnostics() {
+        TextView summary = findViewById(R.id.settings_diagnostics_summary);
+        int lines = DiagnosticsLog.lineCount(DiagnosticsLog.read(this));
+        summary.setText(getResources().getQuantityString(
+                R.plurals.diagnostics_lines, lines, lines));
+        findViewById(R.id.settings_open_diagnostics).setOnClickListener(
+                v -> startActivity(new Intent(this, DiagnosticsActivity.class)));
     }
 
     private static int buttonFor(int pageKind) {

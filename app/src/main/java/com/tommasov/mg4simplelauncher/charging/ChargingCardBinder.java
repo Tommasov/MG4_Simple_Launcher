@@ -86,11 +86,14 @@ public class ChargingCardBinder {
             showStatus(R.string.charging_permission_needed);
             return;
         }
-        Location origin = lastKnownLocation(context);
-        if (origin == null) {
+        Location cached = LocationResolver.lastKnown(context);
+        if (cached == null) {
+            // The card does not hold the screen open waiting for a fix; the full screen does
+            // that. Here it just says so, and the next visit tries again.
             showStatus(R.string.charging_no_location);
             return;
         }
+        Location origin = cached;
         showStatus(R.string.charging_loading);
         fetch(origin, ChargingFilter.MOTORWAY, motorway ->
                 fetch(origin, ChargingFilter.SUPERCHARGER, superchargers -> {
@@ -161,28 +164,6 @@ public class ChargingCardBinder {
             sb.append(context.getString(R.string.charging_power_kw, point.maxPowerKw));
         }
         return sb.toString();
-    }
-
-    @Nullable
-    private static Location lastKnownLocation(@NonNull Context context) {
-        LocationManager lm =
-                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (lm == null) {
-            return null;
-        }
-        Location best = null;
-        try {
-            for (String provider : lm.getProviders(true)) {
-                Location candidate = lm.getLastKnownLocation(provider);
-                if (candidate != null && (best == null
-                        || candidate.getTime() > best.getTime())) {
-                    best = candidate;
-                }
-            }
-        } catch (SecurityException e) {
-            return null;
-        }
-        return best;
     }
 
     private void showStatus(@StringRes int messageRes) {

@@ -36,6 +36,14 @@
     <dimen name="filter_tab_text_size">20sp</dimen>
     <dimen name="settings_tab_text_size">28sp</dimen>
     <dimen name="settings_tab_height">72dp</dimen>
+    <!-- The card artwork paints its own shadow, and it stretches with the view: on a
+         full-width card the left edge alone eats about 48dp, far more than the 24dp used
+         on the narrow cards. These keep the text on the card face instead of the shadow. -->
+    <dimen name="diagnostics_padding_h">48dp</dimen>
+    <dimen name="diagnostics_padding_top">20dp</dimen>
+    <dimen name="diagnostics_padding_bottom">56dp</dimen>
+    <!-- Stack traces, not prose: small and dense beats legible-at-a-glance. -->
+    <dimen name="diagnostics_text_size">16sp</dimen>
     <dimen name="settings_toggle_height">88dp</dimen>
     <!-- Charging card backdrop. The bolt never fills the box it is given — no scaleType
          nor a background drawable made it do so — so these numbers were tuned by eye on the

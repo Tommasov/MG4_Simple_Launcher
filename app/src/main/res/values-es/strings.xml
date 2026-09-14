@@ -54,6 +54,7 @@
     <string name="charging_filter_fast">Carga rápida</string>
     <string name="charging_attribution">Datos © Open Charge Map</string>
     <string name="charging_no_key">Datos de recarga no disponibles: falta la clave API</string>
+    <string name="charging_location_failed">Sin posición disponible. Comprueba que la ubicación esté activa y vuelve a abrir.</string>
     <string name="charging_no_location">Esperando la posición…</string>
     <string name="charging_permission_needed">Se necesita acceso a la ubicación para encontrar puntos cercanos</string>
     <string name="charging_empty">Ningún punto coincide con este filtro</string>
@@ -86,4 +87,16 @@
     <string name="beta_channel_hint">Recibe versiones previas por la red</string>
     <string name="beta_channel_join">Participar</string>
     <string name="beta_channel_warning">Las versiones beta llegan antes que las estables y pueden ser inestables. Salir no es inmediato: Android no instala una versión anterior sobre una más reciente, así que seguirás en la beta hasta que una estable la supere.</string>
+
+    <!-- On-device diagnostics log -->
+    <string name="diagnostics_title">Diagnóstico</string>
+    <string name="diagnostics_open">Abrir registro</string>
+    <string name="diagnostics_copy">Copiar</string>
+    <string name="diagnostics_clear">Vaciar</string>
+    <string name="diagnostics_empty">El registro está vacío</string>
+    <string name="diagnostics_copied">Registro copiado</string>
+    <plurals name="diagnostics_lines">
+        <item quantity="one">%d línea</item>
+        <item quantity="other">%d líneas</item>
+    </plurals>
 </resources>

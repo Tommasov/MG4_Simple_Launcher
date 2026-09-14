@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".diag.LauncherApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -41,6 +42,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- Diagnostics log, readable on the head unit. -->
+        <activity
+            android:name=".diag.DiagnosticsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
 
         <!-- Launcher settings, opened from the app drawer header. -->
         <activity

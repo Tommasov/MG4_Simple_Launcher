@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tommasov.mg4simplelauncher.AppLauncher;
 import com.tommasov.mg4simplelauncher.BuildConfig;
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.R;
 
 import org.osmdroid.config.Configuration;
@@ -37,6 +38,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,7 @@ import java.util.Map;
 public class ChargingMapActivity extends AppCompatActivity
         implements ChargePointAdapter.Listener {
 
+    private static final String TAG_DIAG = "Charging";
     private static final int REQUEST_LOCATION = 1;
     private static final int MAX_RESULTS = 40;
     private static final double DEFAULT_ZOOM = 11.0;
@@ -75,6 +78,7 @@ public class ChargingMapActivity extends AppCompatActivity
     private static final double MAX_SELECTION_ZOOM = 16.0;
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
+    private final LocationResolver locationResolver = new LocationResolver();
 
     private MapView map;
     private RecyclerView list;
@@ -100,13 +104,22 @@ public class ChargingMapActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DiagnosticsLog.log(this, TAG_DIAG, "charging screen opening");
 
         // osmdroid needs its cache path and a real user agent before any MapView inflates;
         // OSM tile servers reject the library's default agent outright.
         Configuration.getInstance().load(
                 this, PreferenceManager.getDefaultSharedPreferences(this));
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+        // Keep osmdroid's cache inside the app's own storage. Left to itself it picks a path
+        // on external storage, which is not guaranteed to exist or be writable on a head
+        // unit, and it fails while the MapView is being inflated.
+        File cache = new File(getFilesDir(), "osmdroid");
+        Configuration.getInstance().setOsmdroidBasePath(cache);
+        Configuration.getInstance().setOsmdroidTileCache(new File(cache, "tiles"));
 
+        DiagnosticsLog.log(this, TAG_DIAG, "osmdroid configured, cache in "
+                + cache.getAbsolutePath());
         setContentView(R.layout.activity_charging_map);
 
         map = findViewById(R.id.charging_map);
@@ -181,38 +194,36 @@ public class ChargingMapActivity extends AppCompatActivity
     }
 
     /**
-     * Takes the freshest cached fix from any provider. A cached position is enough here:
-     * the list is ranked by distance, and waiting for a live GPS lock would leave the
-     * screen empty for the first minute after a cold start.
+     * Finds where the car is, then loads. The cached fix is used when present; otherwise this
+     * waits for a real one rather than reporting failure, because right after the permission
+     * is granted there is usually nothing cached yet.
      */
     private void resolveOrigin() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (lm == null) {
-            showStatus(R.string.charging_no_location);
-            return;
-        }
-        Location best = null;
-        try {
-            for (String provider : lm.getProviders(true)) {
-                Location candidate = lm.getLastKnownLocation(provider);
-                if (candidate == null) {
-                    continue;
+        showStatus(R.string.charging_no_location);
+        locationResolver.resolve(this, new LocationResolver.Callback() {
+            @Override
+            public void onLocation(@NonNull Location location) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
                 }
-                if (best == null || candidate.getTime() > best.getTime()) {
-                    best = candidate;
-                }
+                DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
+                        "position from " + location.getProvider());
+                origin = location;
+                map.getController().setCenter(
+                        new GeoPoint(location.getLatitude(), location.getLongitude()));
+                load();
             }
-        } catch (SecurityException e) {
-            showStatus(R.string.charging_permission_needed);
-            return;
-        }
-        if (best == null) {
-            showStatus(R.string.charging_no_location);
-            return;
-        }
-        origin = best;
-        map.getController().setCenter(new GeoPoint(best.getLatitude(), best.getLongitude()));
-        load();
+
+            @Override
+            public void onUnavailable() {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
+                        "no position available");
+                showStatus(R.string.charging_location_failed);
+            }
+        });
     }
 
     private void load() {
@@ -227,6 +238,8 @@ public class ChargingMapActivity extends AppCompatActivity
                         if (isFinishing() || isDestroyed()) {
                             return;
                         }
+                        DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
+                                "loaded " + points.size() + " stations");
                         adapter.submit(points);
                         showMarkers(points);
                         if (points.isEmpty()) {
@@ -241,6 +254,8 @@ public class ChargingMapActivity extends AppCompatActivity
                         if (isFinishing() || isDestroyed()) {
                             return;
                         }
+                        DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
+                                "charging lookup failed", e);
                         showStatus(R.string.charging_error);
                     }
                 });
@@ -458,6 +473,7 @@ public class ChargingMapActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        locationResolver.cancel();
         client.cancel();
         map.onDetach();
     }

@@ -54,6 +54,7 @@
     <string name="charging_filter_fast">Schnellladen</string>
     <string name="charging_attribution">Daten © Open Charge Map</string>
     <string name="charging_no_key">Ladedaten nicht verfügbar: kein API-Schlüssel</string>
+    <string name="charging_location_failed">Keine Position verfügbar. Prüfe, ob die Ortung aktiv ist, und öffne erneut.</string>
     <string name="charging_no_location">Warte auf Positionsbestimmung…</string>
     <string name="charging_permission_needed">Für Ladepunkte in der Nähe wird der Standortzugriff benötigt</string>
     <string name="charging_empty">Keine Ladesäule passt zu diesem Filter</string>
@@ -86,4 +87,16 @@
     <string name="beta_channel_hint">Vorabversionen über das Netz erhalten</string>
     <string name="beta_channel_join">Teilnehmen</string>
     <string name="beta_channel_warning">Beta-Versionen erscheinen vor den stabilen und können instabil sein. Der Ausstieg wirkt nicht sofort: Android installiert keine ältere über eine neuere Version, du bleibst also auf der Beta, bis eine stabile Version sie überholt.</string>
+
+    <!-- On-device diagnostics log -->
+    <string name="diagnostics_title">Diagnose</string>
+    <string name="diagnostics_open">Protokoll öffnen</string>
+    <string name="diagnostics_copy">Kopieren</string>
+    <string name="diagnostics_clear">Leeren</string>
+    <string name="diagnostics_empty">Das Protokoll ist leer</string>
+    <string name="diagnostics_copied">Protokoll kopiert</string>
+    <plurals name="diagnostics_lines">
+        <item quantity="one">%d Zeile</item>
+        <item quantity="other">%d Zeilen</item>
+    </plurals>
 </resources>
