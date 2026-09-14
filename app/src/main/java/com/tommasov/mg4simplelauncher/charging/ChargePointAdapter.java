@@ -28,11 +28,14 @@ public class ChargePointAdapter
 
     private final List<ChargePoint> points = new ArrayList<>();
     private final Listener listener;
+    /** False on vehicles with no navigator: a shortcut to nowhere is worse than none. */
+    private final boolean showNavigate;
     /** Id of the row matching the highlighted map pin; -1 when nothing is selected. */
     private long selectedId = -1;
 
-    public ChargePointAdapter(@NonNull Listener listener) {
+    public ChargePointAdapter(@NonNull Listener listener, boolean showNavigate) {
         this.listener = listener;
+        this.showNavigate = showNavigate;
     }
 
     public void submit(@NonNull List<ChargePoint> newPoints) {
@@ -75,6 +78,7 @@ public class ChargePointAdapter
                         .getString(R.string.charging_power_kw, point.maxPowerKw)
                 : "");
 
+        holder.navigate.setVisibility(showNavigate ? View.VISIBLE : View.GONE);
         holder.itemView.setActivated(point.id == selectedId);
         holder.itemView.setOnClickListener(v -> listener.onSelect(point));
         holder.navigate.setOnClickListener(v -> listener.onNavigate(point));

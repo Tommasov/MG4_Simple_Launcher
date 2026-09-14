@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.util.Log;
@@ -40,6 +42,17 @@ final class FactoryNavigator {
             "com.saicmotor.adapterservice.services.GeneralService";
     private static final String INTERFACE_TOKEN =
             "com.saicmotor.adapterservice.IGeneralService";
+    /**
+     * Navigation apps shipped on SAIC head units, by market: Telenav here in Europe, iGO in
+     * Hong Kong, SAIC's own in Israel. Only the trims with the full infotainment package
+     * carry one at all, which is why presence is checked rather than assumed.
+     */
+    static final String[] FACTORY_NAVIGATORS = {
+            "com.telenav.app.arp",
+            "com.nng.igo.primong",
+            "com.saicmotor.navigation",
+    };
+
     /** {@code startNavFromEVRout(List, List)} sits at this transaction code. */
     private static final int TRANSACTION_START_NAV_FROM_EV_ROUTE = 48;
 
@@ -52,6 +65,25 @@ final class FactoryNavigator {
     }
 
     private FactoryNavigator() {
+    }
+
+    /**
+     * Whether anything on this vehicle can accept a destination.
+     *
+     * <p>Asked as a capability rather than derived from the model: the base MG4 ships without
+     * a navigator, but {@code build.prop} names the head unit, not the trim, so the model
+     * cannot answer this. Presence can. It also gets the case a trim check would get wrong —
+     * an owner who installed a map app of their own.
+     */
+    public static boolean isNavigationAvailable(@NonNull Context context) {
+        PackageManager packages = context.getPackageManager();
+        for (String navigator : FACTORY_NAVIGATORS) {
+            if (packages.getLaunchIntentForPackage(navigator) != null) {
+                return true;
+            }
+        }
+        Intent geo = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=0,0"));
+        return geo.resolveActivity(packages) != null;
     }
 
     /**

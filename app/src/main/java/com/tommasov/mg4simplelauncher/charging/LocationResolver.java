@@ -12,6 +12,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
+
 import java.util.List;
 
 /**
@@ -27,6 +29,14 @@ final class LocationResolver {
     private static final String TAG = "LocationResolver";
     /** Long enough for a cold GPS fix in the open, short enough not to feel stuck. */
     private static final long TIMEOUT_MS = 30_000;
+    /**
+     * A fix this accurate is taken immediately. Anything coarser is kept but not trusted
+     * yet: the network provider answers in seconds and can be kilometres out, which would
+     * list stations from the wrong part of town.
+     */
+    private static final float GOOD_ENOUGH_METRES = 200f;
+    /** How long to keep waiting for something better after a coarse first fix. */
+    private static final long SETTLE_MS = 12_000;
 
     interface Callback {
         void onLocation(@NonNull Location location);
@@ -41,6 +51,9 @@ final class LocationResolver {
     @Nullable
     private LocationListener listener;
     private boolean finished;
+    @Nullable
+    private Location best;
+    private boolean settling;
 
     /** Returns the freshest cached fix across providers, or null when there is none. */
     @Nullable
@@ -87,11 +100,38 @@ final class LocationResolver {
             return;
         }
 
+        Context appContext = context.getApplicationContext();
+        DiagnosticsLog.log(appContext, TAG, "waiting for a fix from " + providers);
+
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                finish();
-                callback.onLocation(location);
+                DiagnosticsLog.log(appContext, TAG, "fix from " + location.getProvider()
+                        + ", accuracy " + Math.round(location.getAccuracy()) + " m");
+                if (best == null || location.getAccuracy() < best.getAccuracy()) {
+                    best = location;
+                }
+                if (best.getAccuracy() <= GOOD_ENOUGH_METRES) {
+                    finish();
+                    callback.onLocation(best);
+                    return;
+                }
+                // Coarse so far. Keep it, but give the satellites a little longer before
+                // settling for it.
+                if (!settling) {
+                    settling = true;
+                    handler.postDelayed(() -> {
+                        if (finished || best == null) {
+                            return;
+                        }
+                        DiagnosticsLog.log(appContext, TAG, "settling for "
+                                + best.getProvider() + " at "
+                                + Math.round(best.getAccuracy()) + " m");
+                        Location settled = best;
+                        finish();
+                        callback.onLocation(settled);
+                    }, SETTLE_MS);
+                }
             }
 
             @Override
@@ -122,8 +162,16 @@ final class LocationResolver {
         }
 
         handler.postDelayed(() -> {
-            if (!finished) {
-                finish();
+            if (finished) {
+                return;
+            }
+            // Out of time: a coarse fix still beats telling the driver there is none.
+            Location fallback = best;
+            finish();
+            if (fallback != null) {
+                callback.onLocation(fallback);
+            } else {
+                DiagnosticsLog.log(appContext, TAG, "no fix within " + TIMEOUT_MS + " ms");
                 callback.onUnavailable();
             }
         }, TIMEOUT_MS);

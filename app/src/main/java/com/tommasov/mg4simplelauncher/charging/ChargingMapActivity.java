@@ -62,16 +62,6 @@ public class ChargingMapActivity extends AppCompatActivity
     private static final double MAX_AUTO_ZOOM = 13.5;
     private static final int MAP_PADDING_PX = 80;
 
-    /**
-     * Navigation apps shipped on SAIC head units, by market: Telenav here in Europe, iGO in
-     * Hong Kong, SAIC's own in Israel. The factory launcher picks between exactly these
-     * three, so they are the ones worth trying.
-     */
-    private static final String[] FACTORY_NAVIGATORS = {
-            "com.telenav.app.arp",
-            "com.nng.igo.primong",
-            "com.saicmotor.navigation",
-    };
     /** Roomier for a selection: the vehicle beacon is tall and would clip at the edge. */
     private static final int SELECTION_PADDING_PX = 150;
     /** Two points a few hundred metres apart would otherwise fill the screen. */
@@ -98,6 +88,8 @@ public class ChargingMapActivity extends AppCompatActivity
     private Polyline link;
     /** Floating action over the map; only meaningful once a station is picked. */
     private View navigateButton;
+    /** Whether this vehicle has anything that accepts a destination. */
+    private boolean canNavigate;
     @Nullable
     private ChargePoint selectedPoint;
 
@@ -129,7 +121,11 @@ public class ChargingMapActivity extends AppCompatActivity
         map.getController().setZoom(DEFAULT_ZOOM);
 
         status = findViewById(R.id.charging_status);
-        adapter = new ChargePointAdapter(this);
+        canNavigate = FactoryNavigator.isNavigationAvailable(this);
+        DiagnosticsLog.log(this, TAG_DIAG,
+                canNavigate ? "a navigation target is available"
+                            : "no navigation target on this vehicle");
+        adapter = new ChargePointAdapter(this, canNavigate);
         list = findViewById(R.id.charging_list);
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
@@ -383,7 +379,7 @@ public class ChargingMapActivity extends AppCompatActivity
         }
 
         selectedPoint = point;
-        navigateButton.setVisibility(View.VISIBLE);
+        navigateButton.setVisibility(canNavigate ? View.VISIBLE : View.GONE);
         adapter.setSelected(point);
         frameSelection(target);
         map.invalidate();
@@ -451,7 +447,7 @@ public class ChargingMapActivity extends AppCompatActivity
             // Falls through: the factory navigator does not answer geo:.
         }
         // Last resort: open the navigator without a destination, which still beats an error.
-        for (String navigator : FACTORY_NAVIGATORS) {
+        for (String navigator : FactoryNavigator.FACTORY_NAVIGATORS) {
             if (AppLauncher.launch(this, navigator)) {
                 return;
             }
