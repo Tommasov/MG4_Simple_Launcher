@@ -84,7 +84,9 @@ public class ChargingCardBinder {
         }
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            showStatus(R.string.charging_permission_needed);
+            // Worded as an instruction, not a diagnosis: tapping the card opens the screen
+            // that asks for the permission, so the way out is the card itself.
+            showStatus(R.string.charging_permission_card);
             return;
         }
         showStatus(R.string.charging_no_location);

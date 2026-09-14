@@ -56,6 +56,7 @@
     <string name="charging_no_key">Datos de recarga no disponibles: falta la clave API</string>
     <string name="charging_location_failed">Sin posición disponible. Comprueba que la ubicación esté activa y vuelve a abrir.</string>
     <string name="charging_no_location">Esperando la posición…</string>
+    <string name="charging_permission_card">Se necesita la ubicación. Toca para permitir.</string>
     <string name="charging_permission_needed">Se necesita acceso a la ubicación para encontrar puntos cercanos</string>
     <string name="charging_empty">Ningún punto coincide con este filtro</string>
     <string name="charging_error">No se han podido cargar los puntos de recarga</string>

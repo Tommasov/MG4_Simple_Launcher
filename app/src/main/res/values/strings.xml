@@ -55,6 +55,7 @@
     <string name="charging_no_key">Charging data unavailable: no API key</string>
     <string name="charging_location_failed">No position available. Check that location is on, then reopen.</string>
     <string name="charging_no_location">Waiting for a position fix…</string>
+    <string name="charging_permission_card">Location is needed. Tap to allow.</string>
     <string name="charging_permission_needed">Location access is needed to find nearby stations</string>
     <string name="charging_empty">No station matches this filter</string>
     <string name="charging_error">Unable to load charging points</string>
