@@ -42,6 +42,7 @@ public class ChargingCardBinder {
     private static final int SUMMARY_COUNT = PER_GROUP * 2;
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
+    private final LocationResolver locationResolver = new LocationResolver();
     private final View card;
     private final View results;
     private final TextView status;
@@ -86,14 +87,25 @@ public class ChargingCardBinder {
             showStatus(R.string.charging_permission_needed);
             return;
         }
-        Location cached = LocationResolver.lastKnown(context);
-        if (cached == null) {
-            // The card does not hold the screen open waiting for a fix; the full screen does
-            // that. Here it just says so, and the next visit tries again.
-            showStatus(R.string.charging_no_location);
-            return;
-        }
-        Location origin = cached;
+        showStatus(R.string.charging_no_location);
+        // Waiting for a real fix, not just reading the cache: with the cache empty the card
+        // used to sit on "waiting for a position" for good, even once the map screen had
+        // found one. The resolver is cancelled when the page goes away, so nothing keeps
+        // listening behind the driver's back.
+        locationResolver.resolve(context, new LocationResolver.Callback() {
+            @Override
+            public void onLocation(@NonNull Location origin) {
+                loadAround(context, origin);
+            }
+
+            @Override
+            public void onUnavailable() {
+                showStatus(R.string.charging_location_failed);
+            }
+        });
+    }
+
+    private void loadAround(@NonNull Context context, @NonNull Location origin) {
         showStatus(R.string.charging_loading);
         fetch(origin, ChargingFilter.MOTORWAY, motorway ->
                 fetch(origin, ChargingFilter.SUPERCHARGER, superchargers -> {
@@ -172,8 +184,9 @@ public class ChargingCardBinder {
         results.setVisibility(View.GONE);
     }
 
-    /** Drops any in-flight lookup when the page goes away. */
+    /** Drops any in-flight lookup and stops listening for a position. */
     public void cancel() {
+        locationResolver.cancel();
         client.cancel();
     }
 }

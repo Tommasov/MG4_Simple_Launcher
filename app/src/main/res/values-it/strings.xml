@@ -70,7 +70,7 @@
     <!-- Settings screen -->
     <string name="settings_title">Impostazioni</string>
     <string name="settings_home_page">Schermata iniziale</string>
-    <string name="settings_home_page_hint">Quale pagina si apre allâavvio</string>
+    <string name="settings_home_page_hint">Quale pagina si apre all’avvio</string>
     <string name="settings_page_home">Home</string>
     <string name="settings_page_shortcuts">Scorciatoie</string>
     <string name="settings_page_system">Strumenti</string>

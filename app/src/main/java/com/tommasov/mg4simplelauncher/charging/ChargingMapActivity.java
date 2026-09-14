@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -31,6 +30,7 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.R;
 
 import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -106,17 +106,18 @@ public class ChargingMapActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         DiagnosticsLog.log(this, TAG_DIAG, "charging screen opening");
 
-        // osmdroid needs its cache path and a real user agent before any MapView inflates;
-        // OSM tile servers reject the library's default agent outright.
-        Configuration.getInstance().load(
-                this, PreferenceManager.getDefaultSharedPreferences(this));
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        // Keep osmdroid's cache inside the app's own storage. Left to itself it picks a path
-        // on external storage, which is not guaranteed to exist or be writable on a head
-        // unit, and it fails while the MapView is being inflated.
+        // osmdroid is configured by hand rather than through Configuration.load(): that call
+        // reads preferences and probes external storage on the main thread, before any of
+        // this screen has been drawn, which on the head unit shows up as seconds of black
+        // before the window appears. Only three settings actually matter here.
+        IConfigurationProvider configuration = Configuration.getInstance();
+        // OSM tile servers reject the library's default user agent outright.
+        configuration.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        // Cache inside the app's own storage: external storage is not guaranteed to exist
+        // or be writable on a head unit.
         File cache = new File(getFilesDir(), "osmdroid");
-        Configuration.getInstance().setOsmdroidBasePath(cache);
-        Configuration.getInstance().setOsmdroidTileCache(new File(cache, "tiles"));
+        configuration.setOsmdroidBasePath(cache);
+        configuration.setOsmdroidTileCache(new File(cache, "tiles"));
 
         DiagnosticsLog.log(this, TAG_DIAG, "osmdroid configured, cache in "
                 + cache.getAbsolutePath());
