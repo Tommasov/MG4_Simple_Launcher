@@ -31,14 +31,22 @@ android {
         applicationId = "com.tommasov.mg4simplelauncher"
         minSdk = 28
         targetSdk = 34
-        versionCode = 16
-        versionName = "1.6-beta8"
+        versionCode = 18
+        versionName = "1.6-beta10"
 
         // Base URL of the update server; the version manifest lives at <base>/version.json
         buildConfigField(
             "String",
             "UPDATE_BASE_URL",
             "\"https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/\""
+        )
+
+        // Catalogue of the author's other apps for this vehicle. A sibling of the launcher's
+        // own update manifests rather than a file inside its folder: it lists other software.
+        buildConfigField(
+            "String",
+            "CATALOG_URL",
+            "\"https://ws2.tommasovietina.it/mg4/apps.json\""
         )
 
         // Open Charge Map key; empty when apikeys.properties is absent.

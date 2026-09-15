@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One app in the downloads list: what it is on the left, what you can do about it on the
+     right. Same card artwork and padding as the charging rows, so the two lists in the
+     launcher read as the same kind of thing. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/catalog_item_height"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/catalog_item_selector"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/info_card_padding"
+    android:paddingEnd="@dimen/info_card_padding">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/catalog_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/charge_item_title_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/catalog_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/secondary_text_size" />
+
+        <TextView
+            android:id="@+id/catalog_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_tertiary"
+            android:textSize="@dimen/secondary_text_size" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/catalog_action"
+        android:layout_width="@dimen/catalog_action_width"
+        android:layout_height="@dimen/settings_tab_height"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/native_button_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/drawer_button_size" />
+</LinearLayout>

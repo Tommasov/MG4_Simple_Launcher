@@ -109,4 +109,9 @@
     <dimen name="charge_glyph_height">21dp</dimen>
     <dimen name="charge_glyph_width_bolt">12dp</dimen>
     <dimen name="charge_glyph_width_lock">16dp</dimen>
+
+    <!-- Downloads list: three lines of text beside a button, so a touch taller than the
+         charging rows, which carry two. -->
+    <dimen name="catalog_item_height">140dp</dimen>
+    <dimen name="catalog_action_width">240dp</dimen>
 </resources>
