@@ -67,8 +67,12 @@ public class MainActivity extends AppCompatActivity {
         ApkDownloader.clearDownloads(this);
 
         // Silently check for a newer build on launch; prompts the user only if one exists.
+        // The manager is built either way — it owns the teardown in onDestroy — but the check
+        // only runs when the driver has left it on.
         updateManager = new UpdateManager(this);
-        updateManager.checkForUpdates(false);
+        if (new PreferencesManager(this).isUpdateCheckOnLaunchEnabled()) {
+            updateManager.checkForUpdates(false);
+        }
     }
 
     @Override

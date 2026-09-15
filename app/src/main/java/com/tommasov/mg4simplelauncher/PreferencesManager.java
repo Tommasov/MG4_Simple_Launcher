@@ -15,6 +15,7 @@ public class PreferencesManager {
     private static final String KEY_HOME_PAGE = "home_page";
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     private static final String KEY_BETA_CHANNEL = "beta_channel";
+    private static final String KEY_UPDATE_ON_LAUNCH = "update_on_launch";
     public static final int FAVORITE_COUNT = 3;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
@@ -80,6 +81,18 @@ public class PreferencesManager {
      * be broken, and Android will not install an older versionCode over a newer one, so a
      * tester cannot simply step back to the stable build.
      */
+    /**
+     * Whether the launcher looks for a new build when it starts. On by default: this is how
+     * it behaved before the setting existed, and it is how most people get the update at all.
+     */
+    public boolean isUpdateCheckOnLaunchEnabled() {
+        return prefs.getBoolean(KEY_UPDATE_ON_LAUNCH, true);
+    }
+
+    public void setUpdateCheckOnLaunchEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_UPDATE_ON_LAUNCH, enabled).apply();
+    }
+
     public boolean isBetaChannelEnabled() {
         return prefs.getBoolean(KEY_BETA_CHANNEL, false);
     }

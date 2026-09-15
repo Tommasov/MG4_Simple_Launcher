@@ -47,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         bindHomePage();
         bindFeatures();
+        bindUpdateOnLaunch();
         bindBetaChannel();
         bindUpdates();
         bindDiagnostics();
@@ -78,6 +79,14 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     updateShortcutsOptionVisibility(checked);
                 });
+    }
+
+    private void bindUpdateOnLaunch() {
+        bindToggle(R.id.toggle_update_on_launch,
+                R.string.settings_update_on_launch,
+                R.string.settings_update_on_launch_hint,
+                preferences.isUpdateCheckOnLaunchEnabled(),
+                preferences::setUpdateCheckOnLaunchEnabled);
     }
 
     private void bindBetaChannel() {
