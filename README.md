@@ -21,7 +21,8 @@ fits visually with the system, while providing a minimal, focused home screen.
   - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
     **Settings** apps, side by side as icons.
 - **Charging points**: the nearest stations of one network, from Open Charge Map,
-  with a full-screen map and a **send to the car's navigator** button. See below.
+  with a full-screen map, a detail panel for the station you pick, and a **send to
+  the car's navigator** button. See below.
 - **Shortcuts grid** (optional page): eight assignable tiles for the apps that don't
   fit on the three home cards. Tap to launch, long-press to change or clear a tile.
   **Off by default** — turn it on in Settings.
@@ -59,14 +60,38 @@ On the card itself:
   loads once per visit and never on a timer: Open Charge Map bans callers that
   poll it.
 
-The full screen adds the same filters as tabs, a list on the left and an
-OpenStreetMap map on the right (through osmdroid — no Play Services, no Google
-Maps API key). Tapping a station highlights it, draws a line from the car and
-shows the distance.
+Tapping the card opens the full screen **on the network the card was showing**,
+with the same choices as tabs, a list on the left and an OpenStreetMap map on the
+right (through osmdroid — no Play Services, no Google Maps API key).
 
-Location comes from Android's own providers. The first fix after a cold start can
-take minutes when the car's own mobile data is off, because assisted GPS rides on
-that connection; the screen keeps looking as long as it is open and says so.
+Pick a station and it is highlighted on the map, a line is drawn from the car, and
+a panel opens over the map with what Open Charge Map knows about it:
+
+- The **address**, and the **connectors broken down by kind and power** — "2 × CCS
+  (Type 2) 300 kW · 2 × Type 2 22 kW". A site's headline power often belongs to one
+  bay out of several, which the breakdown makes plain.
+- Whether the station is **not simply open to anyone** — private, or by arrangement.
+  Nothing is said about public stations, or about the membership tariffs some
+  networks record, because a padlock that turns out to be wrong costs a usable stop.
+- The button that hands the destination to the car's navigator.
+
+Prices are deliberately absent. Open Charge Map carries them as free text, often
+missing and sometimes years old, and what you actually pay depends on the app you
+start the charge with.
+
+Nothing is restricted to one country: the search follows the car, so it works
+abroad and, more usefully, across a border you are about to drive over.
+
+Location comes from Android's own providers, and is followed for as long as the
+screen is open — the car marker moves with the vehicle, and points the way it is
+travelling once it is moving fast enough for the fix to carry a bearing. Parked, it
+shows a plain disc rather than an arrow in an invented direction. The list keeps the
+distances from when the search ran: re-querying on every fix is the polling Open
+Charge Map asks callers not to do.
+
+The first fix after a cold start can take minutes when the car's own mobile data is
+off, because assisted GPS rides on that connection; the screen keeps looking as long
+as it is open and says so.
 
 ### Sending a destination to the car's navigator
 
