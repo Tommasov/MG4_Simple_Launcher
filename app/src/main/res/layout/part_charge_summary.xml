@@ -17,13 +17,30 @@
         android:textSize="@dimen/charge_name_size"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/summary_detail"
+    <!-- Distance and power, then whatever else is known, on one line: the card is wide
+         enough that these cost no height here, unlike in the map list. -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/text_secondary"
-        android:textSize="@dimen/charge_detail_size" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/summary_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/charge_detail_size" />
+
+        <include
+            layout="@layout/part_charge_extras"
+            android:id="@+id/summary_extras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </LinearLayout>

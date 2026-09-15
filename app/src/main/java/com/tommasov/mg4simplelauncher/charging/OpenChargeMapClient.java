@@ -39,8 +39,6 @@ public class OpenChargeMapClient {
     private static final String TAG = "OpenChargeMap";
     private static final String ENDPOINT = "https://api.openchargemap.io/v3/poi";
     private static final int TIMEOUT_MS = 15_000;
-    /** Country filter: the launcher is built for an Italian head unit. */
-    private static final String COUNTRY_CODE = "IT";
 
     public interface Callback {
         void onResult(@NonNull List<ChargePoint> points);
@@ -84,7 +82,9 @@ public class OpenChargeMapClient {
             try {
                 Uri.Builder query = Uri.parse(ENDPOINT).buildUpon()
                         .appendQueryParameter("output", "json")
-                        .appendQueryParameter("countrycode", COUNTRY_CODE)
+                        // No country filter: latitude, longitude and distance already bound
+                        // the search, and a country would cut it at the border — exactly
+                        // where a driver is most interested in what is on the other side.
                         .appendQueryParameter("latitude", String.valueOf(latitude))
                         .appendQueryParameter("longitude", String.valueOf(longitude))
                         .appendQueryParameter("distance", String.valueOf(filter.radiusKm))

@@ -51,6 +51,8 @@
         <RadioGroup
             android:id="@+id/charging_filters"
             android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/charge_list_inset"
+            android:layout_marginEnd="@dimen/charge_list_inset"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/card_gap"
             android:gravity="center_vertical"
@@ -154,6 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/charge_list_inset"
             android:text="@string/charging_attribution"
             android:textColor="@color/text_tertiary"
             android:textSize="@dimen/secondary_text_size" />
@@ -170,40 +173,106 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <!-- What is known about the station you picked. It lives over the map, at the bottom,
+             because the list column is too narrow to read a price in and because the map is
+             where the eye already is once a pin is highlighted. Hidden until something is
+             selected, and taken away again when the selection clears. -->
+        <!-- What is known about the station you picked. Over the map, at the bottom, because
+             the list column is too narrow to read a price in and the eye is already on this
+             side once a pin lights up. Hidden until something is selected.
+
+             The height is fixed rather than wrapped on purpose: the card artwork is a
+             429x298 bitmap, and a background contributes its intrinsic height as the view's
+             minimum, so a wrapped panel could never be shorter than 298dp however little it
+             had to say. Every line inside is a single line, so the content height is known. -->
         <LinearLayout
-            android:id="@+id/charging_navigate_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/map_button_selector"
-            android:clickable="true"
+            android:id="@+id/charging_detail_panel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/charge_detail_panel_height"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
             android:elevation="6dp"
-            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/native_button_padding_h"
-            android:paddingVertical="@dimen/native_button_padding_v"
+            android:paddingStart="@dimen/charge_detail_padding_h"
+            android:paddingEnd="@dimen/charge_detail_padding_h"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_navigate"
-                app:tint="@android:color/white" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/charging_navigate_label"
+                <TextView
+                    android:id="@+id/charging_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/charging_detail_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <TextView
+                    android:id="@+id/charging_detail_connectors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <include
+                    layout="@layout/part_charge_extras"
+                    android:id="@+id/charging_detail_extras"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/charging_navigate_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/charging_send_to_navigation"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/drawer_button_size"
-                android:textStyle="bold" />
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/map_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/native_button_padding_h"
+                android:paddingVertical="@dimen/native_button_padding_v"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_navigate"
+                    app:tint="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/charging_navigate_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/charging_send_to_navigation"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/drawer_button_size" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

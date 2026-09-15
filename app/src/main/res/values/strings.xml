@@ -66,6 +66,13 @@
     <string name="charging_error">Unable to load charging points</string>
     <string name="charging_distance_km">%1$.1f km</string>
     <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_access_membership">Members</string>
+    <string name="charging_access_notice">By arrangement</string>
+    <string name="charging_access_private">Private</string>
+    <plurals name="charging_bays">
+        <item quantity="one">%d bay</item>
+        <item quantity="other">%d bays</item>
+    </plurals>
     <string name="charging_navigate">Navigate</string>
     <string name="charging_loading">Loading charging points…</string>
     <string name="charging_no_navigation">No navigation app available</string>

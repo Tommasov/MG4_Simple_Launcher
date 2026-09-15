@@ -67,6 +67,13 @@
     <string name="charging_error">No se han podido cargar los puntos de recarga</string>
     <string name="charging_distance_km">%1$.1f km</string>
     <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_access_membership">Socios</string>
+    <string name="charging_access_notice">Con aviso</string>
+    <string name="charging_access_private">Privada</string>
+    <plurals name="charging_bays">
+        <item quantity="one">%d punto</item>
+        <item quantity="other">%d puntos</item>
+    </plurals>
     <string name="charging_navigate">Navegar</string>
     <string name="charging_loading">Cargando puntos de recarga…</string>
     <string name="charging_no_navigation">No hay ninguna app de navegación</string>

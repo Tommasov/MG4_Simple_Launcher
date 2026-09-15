@@ -67,6 +67,13 @@
     <string name="charging_error">Impossible de charger les points de recharge</string>
     <string name="charging_distance_km">%1$.1f km</string>
     <string name="charging_power_kw">%1$.0f kW</string>
+    <string name="charging_access_membership">Membres</string>
+    <string name="charging_access_notice">Sur réservation</string>
+    <string name="charging_access_private">Privée</string>
+    <plurals name="charging_bays">
+        <item quantity="one">%d borne</item>
+        <item quantity="other">%d bornes</item>
+    </plurals>
     <string name="charging_navigate">Naviguer</string>
     <string name="charging_loading">Chargement des points de recharge…</string>
     <string name="charging_no_navigation">Aucune application de navigation</string>

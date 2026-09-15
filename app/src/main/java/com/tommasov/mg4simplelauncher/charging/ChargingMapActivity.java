@@ -94,6 +94,12 @@ public class ChargingMapActivity extends AppCompatActivity
     private Polyline link;
     /** Floating action over the map; only meaningful once a station is picked. */
     private View navigateButton;
+    /** Details of the picked station, over the map. Hidden while nothing is selected. */
+    private View detailPanel;
+    private TextView detailTitle;
+    private TextView detailAddress;
+    private TextView detailConnectors;
+    private View detailExtras;
     /** Whether this vehicle has anything that accepts a destination. */
     private boolean canNavigate;
     @Nullable
@@ -137,6 +143,12 @@ public class ChargingMapActivity extends AppCompatActivity
         list.setAdapter(adapter);
 
         findViewById(R.id.charging_back_button).setOnClickListener(v -> finish());
+
+        detailPanel = findViewById(R.id.charging_detail_panel);
+        detailTitle = findViewById(R.id.charging_detail_title);
+        detailAddress = findViewById(R.id.charging_detail_address);
+        detailConnectors = findViewById(R.id.charging_detail_connectors);
+        detailExtras = findViewById(R.id.charging_detail_extras);
 
         navigateButton = findViewById(R.id.charging_navigate_button);
         navigateButton.setOnClickListener(v -> {
@@ -315,6 +327,7 @@ public class ChargingMapActivity extends AppCompatActivity
         link = null;
         selectedPoint = null;
         navigateButton.setVisibility(View.GONE);
+        detailPanel.setVisibility(View.GONE);
 
         Drawable pin = ContextCompat.getDrawable(this, R.drawable.ic_charge_pin);
         for (ChargePoint point : points) {
@@ -430,9 +443,38 @@ public class ChargingMapActivity extends AppCompatActivity
 
         selectedPoint = point;
         navigateButton.setVisibility(canNavigate ? View.VISIBLE : View.GONE);
+        showDetails(point);
         adapter.setSelected(point);
         frameSelection(target);
         map.invalidate();
+    }
+
+    /**
+     * Fills the panel over the map with what is known about the chosen station.
+     *
+     * <p>This is where bays, access and price ended up. The list column leaves about 340dp
+     * for text, which is not enough for a price that frequently reads like a sentence; here
+     * there is the width of the map to spend, and the eye is already on this side once a pin
+     * lights up.
+     */
+    private void showDetails(@NonNull ChargePoint point) {
+        detailTitle.setText(point.title);
+        detailAddress.setText(point.address);
+        detailAddress.setVisibility(point.address.isEmpty() ? View.GONE : View.VISIBLE);
+        // The breakdown when there is one, the bare list of kinds when there is not.
+        boolean detailed = !point.connectorDetail.isEmpty();
+        String connectors = detailed ? point.connectorDetail : point.connectors;
+        detailConnectors.setText(connectors);
+        detailConnectors.setVisibility(connectors.isEmpty() ? View.GONE : View.VISIBLE);
+        detailExtras.setVisibility(
+                ChargeExtras.bind(detailExtras, point, !detailed) ? View.VISIBLE : View.GONE);
+        detailPanel.setVisibility(View.VISIBLE);
+    }
+
+    /** How much of the map the detail panel covers: its height plus the margins around it. */
+    private int panelClearance() {
+        return getResources().getDimensionPixelSize(R.dimen.charge_detail_panel_height)
+                + 2 * getResources().getDimensionPixelSize(R.dimen.card_gap);
     }
 
     /** Frames car and station together, falling back to the station when there is no fix. */
@@ -453,10 +495,17 @@ public class ChargingMapActivity extends AppCompatActivity
             }
             // Not animated: an animated fit applies the zoom later, so reading it back here
             // to clamp it would see the previous value and the clamp would never fire.
+            //
             map.zoomToBoundingBox(box, false, SELECTION_PADDING_PX);
             if (map.getZoomLevelDouble() > MAX_SELECTION_ZOOM) {
                 map.getController().setZoom(MAX_SELECTION_ZOOM);
             }
+            // Then lift the whole picture clear of the detail panel, which covers the bottom
+            // of the map. Padding the fit instead would have worked, but zoomToBoundingBox
+            // pads all four sides alike: buying room at the bottom meant zooming out until
+            // two stations 24 km apart sat in the middle of northern Italy. Shifting keeps
+            // the zoom the fit chose.
+            map.scrollBy(0, panelClearance() / 2);
         });
     }
 

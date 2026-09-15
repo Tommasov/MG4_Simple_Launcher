@@ -1,0 +1,17 @@
+<!-- Charging glyph, taken from the factory navigator's own map pin for a charging point
+     (assets/geoviz/.../poi/day/car-charging.svg): the white bolt inside the teardrop. The
+     pin's shape and colour are dropped, the glyph is cropped to its own bounds with a
+     translated group — Android vectors have no viewBox offset — and tinted like the text
+     it sits beside. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="12dp"
+    android:height="21dp"
+    android:viewportWidth="6"
+    android:viewportHeight="10.5"
+    android:tint="@color/text_secondary">
+    <group android:translateX="-7" android:translateY="-5.75">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M10.75 16.25H10V11.75H7L9.25 5.75H10V10.25H13L10.75 16.25Z" />
+    </group>
+</vector>

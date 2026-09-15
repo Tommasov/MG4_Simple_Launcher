@@ -53,6 +53,7 @@ public class ChargingCardBinder {
     private final TextView groupLabel;
     private final TextView[] names = new TextView[SUMMARY_COUNT];
     private final TextView[] details = new TextView[SUMMARY_COUNT];
+    private final View[] extras = new View[SUMMARY_COUNT];
 
     /** Set once the card has shown results, so returning to the page costs no request. */
     private boolean loaded;
@@ -69,6 +70,7 @@ public class ChargingCardBinder {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);
             details[i] = row.findViewById(R.id.summary_detail);
+            extras[i] = row.findViewById(R.id.summary_extras);
         }
 
         card.setOnClickListener(v -> {
@@ -197,12 +199,15 @@ public class ChargingCardBinder {
             boolean present = i < points.size();
             names[i].setVisibility(present ? View.VISIBLE : View.GONE);
             details[i].setVisibility(present ? View.VISIBLE : View.GONE);
+            extras[i].setVisibility(View.GONE);
             if (!present) {
                 continue;
             }
             ChargePoint point = points.get(i);
             names[i].setText(point.title);
             details[i].setText(summarise(context, point));
+            extras[i].setVisibility(
+                    ChargeExtras.bind(extras[i], point) ? View.VISIBLE : View.GONE);
         }
         status.setVisibility(View.GONE);
         results.setVisibility(View.VISIBLE);

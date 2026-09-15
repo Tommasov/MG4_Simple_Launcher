@@ -1,5 +1,6 @@
 package com.tommasov.mg4simplelauncher.charging;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

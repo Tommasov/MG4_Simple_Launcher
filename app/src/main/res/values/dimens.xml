@@ -33,7 +33,9 @@
     <dimen name="charge_list_width">640dp</dimen>
     <!-- The system tab bar sits at 28sp, and the settings tabs match it: they span a whole
          card. The charging filters cannot — four long labels share 640dp there. -->
-    <dimen name="filter_tab_text_size">20sp</dimen>
+    <!-- 18, not 20: the tabs are inset by charge_list_inset to line up with the rows below,
+         and at 20sp the longest label ("Ricarica rapida") no longer fitted one line. -->
+    <dimen name="filter_tab_text_size">18sp</dimen>
     <dimen name="settings_tab_text_size">28sp</dimen>
     <dimen name="settings_tab_height">72dp</dimen>
     <!-- The card artwork paints its own shadow, and it stretches with the view: on a
@@ -58,6 +60,12 @@
     <!-- The row artwork paints its own shadow: the solid card face starts ~30dp in on the
          left and ends ~35dp before the right edge once stretched to the list width. These
          keep the content on the card rather than on the shadow. -->
+    <!-- How far the rows of the charging list sit inside their column. Not a margin we
+         chose: the row artwork (app_normal_bg.png, 216x206) carries a 10px shadow on each
+         side, and stretched across a 640dp row that band is 30dp. Anything meant to line up
+         with the rows — the filter tabs above them, the attribution below — has to start
+         here, or it looks like the list is narrower than the header. -->
+    <dimen name="charge_list_inset">30dp</dimen>
     <dimen name="charge_item_padding_start">44dp</dimen>
     <dimen name="charge_item_padding_end">48dp</dimen>
     <dimen name="charge_item_title_size">28sp</dimen>
@@ -76,16 +84,29 @@
     <dimen name="round_button_size">72dp</dimen>
     <dimen name="round_button_icon_padding">18dp</dimen>
 
-    <!-- Horizontal padding for the charging card. The card art (bg_normal.png, 429x298)
-         paints its own drop shadow inside the bitmap: 11px on the left, 10px on the right.
-         It is a plain PNG, not a nine-patch, so that band is stretched with the view instead
-         of staying put — the wider the card, the wider its shadow. Across the 1237dp this card
-         spans on the head unit that works out at 32dp on the left and 29dp on the right, which
-         is why text at the usual 24dp sat on the shadow. 40dp clears the wider side with a
-         little air to spare, and is worth rechecking whenever the card changes width. Narrower cards elsewhere keep info_card_padding: at a third of this
-         width their shadow is only 16dp. -->
-    <dimen name="charging_card_padding_h">40dp</dimen>
+    <!-- Padding inside the charging card. Two things decide it. First the artwork: the card
+         art (bg_normal.png, 429x298) paints its own drop shadow inside the bitmap, 11px on
+         the left of 429, and it is a plain PNG rather than a nine-patch, so the band stretches
+         with the view — across the 1237dp this card spans that is 32dp on the left and 29dp
+         on the right, which is why text at 24dp sat on the shadow. Clearing the shadow is the
+         floor, not the answer: at 40dp the text cleared it by 8dp and still read as cramped.
+         56dp leaves about 24dp of visible margin inside the card, which is the air. Recheck
+         both numbers whenever the card changes width. -->
+    <dimen name="charging_card_padding_h">56dp</dimen>
+    <!-- Same reasoning vertically: 13dp of shadow at the top, 16dp at the bottom. -->
+    <dimen name="charging_card_padding_v">32dp</dimen>
 
     <!-- Icon sitting next to a label inside a button, sized to the text beside it. -->
     <dimen name="button_icon_size">36dp</dimen>
+
+    <!-- Glyphs on the charging details line. Heights match so bolt, euro and padlock sit on
+         the same baseline; the widths keep each glyph's own proportions. -->
+    <!-- Four single lines plus room to breathe. Fixed, not wrapped: see the panel itself. -->
+    <dimen name="charge_detail_panel_height">184dp</dimen>
+    <!-- The detail panel spans the map, about 1150dp, so its shadow band is 29dp: the list
+         row padding it borrowed left only 15dp of visible margin. -->
+    <dimen name="charge_detail_padding_h">56dp</dimen>
+    <dimen name="charge_glyph_height">21dp</dimen>
+    <dimen name="charge_glyph_width_bolt">12dp</dimen>
+    <dimen name="charge_glyph_width_lock">16dp</dimen>
 </resources>

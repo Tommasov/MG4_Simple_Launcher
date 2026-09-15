@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What Open Charge Map knows beyond distance and power: how many bays, and whether
+     something stands between the driver and plugging in.
+     Glyphs rather than words because the list column leaves roughly 340dp for text, and
+     "Membership required" alone took two thirds of it.
+
+     Included twice — on its own line in the map list, and inline after distance and power
+     on the wide card — so it carries no margins of its own; the host decides. Every pair
+     disappears when Open Charge Map has nothing for it, which is often. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/charge_bays_icon"
+        android:layout_width="@dimen/charge_glyph_width_bolt"
+        android:layout_height="@dimen/charge_glyph_height"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_glyph_bolt" />
+
+    <TextView
+        android:id="@+id/charge_bays"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="14dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/secondary_text_size" />
+
+    <ImageView
+        android:id="@+id/charge_access_icon"
+        android:layout_width="@dimen/charge_glyph_width_lock"
+        android:layout_height="@dimen/charge_glyph_height"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_glyph_lock" />
+
+    <TextView
+        android:id="@+id/charge_access"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="14dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/secondary_text_size" />
+</LinearLayout>

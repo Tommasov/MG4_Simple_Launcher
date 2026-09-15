@@ -3,7 +3,11 @@
      the row highlights on press exactly like the rest of the launcher.
      Two lines, not three: the operator and the connectors share the second one. Kept apart
      they crowded the row's lower edge, and the operator frequently just repeated the title
-     ("Enel X" under "Enel X"). -->
+     ("Enel X" under "Enel X").
+
+     Bays, access and price briefly lived here as a third line and did not fit: the text
+     column is about 340dp, and a price is often a whole sentence. They moved to the panel
+     that opens over the map when a station is picked, where there is room to read them. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/charge_item_height"
@@ -42,6 +46,8 @@
             android:maxLines="1"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/secondary_text_size" />
+
+
 
     </LinearLayout>
 
