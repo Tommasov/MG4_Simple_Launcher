@@ -55,7 +55,9 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.AppViewH
     public void onBindViewHolder(@NonNull AppViewHolder holder, int position) {
         CatalogApp app = apps.get(position);
         Context context = holder.itemView.getContext();
-        holder.name.setText(app.name);
+        holder.name.setText(app.author.isEmpty()
+                ? app.name
+                : context.getString(R.string.downloads_by, app.name, app.author));
         holder.description.setText(app.description);
         holder.description.setVisibility(app.description.isEmpty() ? View.GONE : View.VISIBLE);
 

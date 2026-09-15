@@ -120,6 +120,7 @@
     <string name="downloads_failed">Katalog nicht erreichbar</string>
     <string name="downloads_install">Installieren</string>
     <string name="downloads_installed">Installiert</string>
+    <string name="downloads_by">%1$s — von %2$s</string>
     <string name="downloads_downloading">Wird geladen…</string>
     <string name="downloads_available">Version %1$s</string>
     <string name="downloads_update_from">Auf %1$s aktualisieren</string>

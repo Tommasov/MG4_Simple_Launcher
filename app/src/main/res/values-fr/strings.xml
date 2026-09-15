@@ -120,6 +120,7 @@
     <string name="downloads_failed">Catalogue indisponible</string>
     <string name="downloads_install">Installer</string>
     <string name="downloads_installed">Installée</string>
+    <string name="downloads_by">%1$s — par %2$s</string>
     <string name="downloads_downloading">Téléchargement…</string>
     <string name="downloads_available">Version %1$s</string>
     <string name="downloads_update_from">Mettre à jour vers %1$s</string>

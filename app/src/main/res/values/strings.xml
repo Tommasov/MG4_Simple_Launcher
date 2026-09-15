@@ -119,6 +119,7 @@
     <string name="downloads_failed">Catalogue unavailable</string>
     <string name="downloads_install">Install</string>
     <string name="downloads_installed">Installed</string>
+    <string name="downloads_by">%1$s — by %2$s</string>
     <string name="downloads_downloading">Downloading…</string>
     <string name="downloads_available">Version %1$s</string>
     <string name="downloads_update_from">Update to %1$s</string>

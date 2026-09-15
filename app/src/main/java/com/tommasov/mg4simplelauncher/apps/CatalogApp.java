@@ -23,6 +23,12 @@ public class CatalogApp {
 
     public final String packageName;
     public final String name;
+    /**
+     * Who made it, when that is not the launcher's author. Shown in the list so nobody
+     * installs somebody else's work believing it comes from here, and so that praise and
+     * complaints reach the right person. Empty for the author's own apps.
+     */
+    public final String author;
     /** Already resolved to the reader's language; see {@link #describe}. */
     public final String description;
     public final long versionCode;
@@ -32,10 +38,12 @@ public class CatalogApp {
     /** Download size in bytes, or 0 when the catalogue does not say. */
     public final long sizeBytes;
 
-    private CatalogApp(String packageName, String name, String description, long versionCode,
-                       String versionName, String apkUrl, String sha256, long sizeBytes) {
+    private CatalogApp(String packageName, String name, String author, String description,
+                       long versionCode, String versionName, String apkUrl, String sha256,
+                       long sizeBytes) {
         this.packageName = packageName;
         this.name = name;
+        this.author = author;
         this.description = description;
         this.versionCode = versionCode;
         this.versionName = versionName;
@@ -57,6 +65,7 @@ public class CatalogApp {
         return new CatalogApp(
                 packageName,
                 json.optString("name", packageName),
+                json.optString("author", ""),
                 describe(json.opt("description")),
                 json.getLong("versionCode"),
                 json.optString("versionName", ""),
