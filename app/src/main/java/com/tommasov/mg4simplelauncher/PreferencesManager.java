@@ -21,6 +21,9 @@ public class PreferencesManager {
     private static final String KEY_BETA_CHANNEL = "beta_channel";
     private static final String KEY_UPDATE_ON_LAUNCH = "update_on_launch";
     private static final String KEY_CHARGING_FILTER = "charging_card_filter";
+    private static final String KEY_PREFS_VERSION = "prefs_version";
+    /** Bumped whenever {@link #migrate()} gains a step. */
+    private static final int PREFS_VERSION = 1;
     public static final int FAVORITE_COUNT = 3;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
@@ -73,8 +76,14 @@ public class PreferencesManager {
     }
 
     /** Whether the shortcuts page appears in the carousel at all. */
+    /**
+     * Whether the shortcuts page is in the carousel. Off unless asked for: eight tiles are
+     * more than most people fill, and every app is a tap away on the all-apps button
+     * regardless. Installations that predate this default keep the page — see
+     * {@link #migrate()}.
+     */
     public boolean isShortcutsPageEnabled() {
-        return prefs.getBoolean(KEY_SHORTCUTS_ENABLED, true);
+        return prefs.getBoolean(KEY_SHORTCUTS_ENABLED, false);
     }
 
     public void setShortcutsPageEnabled(boolean enabled) {
@@ -135,6 +144,47 @@ public class PreferencesManager {
      * filled the twelve-tile grid in 1.5. Without this they stay in storage unseen and
      * would reappear if the grid ever grew again.
      */
+    /**
+     * Brings an existing installation up to the current expectations, once.
+     *
+     * <p>Today it has one job: the shortcuts page used to be on for everybody and is now off
+     * unless asked for. A stored preference only exists for people who opened settings and
+     * touched the switch, so simply flipping the default would take the page away from
+     * everyone else — including those using it happily, who never had a reason to visit
+     * settings at all. So the old value is written down for them before the default changes.
+     *
+     * <p>"Them" is narrowed to installations with at least one shortcut actually assigned.
+     * A page nobody ever put an app on is a page nobody loses anything by closing, and
+     * leaving it open would mean those cars carry an empty page for ever.
+     *
+     * <p>Must run before anything reads the preferences — the carousel is built from them.
+     */
+    public void migrate() {
+        if (prefs.getInt(KEY_PREFS_VERSION, 0) >= PREFS_VERSION) {
+            return;
+        }
+        // Empty on a fresh install, and only then: any key at all means someone was here
+        // before this build. Read before writing the version marker, which would fill it.
+        boolean existingInstall = !prefs.getAll().isEmpty();
+        SharedPreferences.Editor editor = prefs.edit();
+        if (existingInstall
+                && !prefs.contains(KEY_SHORTCUTS_ENABLED)
+                && hasAnyGridFavorite()) {
+            editor.putBoolean(KEY_SHORTCUTS_ENABLED, true);
+        }
+        editor.putInt(KEY_PREFS_VERSION, PREFS_VERSION).apply();
+    }
+
+    /** True when any tile of the shortcuts grid holds an app. */
+    private boolean hasAnyGridFavorite() {
+        for (int slot = 0; slot < GRID_FAVORITE_COUNT; slot++) {
+            if (prefs.getString(KEY_GRID_FAVORITE_PREFIX + slot, null) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void pruneGridFavorites() {
         SharedPreferences.Editor editor = prefs.edit();
         for (int slot = GRID_FAVORITE_COUNT; slot < LEGACY_GRID_FAVORITE_COUNT; slot++) {

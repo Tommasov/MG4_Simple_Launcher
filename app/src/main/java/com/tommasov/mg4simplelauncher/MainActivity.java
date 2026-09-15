@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         PreferencesManager preferences = new PreferencesManager(this);
+        // Before the first read: the carousel is shaped by these preferences, and the
+        // migration decides what one of them says on an installation that predates it.
+        preferences.migrate();
         shortcutsEnabled = preferences.isShortcutsPageEnabled();
         pageCount = HomePagerAdapter.pagesFor(shortcutsEnabled).size();
 
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         pager.post(() -> updateIndicator(pager.getCurrentItem()));
 
         // Forget shortcut slots that no longer have a tile after the 1.5 grid was resized.
-        new PreferencesManager(this).pruneGridFavorites();
+        preferences.pruneGridFavorites();
 
         // Remove any APK left over from a previous (completed or cancelled) update.
         ApkDownloader.clearDownloads(this);
