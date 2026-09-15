@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Queries the Open Charge Map registry for stations around a position.
@@ -50,6 +51,13 @@ public class OpenChargeMapClient {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    /**
+     * Bumped by {@link #cancel()}. A request remembers the value it started under and stays
+     * quiet if it no longer matches, which is how a cancelled lookup is silenced without
+     * shutting the executor down — a shut-down executor rejects every later request, and this
+     * client is reused every time the driver asks for a refresh.
+     */
+    private final AtomicInteger generation = new AtomicInteger();
 
     /** True when the build carries an Open Charge Map key; without one, queries fail fast. */
     public static boolean hasApiKey() {
@@ -71,6 +79,7 @@ public class OpenChargeMapClient {
                     new IllegalStateException("No Open Charge Map API key configured")));
             return;
         }
+        final int startedUnder = generation.get();
         executor.execute(() -> {
             try {
                 Uri.Builder query = Uri.parse(ENDPOINT).buildUpon()
@@ -93,10 +102,18 @@ public class OpenChargeMapClient {
                 // operator and connector names the list shows would come back empty.
                 String url = query.build().toString();
                 List<ChargePoint> points = parse(download(url));
-                mainHandler.post(() -> callback.onResult(points));
+                mainHandler.post(() -> {
+                    if (startedUnder == generation.get()) {
+                        callback.onResult(points);
+                    }
+                });
             } catch (Exception e) {
                 Log.w(TAG, "charging point lookup failed", e);
-                mainHandler.post(() -> callback.onError(e));
+                mainHandler.post(() -> {
+                    if (startedUnder == generation.get()) {
+                        callback.onError(e);
+                    }
+                });
             }
         });
     }
@@ -147,9 +164,16 @@ public class OpenChargeMapClient {
         }
     }
 
-    /** Stops any in-flight lookup; the callback will not run afterwards. */
+    /**
+     * Stops any in-flight lookup; its callback will not run afterwards. The client stays
+     * usable — a request started after this one will be served normally.
+     *
+     * <p>The download itself is left to finish into the void rather than interrupted: it is
+     * a blocking socket read that cannot be stopped cleanly, and its result is discarded by
+     * the generation check.
+     */
     public void cancel() {
-        executor.shutdownNow();
+        generation.incrementAndGet();
         mainHandler.removeCallbacksAndMessages(null);
     }
 }

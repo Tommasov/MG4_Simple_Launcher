@@ -49,6 +49,8 @@
 
     <!-- Charging points (page 3 card + map screen) -->
     <string name="charging_title">Charging points</string>
+    <string name="charging_refresh">Refresh</string>
+    <string name="charging_card_options">Show</string>
     <string name="charging_filter_all">All</string>
     <string name="charging_filter_motorway">Motorway</string>
     <string name="charging_filter_supercharger">Supercharger</string>

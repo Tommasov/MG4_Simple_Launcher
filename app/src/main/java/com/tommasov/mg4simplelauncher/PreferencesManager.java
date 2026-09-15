@@ -1,6 +1,10 @@
 package com.tommasov.mg4simplelauncher;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.tommasov.mg4simplelauncher.charging.ChargingFilter;
 import android.content.SharedPreferences;
 
 /**
@@ -16,6 +20,7 @@ public class PreferencesManager {
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     private static final String KEY_BETA_CHANNEL = "beta_channel";
     private static final String KEY_UPDATE_ON_LAUNCH = "update_on_launch";
+    private static final String KEY_CHARGING_FILTER = "charging_card_filter";
     public static final int FAVORITE_COUNT = 3;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
@@ -85,6 +90,30 @@ public class PreferencesManager {
      * Whether the launcher looks for a new build when it starts. On by default: this is how
      * it behaved before the setting existed, and it is how most people get the update at all.
      */
+    /**
+     * Which network the charging card lists, by {@link ChargingFilter} name.
+     *
+     * <p>Stored as the enum's name rather than its ordinal: the order of the constants is a
+     * detail of the source file, and reordering them must not silently change what a car
+     * already set up is showing. An unknown name falls back to the default.
+     */
+    @NonNull
+    public ChargingFilter getChargingCardFilter() {
+        String stored = prefs.getString(KEY_CHARGING_FILTER, null);
+        if (stored != null) {
+            try {
+                return ChargingFilter.valueOf(stored);
+            } catch (IllegalArgumentException ignored) {
+                // Written by an older or newer build; fall through to the default.
+            }
+        }
+        return ChargingFilter.MOTORWAY;
+    }
+
+    public void setChargingCardFilter(@NonNull ChargingFilter filter) {
+        prefs.edit().putString(KEY_CHARGING_FILTER, filter.name()).apply();
+    }
+
     public boolean isUpdateCheckOnLaunchEnabled() {
         return prefs.getBoolean(KEY_UPDATE_ON_LAUNCH, true);
     }

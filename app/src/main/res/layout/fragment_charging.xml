@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Carousel page 3: charging points, landscape (MG4 head unit).
-     One card across the whole width. This page held four cards, then two; what survived the
-     pruning is the only thing on it worth reading while driving, so it stopped sharing. The
-     three columns are the same three networks the map screen filters by. Settings keep the
-     round button, now floating in the page corner rather than owning a card of their own. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     One list, not three columns. Three at once was more than anyone reads at a glance, and
+     choosing which network mattered is not our call to make once and for all — the gear on
+     the card makes it the driver's, and the card shows that one. The two buttons sit on the
+     card because they act on the card: what it lists, and reading it again now. The launcher's
+     own settings live on the right, off the card, where they cannot be mistaken for it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
     android:padding="@dimen/screen_padding">
 
     <FrameLayout
         android:id="@+id/charging_card"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:layout_marginEnd="@dimen/card_gap"
         android:background="@drawable/smallcard_selector"
         android:clickable="true"
         android:focusable="true">
@@ -55,77 +60,25 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="14dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Says which network is on show, so the chosen filter is never a mystery. -->
+                <TextView
+                    android:id="@+id/charge_group_label"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/card_gap"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/accent"
+                    android:textSize="@dimen/charge_detail_size"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/charge_group_motorway"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/charging_filter_motorway"
-                        android:textColor="@color/accent"
-                        android:textSize="@dimen/charge_detail_size"
-                        android:textStyle="bold" />
-
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/card_gap"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/charge_group_supercharger"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/charging_filter_supercharger"
-                        android:textColor="@color/accent"
-                        android:textSize="@dimen/charge_detail_size"
-                        android:textStyle="bold" />
-
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_6" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_7" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/charge_group_fast"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/charging_filter_fast"
-                        android:textColor="@color/accent"
-                        android:textSize="@dimen/charge_detail_size"
-                        android:textStyle="bold" />
-
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_8" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_9" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_10" />
-                    <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_11" />
-                </LinearLayout>
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_0" />
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
+                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
             </LinearLayout>
 
             <TextView
@@ -144,22 +97,76 @@
                 android:textColor="@color/text_tertiary"
                 android:textSize="@dimen/secondary_text_size" />
         </LinearLayout>
+
+        <!-- Both act on the card: reload it now, and choose what it lists. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="@dimen/info_card_padding"
+            android:layout_marginEnd="@dimen/charging_card_padding_h"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/charging_card_refresh"
+                android:layout_width="@dimen/round_button_size"
+                android:layout_height="@dimen/round_button_size"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/round_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/charging_refresh"
+                android:padding="@dimen/round_button_icon_padding"
+                android:src="@drawable/ic_refresh" />
+
+            <ImageView
+                android:id="@+id/charging_card_options"
+                android:layout_width="@dimen/round_button_size"
+                android:layout_height="@dimen/round_button_size"
+                android:background="@drawable/round_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/charging_card_options"
+                android:padding="@dimen/round_button_icon_padding"
+                android:src="@drawable/ic_gear" />
+        </LinearLayout>
     </FrameLayout>
 
-    <!-- Settings, in the page corner. Inset by the same padding as the card's own text so it
-         lines up with the title across the way, and so it clears the shadow the card art
-         paints inside its own bounds. -->
-    <ImageView
-        android:id="@+id/settings_card_button"
-        android:layout_width="@dimen/round_button_size"
-        android:layout_height="@dimen/round_button_size"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="@dimen/info_card_padding"
-        android:layout_marginEnd="@dimen/charging_card_padding_h"
-        android:background="@drawable/round_button_selector"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/settings_title"
-        android:padding="@dimen/round_button_icon_padding"
-        android:src="@drawable/ic_gear" />
-</FrameLayout>
+    <!-- The launcher's settings: a button on the page, not a card. An empty card would read
+         as something missing; bare background reads as room, and whatever comes next can
+         bring its own card. -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Icon and label as separate views rather than a compound drawable: a compound
+             drawable is painted at the vector's intrinsic size, and ours is 96dp so it
+             dwarfed the text. An ImageView scales to the box it is given. -->
+        <LinearLayout
+            android:id="@+id/settings_card_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_tab_height"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/button_icon_size"
+                android:layout_height="@dimen/button_icon_size"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_gear" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/settings_title"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/drawer_button_size" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

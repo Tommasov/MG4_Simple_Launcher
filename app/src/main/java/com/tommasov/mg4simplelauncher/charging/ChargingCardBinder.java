@@ -1,6 +1,7 @@
 package com.tommasov.mg4simplelauncher.charging;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,9 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
+import com.tommasov.mg4simplelauncher.PreferencesManager;
 import com.tommasov.mg4simplelauncher.R;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,11 +26,10 @@ import java.util.function.Consumer;
  * Drives the charging card on carousel page 3: the nearest motorway and Supercharger
  * sites, and a tap that opens {@link ChargingMapActivity}.
  *
- * <p>One query per column rather than one for the lot, because a plain "nearest stations"
- * search answers with the wrong thing: around Florence the closest few dozen are all city
- * chargers, and neither the motorway network nor the Superchargers — the two you plan a long
- * drive around — appear at all. They run one after the other, not in parallel, to keep a
- * single connection open at a time.
+ * <p>One network at a time, chosen by the driver from the gear on the card. A plain "nearest
+ * stations" search answers with the wrong thing on a motorway — around Florence the closest
+ * few dozen are all city chargers — and which network matters depends on the journey, which
+ * is not a decision we can make once for everyone.
  *
  * <p>Deliberately separate from the fragment that owns the page. That page refreshes its
  * readings every few seconds, and Open Charge Map bans callers who poll; keeping this out
@@ -38,18 +38,19 @@ import java.util.function.Consumer;
  */
 public class ChargingCardBinder {
 
-    /** The three columns, in the order they are drawn. */
-    private static final ChargingFilter[] GROUPS = {
-            ChargingFilter.MOTORWAY, ChargingFilter.SUPERCHARGER, ChargingFilter.FAST};
-    /** Four stations under each heading. */
-    private static final int PER_GROUP = 4;
-    private static final int SUMMARY_COUNT = PER_GROUP * GROUPS.length;
+    /** What the card lists. Six fills its height at the size the entries are set in. */
+    private static final int SUMMARY_COUNT = 6;
+    /** The networks the gear offers, in the order the dialog lists them. */
+    private static final ChargingFilter[] CHOICES = {
+            ChargingFilter.ALL, ChargingFilter.MOTORWAY,
+            ChargingFilter.SUPERCHARGER, ChargingFilter.FAST};
 
     private final OpenChargeMapClient client = new OpenChargeMapClient();
     private final LocationResolver locationResolver = new LocationResolver();
     private final View card;
     private final View results;
     private final TextView status;
+    private final TextView groupLabel;
     private final TextView[] names = new TextView[SUMMARY_COUNT];
     private final TextView[] details = new TextView[SUMMARY_COUNT];
 
@@ -60,11 +61,10 @@ public class ChargingCardBinder {
         card = page.findViewById(R.id.charging_card);
         results = page.findViewById(R.id.charging_card_results);
         status = page.findViewById(R.id.charging_card_status);
+        groupLabel = page.findViewById(R.id.charge_group_label);
 
         int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2,
-                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5,
-                R.id.charge_row_6, R.id.charge_row_7, R.id.charge_row_8,
-                R.id.charge_row_9, R.id.charge_row_10, R.id.charge_row_11};
+                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5};
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);
@@ -76,6 +76,8 @@ public class ChargingCardBinder {
             // The full screen owns the permission prompt, so the card never has to ask.
             context.startActivity(new Intent(context, ChargingMapActivity.class));
         });
+        page.findViewById(R.id.charging_card_refresh).setOnClickListener(v -> reload());
+        page.findViewById(R.id.charging_card_options).setOnClickListener(v -> chooseNetwork());
     }
 
     /** Loads the summary the first time the page becomes visible; a no-op afterwards. */
@@ -83,6 +85,45 @@ public class ChargingCardBinder {
         if (loaded) {
             return;
         }
+        load();
+    }
+
+    /**
+     * Reads the list again now, because someone asked. The once-per-visit rule exists to keep
+     * the launcher from polling Open Charge Map on a timer, and a button somebody pressed is
+     * not polling; waiting for the next visit to see a station that has just come into range
+     * is the frustration this removes.
+     */
+    public void reload() {
+        client.cancel();
+        loaded = false;
+        load();
+    }
+
+    /** Lets the driver pick which network the card lists, and reloads it on the spot. */
+    private void chooseNetwork() {
+        Context context = card.getContext();
+        PreferencesManager preferences = new PreferencesManager(context);
+        ChargingFilter current = preferences.getChargingCardFilter();
+        CharSequence[] labels = new CharSequence[CHOICES.length];
+        int checked = 0;
+        for (int i = 0; i < CHOICES.length; i++) {
+            labels[i] = context.getString(CHOICES[i].labelRes);
+            if (CHOICES[i] == current) {
+                checked = i;
+            }
+        }
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.charging_card_options)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    preferences.setChargingCardFilter(CHOICES[which]);
+                    dialog.dismiss();
+                    reload();
+                })
+                .show();
+    }
+
+    private void load() {
         Context context = card.getContext();
         if (!OpenChargeMapClient.hasApiKey()) {
             showStatus(R.string.charging_no_key);
@@ -115,42 +156,22 @@ public class ChargingCardBinder {
 
     private void loadAround(@NonNull Context context, @NonNull Location origin) {
         showStatus(R.string.charging_loading);
-        fetchGroup(origin, 0, new ArrayList<>());
-    }
-
-    /**
-     * Walks the three queries one after another, carrying the results collected so far.
-     *
-     * <p>One at a time rather than three at once: this runs on a head unit sharing a phone's
-     * hotspot as often as not, and Open Charge Map is being asked a favour, not paid for a
-     * service. Recursion rather than a loop because each call only starts when the one
-     * before it has answered.
-     */
-    private void fetchGroup(@NonNull Location origin, int index,
-                            @NonNull List<List<ChargePoint>> collected) {
-        if (index == GROUPS.length) {
-            boolean anything = false;
-            for (List<ChargePoint> group : collected) {
-                anything |= !group.isEmpty();
-            }
-            if (!anything) {
+        ChargingFilter filter = new PreferencesManager(context).getChargingCardFilter();
+        fetch(origin, filter, points -> {
+            if (points.isEmpty()) {
                 showStatus(R.string.charging_empty);
                 return;
             }
-            bind(collected);
+            groupLabel.setText(filter.labelRes);
+            bind(points);
             loaded = true;
-            return;
-        }
-        fetch(origin, GROUPS[index], points -> {
-            collected.add(points);
-            fetchGroup(origin, index + 1, collected);
         });
     }
 
     /** Runs one query, handing back an empty list rather than failing the whole card. */
     private void fetch(@NonNull Location origin, @NonNull ChargingFilter filter,
                        @NonNull Consumer<List<ChargePoint>> then) {
-        client.nearby(origin.getLatitude(), origin.getLongitude(), filter, PER_GROUP,
+        client.nearby(origin.getLatitude(), origin.getLongitude(), filter, SUMMARY_COUNT,
                 new OpenChargeMapClient.Callback() {
                     @Override
                     public void onResult(@NonNull List<ChargePoint> points) {
@@ -165,24 +186,16 @@ public class ChargingCardBinder {
                 });
     }
 
-    private void bind(@NonNull List<List<ChargePoint>> groups) {
+    private void bind(@NonNull List<ChargePoint> points) {
         Context context = card.getContext();
-        List<ChargePoint> slots = new ArrayList<>();
-        // Fixed slots: each heading owns its own block of four, so a short group leaves a
-        // gap at the bottom of its column instead of pulling the next one up into it.
-        for (List<ChargePoint> group : groups) {
-            for (int i = 0; i < PER_GROUP; i++) {
-                slots.add(i < group.size() ? group.get(i) : null);
-            }
-        }
         for (int i = 0; i < SUMMARY_COUNT; i++) {
-            boolean present = slots.get(i) != null;
+            boolean present = i < points.size();
             names[i].setVisibility(present ? View.VISIBLE : View.GONE);
             details[i].setVisibility(present ? View.VISIBLE : View.GONE);
             if (!present) {
                 continue;
             }
-            ChargePoint point = slots.get(i);
+            ChargePoint point = points.get(i);
             names[i].setText(point.title);
             details[i].setText(summarise(context, point));
         }
@@ -190,7 +203,7 @@ public class ChargingCardBinder {
         results.setVisibility(View.VISIBLE);
     }
 
-    /** "7.6 km · 300 kW". The operator is omitted: the group heading already says it. */
+    /** "7.6 km · 300 kW". The operator is omitted: the heading above already says it. */
     private static String summarise(@NonNull Context context, @NonNull ChargePoint point) {
         StringBuilder sb = new StringBuilder();
         if (point.hasDistance()) {

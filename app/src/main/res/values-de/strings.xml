@@ -50,6 +50,8 @@
 
     <!-- Ladepunkte (Karte Seite 3 + Kartenansicht) -->
     <string name="charging_title">Ladepunkte</string>
+    <string name="charging_refresh">Aktualisieren</string>
+    <string name="charging_card_options">Anzeigen</string>
     <string name="charging_filter_all">Alle</string>
     <string name="charging_filter_motorway">Autobahn</string>
     <string name="charging_filter_supercharger">Supercharger</string>

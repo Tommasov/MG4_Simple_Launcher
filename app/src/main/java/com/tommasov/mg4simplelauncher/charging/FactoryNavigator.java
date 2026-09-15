@@ -35,7 +35,14 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
  *
  * <p>The adapter hands the call to whichever navigator registered as its listener, so what
  * the three strings mean is settled on the far side. In Telenav's handler they fill an
- * {@code Entity}: an id looked up in its own database, a name, and an address.
+ * {@code Entity}: an id looked up in its own database, a name, and an address. The id is
+ * left empty because one we invent matches nothing in that database — an earlier attempt
+ * that put the station name there had the destination filed under "work".
+ *
+ * <p>Confirmed on the vehicle: the stop reaches Telenav with its name and address, and is
+ * accepted both as a waypoint on a running route and as a fresh destination. Trims without
+ * the factory navigator have nothing listening, which is what {@link #isNavigationAvailable}
+ * is for.
  *
  * <p>None of this is a published API. It can disappear with a firmware update, so every
  * failure path falls back to the caller rather than surfacing an error.

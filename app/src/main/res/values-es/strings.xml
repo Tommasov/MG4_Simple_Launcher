@@ -50,6 +50,8 @@
 
     <!-- Puntos de recarga (tarjeta página 3 + pantalla de mapa) -->
     <string name="charging_title">Puntos de recarga</string>
+    <string name="charging_refresh">Actualizar</string>
+    <string name="charging_card_options">Mostrar</string>
     <string name="charging_filter_all">Todos</string>
     <string name="charging_filter_motorway">Autopista</string>
     <string name="charging_filter_supercharger">Supercharger</string>

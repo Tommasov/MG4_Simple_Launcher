@@ -79,10 +79,13 @@
     <!-- Horizontal padding for the charging card. The card art (bg_normal.png, 429x298)
          paints its own drop shadow inside the bitmap: 11px on the left, 10px on the right.
          It is a plain PNG, not a nine-patch, so that band is stretched with the view instead
-         of staying put — the wider the card, the wider its shadow. Across the full 1872dp of
-         the head unit that works out at 48dp on the left and 44dp on the right, which is why
-         text at the usual 24dp sat on the shadow. 56dp clears the wider side with a little
-         air to spare. Narrower cards elsewhere keep info_card_padding: at a third of this
+         of staying put — the wider the card, the wider its shadow. Across the 1237dp this card
+         spans on the head unit that works out at 32dp on the left and 29dp on the right, which
+         is why text at the usual 24dp sat on the shadow. 40dp clears the wider side with a
+         little air to spare, and is worth rechecking whenever the card changes width. Narrower cards elsewhere keep info_card_padding: at a third of this
          width their shadow is only 16dp. -->
-    <dimen name="charging_card_padding_h">56dp</dimen>
+    <dimen name="charging_card_padding_h">40dp</dimen>
+
+    <!-- Icon sitting next to a label inside a button, sized to the text beside it. -->
+    <dimen name="button_icon_size">36dp</dimen>
 </resources>
