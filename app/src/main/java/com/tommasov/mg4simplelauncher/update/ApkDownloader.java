@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
@@ -25,6 +26,8 @@ public class ApkDownloader {
     /** Sub-directory of getExternalFilesDir(null); must match res/xml/file_paths.xml. */
     private static final String SUBDIR = "updates";
     private static final long POLL_INTERVAL_MS = 500;
+    /** One retry after a dropped connection, then the driver deserves to be told. */
+    private static final int MAX_ATTEMPTS = 2;
 
     public interface Callback {
         void onProgress(int percent);
@@ -39,6 +42,12 @@ public class ApkDownloader {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private long downloadId = -1;
+    /** Kept so a failed attempt can be started again from scratch. */
+    private String apkUrl;
+    private String fileName;
+    private int attempt;
+    /** Guards the one-shot ending: the poll and the broadcast both race to report it. */
+    private boolean finished;
     private File targetFile;
     private Callback callback;
     private BroadcastReceiver completeReceiver;
@@ -52,9 +61,28 @@ public class ApkDownloader {
 
     /** Starts downloading {@code info.apkUrl}. Callbacks run on the main thread. */
     public void start(@NonNull UpdateInfo info, @NonNull Callback callback) {
-        this.callback = callback;
+        start(info.apkUrl, info.fileName(), callback);
+    }
 
-        String name = info.fileName();
+    /**
+     * Downloads any APK, not only a launcher update: the catalogue of the author's other apps
+     * installs through the same path, and there is nothing about fetching a file that belongs
+     * to the update channel in particular.
+     *
+     * @param fileName what to call it on disk, or null to fall back to a generic name.
+     */
+    public void start(@NonNull String apkUrl, @Nullable String fileName,
+                      @NonNull Callback callback) {
+        this.callback = callback;
+        this.apkUrl = apkUrl;
+        this.fileName = fileName;
+        attempt = 1;
+        enqueue();
+    }
+
+    private void enqueue() {
+        finished = false;
+        String name = fileName;
         if (name == null) {
             name = "update.apk";
         }
@@ -68,19 +96,52 @@ public class ApkDownloader {
             targetFile.delete();
         }
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(info.apkUrl))
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(this.apkUrl))
                 .setTitle(name)
                 .setDestinationInExternalFilesDir(appContext, null, SUBDIR + "/" + name)
                 .setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setMimeType("application/vnd.android.package-archive");
 
+        forgetPreviousDownloadsOf(targetFile);
+
         registerCompleteReceiver();
         downloadId = downloadManager.enqueue(request);
-        DiagnosticsLog.log(appContext, TAG, "downloading " + info.apkUrl + " to "
+        DiagnosticsLog.log(appContext, TAG, "downloading " + this.apkUrl + " to "
                 + targetFile.getAbsolutePath() + ", free space "
                 + (dir.getUsableSpace() / (1024 * 1024)) + " MB");
         startPolling();
+    }
+
+    /**
+     * Drops any earlier download record aimed at the same file.
+     *
+     * <p>DownloadManager keeps finished downloads in its own database, destination and all.
+     * Enqueue a new one onto a path an old record still claims and it decides it is resuming
+     * that one: it asks the server to continue from where the old file ended, the server
+     * answers with the whole thing, and the download dies as ERROR_CANNOT_RESUME (1008)
+     * before a byte is kept. Every update lands on the same file name, so without this the
+     * second update a car is ever offered is the one that fails.
+     */
+    private void forgetPreviousDownloadsOf(@NonNull File file) {
+        String wanted = Uri.fromFile(file).toString();
+        try (Cursor c = downloadManager.query(new DownloadManager.Query())) {
+            if (c == null) {
+                return;
+            }
+            int idColumn = c.getColumnIndex(DownloadManager.COLUMN_ID);
+            int uriColumn = c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
+            while (c.moveToNext()) {
+                String local = uriColumn >= 0 ? c.getString(uriColumn) : null;
+                if (local != null && local.equals(wanted)) {
+                    // Removes the record; the file itself was deleted just above.
+                    downloadManager.remove(c.getLong(idColumn));
+                }
+            }
+        } catch (Exception e) {
+            // A query that fails leaves the old behaviour, which is no worse than before.
+            Log.w(TAG, "could not clear previous downloads", e);
+        }
     }
 
     private void registerCompleteReceiver() {
@@ -102,9 +163,8 @@ public class ApkDownloader {
         poller = new Runnable() {
             @Override
             public void run() {
-                int percent = queryProgress();
-                if (percent >= 0) {
-                    callback.onProgress(percent);
+                if (pollOnce()) {
+                    return;
                 }
                 mainHandler.postDelayed(this, POLL_INTERVAL_MS);
             }
@@ -112,25 +172,43 @@ public class ApkDownloader {
         mainHandler.post(poller);
     }
 
-    /** Returns 0..100, or -1 if the size is still unknown. */
-    private int queryProgress() {
+    /**
+     * Reads progress and status in one query. Returns true when the download has ended, in
+     * which case the ending has already been reported.
+     *
+     * <p>The end is detected here rather than left to {@code ACTION_DOWNLOAD_COMPLETE} alone.
+     * That broadcast has been seen to go missing — on a download the manager retried after a
+     * dropped connection, the file arrived complete and the notice never did, leaving the
+     * dialog at 99% for ever. The poll is already running and holds the same truth.
+     */
+    private boolean pollOnce() {
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
         try (Cursor c = downloadManager.query(query)) {
             if (c == null || !c.moveToFirst()) {
-                return -1;
+                return false;
             }
-            int total = c.getInt(c.getColumnIndexOrThrow(
+            int status = c.getInt(c.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+            long total = c.getLong(c.getColumnIndexOrThrow(
                     DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-            int done = c.getInt(c.getColumnIndexOrThrow(
+            long done = c.getLong(c.getColumnIndexOrThrow(
                     DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-            if (total <= 0) {
-                return -1;
+            if (total > 0) {
+                callback.onProgress((int) (done * 100L / total));
             }
-            return (int) (done * 100L / total);
+            if (status == DownloadManager.STATUS_SUCCESSFUL
+                    || status == DownloadManager.STATUS_FAILED) {
+                onDownloadFinished();
+                return true;
+            }
         }
+        return false;
     }
 
     private void onDownloadFinished() {
+        if (finished) {
+            return;
+        }
+        finished = true;
         stopPolling();
         int status;
         int reason = 0;
@@ -151,6 +229,16 @@ public class ApkDownloader {
             DiagnosticsLog.log(appContext, TAG, "downloaded " + targetFile.length() + " bytes");
             callback.onProgress(100);
             callback.onComplete(targetFile);
+        } else if (attempt < MAX_ATTEMPTS && isWorthRetrying(reason)) {
+            // A dropped connection is the normal weather here: the car is often on a phone
+            // hotspot, and a transfer of ten megabytes has plenty of time to be interrupted.
+            // One clean retry costs the driver nothing and saves the common case; anything
+            // beyond that is a problem no amount of retrying will fix.
+            attempt++;
+            DiagnosticsLog.log(appContext, TAG, "download failed (reason " + reason
+                    + "), attempt " + attempt + " of " + MAX_ATTEMPTS);
+            unregisterReceiver();
+            enqueue();
         } else {
             // Both halves matter: a successful status with no file at the expected path means
             // DownloadManager renamed it — it appends a suffix rather than overwriting — while
@@ -162,6 +250,18 @@ public class ApkDownloader {
                             : targetFile.getParentFile().getUsableSpace() / (1024 * 1024))
                     + " MB");
         }
+    }
+
+    /**
+     * Whether a failure is the kind a second attempt can beat: a connection that dropped or a
+     * resume the manager could not make sense of. Out of space or a missing file will fail
+     * again just as surely, and retrying only makes the driver wait twice for the same news.
+     */
+    private static boolean isWorthRetrying(int reason) {
+        return reason == DownloadManager.ERROR_HTTP_DATA_ERROR
+                || reason == DownloadManager.ERROR_CANNOT_RESUME
+                || reason == DownloadManager.ERROR_TOO_MANY_REDIRECTS
+                || reason == DownloadManager.ERROR_UNHANDLED_HTTP_CODE;
     }
 
     private void fail(@NonNull String reason) {

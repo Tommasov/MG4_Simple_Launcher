@@ -112,4 +112,16 @@
         <item quantity="other">%d lignes</item>
     </plurals>
 
+
+    <!-- Downloads: the author's other apps for this vehicle -->
+    <string name="downloads_title">Téléchargements</string>
+    <string name="downloads_loading">Chargement du catalogue…</string>
+    <string name="downloads_empty">Aucune application publiée</string>
+    <string name="downloads_failed">Catalogue indisponible</string>
+    <string name="downloads_install">Installer</string>
+    <string name="downloads_installed">Installée</string>
+    <string name="downloads_downloading">Téléchargement…</string>
+    <string name="downloads_available">Version %1$s</string>
+    <string name="downloads_update_from">Mettre à jour vers %1$s</string>
+    <string name="downloads_current">À jour, version %1$s</string>
 </resources>

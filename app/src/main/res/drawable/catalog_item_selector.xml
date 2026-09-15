@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background for the full-width rows of the downloads list.
+     Not the card artwork the charging rows use: that bitmap paints its own drop shadow, 10px
+     of 216, and a row this wide stretches the band to some 87dp a side — the card dissolves
+     into its own shadow. A drawn surface has nothing to stretch, and the launcher already
+     speaks this shape in its buttons. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/button_surface_pressed" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/native_button_radius" />
+            <solid android:color="@color/button_surface" />
+        </shape>
+    </item>
+</selector>

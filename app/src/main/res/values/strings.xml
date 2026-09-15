@@ -111,4 +111,16 @@
         <item quantity="other">%d lines</item>
     </plurals>
 
+
+    <!-- Downloads: the author's other apps for this vehicle -->
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_loading">Loading the catalogue…</string>
+    <string name="downloads_empty">No apps published yet</string>
+    <string name="downloads_failed">Catalogue unavailable</string>
+    <string name="downloads_install">Install</string>
+    <string name="downloads_installed">Installed</string>
+    <string name="downloads_downloading">Downloading…</string>
+    <string name="downloads_available">Version %1$s</string>
+    <string name="downloads_update_from">Update to %1$s</string>
+    <string name="downloads_current">Up to date, version %1$s</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tommasov.mg4simplelauncher.apps.DownloadsActivity;
 import com.tommasov.mg4simplelauncher.charging.ChargingCardBinder;
 
 /**
@@ -40,6 +41,8 @@ public class ChargingFragment extends Fragment {
         chargingCard = new ChargingCardBinder(view);
         view.findViewById(R.id.settings_card_button).setOnClickListener(
                 v -> startActivity(new Intent(requireContext(), SettingsActivity.class)));
+        view.findViewById(R.id.downloads_button).setOnClickListener(
+                v -> startActivity(new Intent(requireContext(), DownloadsActivity.class)));
     }
 
     @Override
