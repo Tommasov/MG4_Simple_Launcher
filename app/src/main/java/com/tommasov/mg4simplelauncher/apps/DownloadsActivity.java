@@ -1,15 +1,17 @@
 package com.tommasov.mg4simplelauncher.apps;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +47,11 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
     @Nullable
     private ApkDownloader downloader;
     @Nullable
-    private ProgressDialog progress;
+    private AlertDialog progress;
+    @Nullable
+    private ProgressBar progressBar;
+    @Nullable
+    private TextView progressText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +59,10 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
         setContentView(R.layout.activity_downloads);
         findViewById(R.id.downloads_back_button).setOnClickListener(v -> finish());
         findViewById(R.id.downloads_refresh).setOnClickListener(v -> load());
+
+        // Opening this screen is as good a moment as any to throw away the APKs of installs
+        // already done: they are megabytes each and serve no purpose once installed.
+        ApkDownloader.clearDownloads(this);
 
         status = findViewById(R.id.downloads_status);
         adapter = new CatalogAdapter(this);
@@ -116,8 +126,12 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
         downloader.start(app.apkUrl, fileNameFor(app), new ApkDownloader.Callback() {
             @Override
             public void onProgress(int percent) {
-                if (progress != null) {
-                    progress.setProgress(percent);
+                if (progressBar != null) {
+                    progressBar.setIndeterminate(percent <= 0);
+                    progressBar.setProgress(percent);
+                }
+                if (progressText != null) {
+                    progressText.setText(getString(R.string.update_downloading, percent));
                 }
             }
 
@@ -165,14 +179,41 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
         executor.shutdown();
     }
 
+    /**
+     * Built by hand on an AppCompat dialog rather than with ProgressDialog.
+     *
+     * <p>ProgressDialog draws itself from the platform theme, not the app's, so in a car set
+     * to dark mode it came up in the wrong colours while every other dialog in the launcher
+     * followed along. This is the same construction the update flow uses, which is why that
+     * one has always looked right.
+     */
     private void showProgress(@NonNull String appName) {
-        //noinspection deprecation
-        progress = new ProgressDialog(this);
-        progress.setTitle(appName);
-        progress.setMessage(getString(R.string.downloads_downloading));
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setMax(100);
-        progress.setCancelable(false);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (24 * getResources().getDisplayMetrics().density);
+        layout.setPadding(pad, pad, pad, pad);
+
+        progressText = new TextView(this);
+        progressText.setText(getString(R.string.update_downloading, 0));
+        progressText.setGravity(Gravity.CENTER);
+
+        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar.setMax(100);
+        progressBar.setIndeterminate(true);
+
+        layout.addView(progressText);
+        layout.addView(progressBar);
+
+        progress = new AlertDialog.Builder(this)
+                .setTitle(appName)
+                .setView(layout)
+                .setCancelable(false)
+                .setNegativeButton(android.R.string.cancel, (d, w) -> {
+                    if (downloader != null) {
+                        downloader.cancel();
+                    }
+                })
+                .create();
         progress.show();
     }
 
@@ -181,6 +222,8 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
             progress.dismiss();
         }
         progress = null;
+        progressBar = null;
+        progressText = null;
     }
 
     private void showStatus(@StringRes int message) {

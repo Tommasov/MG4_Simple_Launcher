@@ -102,7 +102,15 @@ public class ApkDownloader {
                 .setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setMimeType("application/vnd.android.package-archive");
+        // Kept out of the system Downloads list: these are working files the launcher fetches
+        // and installs, not documents the driver chose to keep, and leaving them there means
+        // an ever-growing list of APKs nobody asked for.
+        request.setVisibleInDownloadsUi(false);
 
+        // Sweep before fetching, not only at launcher start: the launcher is the home app and
+        // can stay alive for days, so a cleanup that only runs in onCreate may never run at
+        // all, and every install leaves its APK behind.
+        clearDownloads(appContext);
         forgetPreviousDownloadsOf(targetFile);
 
         registerCompleteReceiver();
