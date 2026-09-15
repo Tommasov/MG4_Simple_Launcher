@@ -67,6 +67,11 @@ public class ChargingMapActivity extends AppCompatActivity
     /** Ceiling for the automatic fit, so a lone result keeps some surrounding context. */
     private static final double MAX_AUTO_ZOOM = 13.5;
     private static final int MAP_PADDING_PX = 80;
+    /**
+     * Below this, the fix's bearing means nothing: a stationary GPS receiver reports whatever
+     * direction its last drift happened to point. 1.5 m/s is about 5 km/h, walking pace.
+     */
+    private static final float MIN_BEARING_SPEED_MS = 1.5f;
 
     /** Roomier for a selection: the vehicle beacon is tall and would clip at the edge. */
     private static final int SELECTION_PADDING_PX = 150;
@@ -104,6 +109,9 @@ public class ChargingMapActivity extends AppCompatActivity
     private boolean canNavigate;
     @Nullable
     private ChargePoint selectedPoint;
+    /** The car on the map, kept so later fixes can move it instead of piling up markers. */
+    @Nullable
+    private Marker vehicleMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,18 +259,29 @@ public class ChargingMapActivity extends AppCompatActivity
      */
     private void resolveOrigin() {
         showStatus(R.string.charging_no_location);
-        locationResolver.resolveUntilCancelled(this, new LocationResolver.Callback() {
+        locationResolver.watch(this, new LocationResolver.Callback() {
             @Override
             public void onLocation(@NonNull Location location) {
                 if (isFinishing() || isDestroyed()) {
                     return;
                 }
-                DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
-                        "position from " + location.getProvider());
+                boolean first = origin == null;
                 origin = location;
-                map.getController().setCenter(
-                        new GeoPoint(location.getLatitude(), location.getLongitude()));
-                load();
+                if (first) {
+                    DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
+                            "position from " + location.getProvider());
+                    map.getController().setCenter(
+                            new GeoPoint(location.getLatitude(), location.getLongitude()));
+                    load();
+                    return;
+                }
+                // Later fixes move the car and nothing else. Re-centring would drag the map
+                // out from under whoever is reading it, and re-querying Open Charge Map on
+                // every fix is exactly the polling it asks callers not to do — so the
+                // distances in the list stay the ones from when the search ran.
+                updateVehicleMarker();
+                updateLink();
+                map.invalidate();
             }
 
             @Override
@@ -353,16 +372,56 @@ public class ChargingMapActivity extends AppCompatActivity
      * station pins.
      */
     private void addVehicleMarker() {
+        updateVehicleMarker();
+    }
+
+    /**
+     * Puts the car on the map using the stock navigator's own current-position pin, or moves
+     * it where a later fix says it is. Added last, so it draws on top of the station pins.
+     */
+    private void updateVehicleMarker() {
         if (origin == null) {
             return;
         }
-        Marker vehicle = new Marker(map);
-        vehicle.setPosition(new GeoPoint(origin.getLatitude(), origin.getLongitude()));
-        // Arrow above a disc: the disc's centre is the position, at 55% of the artwork.
-        vehicle.setAnchor(Marker.ANCHOR_CENTER, 0.55f);
-        vehicle.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_vehicle_position));
-        vehicle.setTitle(getString(R.string.charging_you_are_here));
-        map.getOverlays().add(vehicle);
+        if (vehicleMarker == null) {
+            vehicleMarker = new Marker(map);
+            // Arrow above a disc: the disc's centre is the position, at 55% of the artwork.
+            vehicleMarker.setAnchor(Marker.ANCHOR_CENTER, 0.55f);
+            vehicleMarker.setTitle(getString(R.string.charging_you_are_here));
+        }
+        // Membership is checked every time, not just on creation: reloading the list wipes
+        // the overlays, and a marker kept in a field but no longer on the map is a car that
+        // silently vanishes the moment the driver changes filter.
+        if (!map.getOverlays().contains(vehicleMarker)) {
+            map.getOverlays().add(vehicleMarker);
+        }
+        vehicleMarker.setPosition(new GeoPoint(origin.getLatitude(), origin.getLongitude()));
+
+        // The pointed marker only comes out when there is a direction to point in. A GPS fix
+        // carries a bearing solely while the vehicle is moving; parked, the receiver reports
+        // the heading of its own last drift, and an arrow drawn from that is an invention.
+        // The factory navigator makes the same distinction — its own position icon has no
+        // point at all — so the flat variant is the honest default, not a degraded one.
+        boolean heading = origin.hasBearing()
+                && origin.hasSpeed()
+                && origin.getSpeed() >= MIN_BEARING_SPEED_MS;
+        vehicleMarker.setIcon(ContextCompat.getDrawable(this, heading
+                ? R.drawable.ic_vehicle_position
+                : R.drawable.ic_vehicle_position_flat));
+        // Negated on purpose. Marker.draw computes its on-screen angle as -mBearing and hands
+        // it to Canvas.rotate, which turns clockwise; a compass bearing has to turn clockwise
+        // too, so the sign has to be flipped on the way in.
+        vehicleMarker.setRotation(heading ? -origin.getBearing() : 0f);
+    }
+
+    /** Redraws the line from the car to the selected station after the car has moved. */
+    private void updateLink() {
+        if (link == null || origin == null || selectedPoint == null) {
+            return;
+        }
+        link.setPoints(Arrays.asList(
+                new GeoPoint(origin.getLatitude(), origin.getLongitude()),
+                new GeoPoint(selectedPoint.latitude, selectedPoint.longitude)));
     }
 
     /**

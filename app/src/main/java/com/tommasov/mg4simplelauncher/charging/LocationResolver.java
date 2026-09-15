@@ -42,6 +42,10 @@ final class LocationResolver {
     private static final float GOOD_ENOUGH_METRES = 200f;
     /** How long to keep waiting for something better after a coarse first fix. */
     private static final long SETTLE_MS = 12_000;
+    /** Past this, a fix while following is noise rather than a position. */
+    private static final float COARSE_LIMIT_METRES = 1_000f;
+    /** How often a fix earns a line in the on-device log while following. */
+    private static final long LOG_INTERVAL_MS = 60_000;
 
     interface Callback {
         void onLocation(@NonNull Location location);
@@ -66,9 +70,14 @@ final class LocationResolver {
     private boolean finished;
     @Nullable
     private Location best;
+    /** Whether the caller has had at least one position, in following mode. */
+    private boolean delivered;
+    private long lastLoggedAt;
     private boolean settling;
     /** When set, the wait has no deadline and ends only when the caller cancels. */
     private boolean untilCancelled;
+    /** When set, every fix is handed on instead of the first good one ending the search. */
+    private boolean continuous;
     @Nullable
     private GnssStatus.Callback gnssCallback;
     /** Satellites the receiver can see, and how many of them are in the solution. */
@@ -115,6 +124,21 @@ final class LocationResolver {
     }
 
     /**
+     * Follows the vehicle: {@link Callback#onLocation} runs again for every fix that arrives,
+     * until {@link #cancel()}.
+     *
+     * <p>For a screen that draws where the car is. A single fix is right only for the instant
+     * the screen opened — drive away and the marker stays behind, and the heading it was
+     * drawn with becomes a memory. The receiver is already running to get the first fix, so
+     * this costs keeping it on rather than turning it on.
+     */
+    void watch(@NonNull Context context, @NonNull Callback callback) {
+        untilCancelled = true;
+        continuous = true;
+        resolve(context, callback);
+    }
+
+    /**
      * Hands back a position: the cached one when there is one, otherwise the first live fix
      * from any enabled provider. The callback runs once, on the main thread.
      */
@@ -126,13 +150,20 @@ final class LocationResolver {
         finished = false;
         best = null;
         settling = false;
+        delivered = false;
         satellitesInView = 0;
         satellitesUsed = 0;
+        lastLoggedAt = 0;
 
         Location cached = lastKnown(context);
         if (cached != null) {
             callback.onLocation(cached);
-            return;
+            // In following mode the cached fix is a head start, not an answer: it is often
+            // minutes old, and the whole point is to keep up with where the car is now.
+            if (!continuous) {
+                return;
+            }
+            delivered = true;
         }
 
         manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -160,6 +191,32 @@ final class LocationResolver {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                if (continuous) {
+                    // Newest, not best: a car that has moved makes the older, tighter fix the
+                    // wrong one. Wildly loose fixes are dropped rather than made to jump.
+                    if (location.getAccuracy() > COARSE_LIMIT_METRES && delivered) {
+                        return;
+                    }
+                    // A fix a second, and the log lives in a file on a car that cannot be
+                    // reached over adb: written in full it would bury everything else worth
+                    // reading. The first one goes in, then one a minute.
+                    long now = SystemClock.elapsedRealtime();
+                    if (!delivered || now - lastLoggedAt >= LOG_INTERVAL_MS) {
+                        lastLoggedAt = now;
+                        DiagnosticsLog.log(appContext, TAG, "fix from " + location.getProvider()
+                                + ", accuracy " + Math.round(location.getAccuracy()) + " m"
+                                + (location.hasBearing()
+                                        ? ", bearing " + Math.round(location.getBearing())
+                                        : ", no bearing")
+                                + (location.hasSpeed()
+                                        ? ", speed " + Math.round(location.getSpeed() * 3.6f)
+                                                + " km/h"
+                                        : ""));
+                    }
+                    delivered = true;
+                    callback.onLocation(location);
+                    return;
+                }
                 DiagnosticsLog.log(appContext, TAG, "fix from " + location.getProvider()
                         + ", accuracy " + Math.round(location.getAccuracy()) + " m, after "
                         + elapsedSeconds() + " s, " + satellites());
@@ -217,7 +274,7 @@ final class LocationResolver {
         }
 
         handler.postDelayed(() -> {
-            if (finished) {
+            if (finished || delivered) {
                 return;
             }
             // Out of time: a coarse fix still beats telling the driver there is none.
