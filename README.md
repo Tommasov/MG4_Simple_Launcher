@@ -10,24 +10,30 @@ fits visually with the system, while providing a minimal, focused home screen.
 
 ## Features
 
-- **Swipeable three-page home**: a horizontal carousel (`ViewPager2`). Swipe left/right
-  between the launcher home (page 1), a **shortcuts** grid (page 2) and a
-  **system-info** screen (page 3). A SAIC-style bar indicator at the bottom centre
-  shows the current page.
-- **Three favorite cards** (page 1): three vertical cards, each launching one app of
+- **Swipeable home**: a horizontal carousel (`ViewPager2`) between the launcher
+  home and a **charging points** page, with an optional **shortcuts** grid in
+  between. A SAIC-style bar indicator at the bottom centre shows the current page,
+  and you choose which page the launcher opens on.
+- **Three favorite cards** (home): three vertical cards, each launching one app of
   your choice. Tap a card to open its app; **long-press** to assign or change it.
-- **Fourth column**:
+- **Fourth column** (home):
   - **All apps** (top card): every launchable app, in a grid.
   - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
     **Settings** apps, side by side as icons.
-- **Shortcuts grid** (page 2): eight assignable tiles for the apps that don't fit on
-  the three home cards. Tap to launch, long-press to change or clear a tile.
-- **System apps & updates**: inside the *All apps* drawer, the header carries a
-  **System apps** button (only system apps, `FLAG_SYSTEM`) next to **Check for
-  updates**, plus a **back** button to return home.
+- **Charging points**: the nearest stations of one network, from Open Charge Map,
+  with a full-screen map and a **send to the car's navigator** button. See below.
+- **Shortcuts grid** (optional page): eight assignable tiles for the apps that don't
+  fit on the three home cards. Tap to launch, long-press to change or clear a tile.
+  **Off by default** — turn it on in Settings.
+- **Settings**: launch page, optional features, update checks, and the technical
+  screens. Reached from the button on the charging points page.
+- **System apps**: inside the *All apps* drawer, the header carries a **System apps**
+  button (only system apps, `FLAG_SYSTEM`) next to a **back** button.
 - **App info shortcut**: **long-press** any app in the *All apps* or *System apps*
   drawer to jump straight to Android's app-details screen (permissions, storage,
   uninstall).
+- **Over-the-air updates**: the launcher can check for a new build and install it
+  itself, on a stable or a beta channel.
 - **Light / dark theme**: follows the system day/night mode automatically, using
   the original SAIC light and dark artwork.
 - **Persisted favorites**: the three home cards and the eight grid tiles are saved
@@ -38,44 +44,133 @@ fits visually with the system, while providing a minimal, focused home screen.
 **Long-press** one of the three big cards to open the app picker, then tap the app
 you want in that slot. Your choice is saved across reboots.
 
-## Second screen (shortcuts)
+## Charging points
 
-Swipe right from the home to reach the shortcuts grid (`FavoritesGridFragment` /
-`res/layout/fragment_favorites.xml`): eight tiles laid out as four columns of two,
-each with the same proportions as the half cards in the home page's fourth column.
+The charging points page lists the stations nearest to the car, taken from the
+[Open Charge Map](https://openchargemap.org) registry, and opens a full screen with
+a map when tapped.
+
+On the card itself:
+
+- The **gear** chooses which network the card lists: everything nearby, the
+  motorway network, Superchargers open to non-Tesla vehicles, or fast DC. The
+  choice is remembered.
+- The **refresh** button reads the list again straight away. The card otherwise
+  loads once per visit and never on a timer: Open Charge Map bans callers that
+  poll it.
+
+The full screen adds the same filters as tabs, a list on the left and an
+OpenStreetMap map on the right (through osmdroid — no Play Services, no Google
+Maps API key). Tapping a station highlights it, draws a line from the car and
+shows the distance.
+
+Location comes from Android's own providers. The first fix after a cold start can
+take minutes when the car's own mobile data is off, because assisted GPS rides on
+that connection; the screen keeps looking as long as it is open and says so.
+
+### Sending a destination to the car's navigator
+
+Stations carry a **navigate** action — an arrow on each row, and a button on the
+map once a station is selected. What happens next depends on what the vehicle has:
+
+1. **Cars with the factory navigator.** The destination is handed to the SAIC
+   adapter service over Binder, exactly as the voice assistant does when asked to
+   drive somewhere. The navigator receives the station's name and address and adds
+   it either as a **waypoint on the route in progress** or as a **new destination**,
+   the same choice it offers for any other point of interest.
+2. **Cars without it, but with some map app installed.** The launcher falls back to
+   a standard `geo:` intent, and whichever app handles those opens with the station.
+3. **Neither.** The navigate action is not shown at all, rather than offered and
+   then failing.
+
+**Which cars have the factory navigator**: it ships with the full infotainment
+package — in Europe the MG4 trims that carry it are the higher ones (Luxury,
+Trophy and above); the Standard and Comfort trims have no navigator, and for them
+the fallback above applies. The launcher works this out by asking whether anything
+on the vehicle can accept a destination, not by reading the model: `build.prop`
+identifies the head unit, not the trim, so it cannot answer the question — and
+checking the capability also gets the case of an owner who installed a map app of
+their own.
+
+Verified on a Trophy (R71 firmware) with the European Telenav navigator. The iGO
+and SAIC navigators shipped in other markets are recognised as well, but have not
+been tested.
+
+## Shortcuts page (optional)
+
+A grid of eight tiles laid out as four columns of two, each with the same
+proportions as the half cards in the home page's fourth column.
 
 - **Tap** a tile to launch its app. An empty tile opens the app picker.
 - **Long-press** a filled tile to *change* the app or *remove* it, leaving the tile
   empty again.
 
+The page is **off unless you turn it on** in *Settings → Features*: eight tiles are
+more than most people fill, and every app is one tap away on the *All apps* button
+anyway. Installations that already had shortcuts assigned keep the page when they
+update.
+
 These eight slots are stored separately from the three home cards, so assigning an
 app here never disturbs the home page.
 
-## Third screen (system info)
+## Settings
 
-Swipe right once more to reach the system-info page (`SystemInfoFragment` /
-`res/layout/fragment_system.xml`). It shows live, permission-free stats that refresh
-while the page is visible:
+Reached from the button on the charging points page:
 
-- **Device**: manufacturer + model, Android version (release · API), uptime, and the
-  installed launcher version.
-- **Memory**: used / total RAM.
-- **Storage**: free / total internal storage.
-- **Network**: active connection type (Wi-Fi / mobile / Ethernet / offline) and, on
-  Wi-Fi, the negotiated link speed.
+- **Launch page**: which of the pages the launcher opens on.
+- **Features**: the shortcuts page, whether to look for updates at launch, and the
+  beta channel.
+- **Updates**: the installed version, and a manual check.
+- **System**: the technical details, and the diagnostics log.
+
+### Updates
+
+The launcher checks a small manifest on the author's server and, when a newer build
+exists, offers to download and install it. Android asks for permission to install
+unknown apps the first time.
+
+Joining the **beta channel** brings pre-release builds. Leaving it is not immediate:
+Android will not install an older stable build over a newer beta, so a car stays on
+the beta until a stable release overtakes it.
+
+### Technical details
+
+A screen of live, permission-free readings: device model, Android version and
+uptime, the installed launcher build, memory, storage, and the active network with
+its Wi-Fi link speed.
+
+### Diagnostics log
+
+An on-device log, with a crash handler behind it. A head unit cannot be reached
+over adb, so when something goes wrong in the car this is the only way to find out
+what: it records what the launcher was doing, why a download or a position lookup
+failed, and the stack trace of a crash. It can be copied to the clipboard and
+cleared.
 
 ## Screenshots
 
 <p align="center">
-  <img width="320" height="180" alt="ezgif-295db3ba8dbf70b5" src="https://github.com/user-attachments/assets/7a3e3bb3-c81e-41d8-ad17-c9b56d28c359" />
+  <img width="320" height="180" alt="MG4 Simple Launcher in use" src="https://github.com/user-attachments/assets/7a3e3bb3-c81e-41d8-ad17-c9b56d28c359" />
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/Screenshot_1782141845.png" alt="MG4 Simple Launcher — home screen" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/home.png" alt="Home: three favourite cards, all apps and the two fixed shortcuts" width="800" />
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/Screenshot_1782141854.png" alt="MG4 Simple Launcher — system info screen" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/charging.png" alt="Charging points: the nearest stations of the chosen network" width="800" />
+</p>
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/map.png" alt="Charging points map: filters, list and the car position over OpenStreetMap" width="800" />
+</p>
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/shortcuts.png" alt="Shortcuts page: eight assignable tiles, shown empty" width="800" />
+</p>
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/settings.png" alt="Settings: launch page, features, updates and the system screens" width="800" />
 </p>
 
 ## Videoguida in italiano
@@ -110,6 +205,16 @@ The debug APK is produced under `app/build/outputs/apk/debug/`.
 Studio releases bundle a JBR newer than that, so set *Settings → Build Tools →
 Gradle → Gradle JDK* (or `JAVA_HOME` on the command line) to a JDK 17 or 21.
 
+**Open Charge Map key**: the charging features need an API key, read from a
+git-ignored `apikeys.properties` at the project root:
+
+```
+OCM_API_KEY=your-key-here
+```
+
+Without it the launcher builds and runs; the charging card simply says the data is
+unavailable.
+
 ## Disclaimer (English)
 
 This project is provided **for study and educational purposes only**. It is an
@@ -123,6 +228,14 @@ vehicle, its infotainment system, software, or data, loss of functionality, or
 safety-related consequences — arising from the installation or use of this app.
 You use it entirely **at your own risk**. Do not interact with the app while
 driving.
+
+### Vehicle interfaces
+
+Sending a destination to the factory navigator, and reading anything the vehicle
+knows about itself, go through private SAIC system services that are not a
+published API. They were worked out by reading the firmware that is already on the
+car. They can stop working at any time, and every failure path in the launcher is
+built to fall back quietly rather than break.
 
 ### Graphic resources
 
@@ -140,6 +253,10 @@ their own responsibility.
 
 The same applies to trademarks and brand names, used here descriptively only.
 
+Charging point data comes from [Open Charge Map](https://openchargemap.org) and is
+used under its terms; the attribution stays visible wherever results are shown.
+Map tiles come from OpenStreetMap contributors.
+
 ## Avvertenze (Italiano)
 
 Questo progetto è fornito **esclusivamente a scopo di studio ed educativo**. È un
@@ -153,6 +270,19 @@ esemplificativo, danni al veicolo, al sistema di infotainment, al software o ai
 dati, perdita di funzionalità o conseguenze relative alla sicurezza — derivante
 dall'installazione o dall'uso di questa app. L'utilizzo avviene interamente **a
 proprio rischio**. Non interagire con l'app durante la guida.
+
+### Interfacce del veicolo
+
+L'invio di una destinazione al navigatore di serie, e la lettura dei dati che
+l'auto conosce di sé, passano da servizi di sistema SAIC privati, che non sono
+un'API pubblica: sono stati ricavati leggendo il firmware già presente sul veicolo.
+Possono smettere di funzionare in qualsiasi momento, e ogni percorso di errore del
+launcher è costruito per ripiegare in silenzio anziché rompersi.
+
+Il tasto di invio al navigatore compare solo sulle vetture che hanno qualcosa in
+grado di accettare una destinazione: il navigatore di serie, presente sugli
+allestimenti con infotainment completo (Luxury, Trophy e superiori) e non sulle
+versioni Standard e Comfort, oppure un'app di mappe installata dal proprietario.
 
 ### Risorse grafiche
 
@@ -169,3 +299,8 @@ approvazione o affiliazione. Chi ridistribuisce questo progetto, o vi costruisce
 sopra, lo fa sotto la propria responsabilità.
 
 Lo stesso vale per marchi e nomi commerciali, qui usati a soli fini descrittivi.
+
+I dati dei punti di ricarica provengono da
+[Open Charge Map](https://openchargemap.org) e sono usati secondo i suoi termini;
+l'attribuzione resta visibile ovunque i risultati vengano mostrati. Le mappe sono
+di OpenStreetMap e dei suoi contributori.
