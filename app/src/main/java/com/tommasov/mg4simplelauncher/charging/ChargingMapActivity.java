@@ -54,6 +54,12 @@ public class ChargingMapActivity extends AppCompatActivity
         implements ChargePointAdapter.Listener {
 
     private static final String TAG_DIAG = "Charging";
+    /**
+     * Which network to open on, as a {@link ChargingFilter} name. The card sends the one it
+     * is showing, so tapping a list of Superchargers opens a map of Superchargers rather
+     * than throwing the driver back to everything nearby.
+     */
+    public static final String EXTRA_FILTER = "filter";
     private static final int REQUEST_LOCATION = 1;
     private static final int MAX_RESULTS = 40;
     private static final double DEFAULT_ZOOM = 11.0;
@@ -140,6 +146,10 @@ public class ChargingMapActivity extends AppCompatActivity
         });
 
         RadioGroup filters = findViewById(R.id.charging_filters);
+        filter = filterFrom(getIntent());
+        // Checked before the listener is attached: check() fires it, and the load it would
+        // start here would race the one that follows the position lookup.
+        filters.check(buttonFor(filter));
         filters.setOnCheckedChangeListener((group, checkedId) -> {
             filter = filterFor(checkedId);
             // Each filter is a different query, not a different view of the same results.
@@ -151,6 +161,34 @@ public class ChargingMapActivity extends AppCompatActivity
             return;
         }
         requestLocationThenLoad();
+    }
+
+    /** The filter the caller asked for, or everything nearby when it did not ask. */
+    @NonNull
+    private static ChargingFilter filterFrom(@NonNull Intent intent) {
+        String name = intent.getStringExtra(EXTRA_FILTER);
+        if (name != null) {
+            try {
+                return ChargingFilter.valueOf(name);
+            } catch (IllegalArgumentException ignored) {
+                // Sent by a build that knew a filter this one does not.
+            }
+        }
+        return ChargingFilter.ALL;
+    }
+
+    /** The tab that stands for a filter: the inverse of {@link #filterFor(int)}. */
+    private static int buttonFor(@NonNull ChargingFilter filter) {
+        switch (filter) {
+            case MOTORWAY:
+                return R.id.filter_motorway;
+            case SUPERCHARGER:
+                return R.id.filter_supercharger;
+            case FAST:
+                return R.id.filter_fast;
+            default:
+                return R.id.filter_all;
+        }
     }
 
     private static ChargingFilter filterFor(int checkedId) {

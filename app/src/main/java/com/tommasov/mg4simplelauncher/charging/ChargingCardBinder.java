@@ -74,7 +74,12 @@ public class ChargingCardBinder {
         card.setOnClickListener(v -> {
             Context context = v.getContext();
             // The full screen owns the permission prompt, so the card never has to ask.
-            context.startActivity(new Intent(context, ChargingMapActivity.class));
+            // It opens on the network the card is showing: the tap is a request to see more
+            // of what is on the card, not to start the search over.
+            Intent intent = new Intent(context, ChargingMapActivity.class)
+                    .putExtra(ChargingMapActivity.EXTRA_FILTER,
+                            new PreferencesManager(context).getChargingCardFilter().name());
+            context.startActivity(intent);
         });
         page.findViewById(R.id.charging_card_refresh).setOnClickListener(v -> reload());
         page.findViewById(R.id.charging_card_options).setOnClickListener(v -> chooseNetwork());
