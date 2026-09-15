@@ -177,6 +177,10 @@
 
                     <include
                         layout="@layout/part_settings_toggle"
+                        android:id="@+id/toggle_six_tile_home" />
+
+                    <include
+                        layout="@layout/part_settings_toggle"
                         android:id="@+id/toggle_update_on_launch" />
 
                     <include

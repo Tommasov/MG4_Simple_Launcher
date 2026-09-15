@@ -21,10 +21,15 @@ public class PreferencesManager {
     private static final String KEY_BETA_CHANNEL = "beta_channel";
     private static final String KEY_UPDATE_ON_LAUNCH = "update_on_launch";
     private static final String KEY_CHARGING_FILTER = "charging_card_filter";
+    private static final String KEY_SIX_TILE_HOME = "six_tile_home";
     private static final String KEY_PREFS_VERSION = "prefs_version";
     /** Bumped whenever {@link #migrate()} gains a step. */
     private static final int PREFS_VERSION = 1;
+    /** Favourites on the classic home: three large cards. */
     public static final int FAVORITE_COUNT = 3;
+    /** Favourites on the six-tile home. The first three share their slots with the classic
+     *  arrangement, so switching between the two never moves an app the driver placed. */
+    public static final int FAVORITE_COUNT_SIX = 6;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
     /** Tile count shipped in 1.5, before the grid was resized to half cards. */
@@ -121,6 +126,15 @@ public class PreferencesManager {
 
     public void setChargingCardFilter(@NonNull ChargingFilter filter) {
         prefs.edit().putString(KEY_CHARGING_FILTER, filter.name()).apply();
+    }
+
+    /** Whether the home shows six half tiles instead of three large cards. */
+    public boolean isSixTileHomeEnabled() {
+        return prefs.getBoolean(KEY_SIX_TILE_HOME, false);
+    }
+
+    public void setSixTileHomeEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_SIX_TILE_HOME, enabled).apply();
     }
 
     public boolean isUpdateCheckOnLaunchEnabled() {

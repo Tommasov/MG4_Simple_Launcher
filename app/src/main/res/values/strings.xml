@@ -88,6 +88,8 @@
     <string name="settings_page_charging">Charging points</string>
     <string name="settings_shortcuts_page">Shortcuts page</string>
     <string name="settings_shortcuts_page_hint">Show the shortcuts page in the carousel</string>
+    <string name="settings_six_tile_home">Six-tile home</string>
+    <string name="settings_six_tile_home_hint">Six smaller favourites instead of three large cards</string>
     <string name="settings_updates">Updates</string>
     <string name="settings_update_on_launch">Check at launch</string>
     <string name="settings_update_on_launch_hint">Look for a new version when the launcher starts</string>

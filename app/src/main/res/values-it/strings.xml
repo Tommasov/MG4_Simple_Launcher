@@ -89,6 +89,8 @@
     <string name="settings_page_charging">Punti di ricarica</string>
     <string name="settings_shortcuts_page">Pagina scorciatoie</string>
     <string name="settings_shortcuts_page_hint">Mostra la pagina delle scorciatoie nel carosello</string>
+    <string name="settings_six_tile_home">Home a sei tessere</string>
+    <string name="settings_six_tile_home_hint">Sei preferiti più piccoli invece di tre card grandi</string>
     <string name="settings_updates">Aggiornamenti</string>
     <string name="settings_update_on_launch">Cerca all’avvio</string>
     <string name="settings_update_on_launch_hint">Cerca una nuova versione all’avvio del launcher</string>

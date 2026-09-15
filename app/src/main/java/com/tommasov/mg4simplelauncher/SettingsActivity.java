@@ -47,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         bindHomePage();
         bindFeatures();
+        bindSixTileHome();
         bindUpdateOnLaunch();
         bindBetaChannel();
         bindUpdates();
@@ -79,6 +80,14 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     updateShortcutsOptionVisibility(checked);
                 });
+    }
+
+    private void bindSixTileHome() {
+        bindToggle(R.id.toggle_six_tile_home,
+                R.string.settings_six_tile_home,
+                R.string.settings_six_tile_home_hint,
+                preferences.isSixTileHomeEnabled(),
+                preferences::setSixTileHomeEnabled);
     }
 
     private void bindUpdateOnLaunch() {

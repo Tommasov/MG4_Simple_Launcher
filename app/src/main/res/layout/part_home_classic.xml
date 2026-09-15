@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Home, classic arrangement: three large cards and the fourth column. One app per card,
+     read at a glance, which is what a driver wants from the page the launcher opens on. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:padding="@dimen/screen_padding">
+
+    <LinearLayout
+        android:id="@+id/card_fav_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_1"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <!-- Favorite 2 -->
+    <LinearLayout
+        android:id="@+id/card_fav_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_2"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <!-- Favorite 3 -->
+    <LinearLayout
+        android:id="@+id/card_fav_3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:background="@drawable/bigcard_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_fav_3"
+            android:layout_width="@dimen/favorite_icon_size"
+            android:layout_height="@dimen/favorite_icon_size"
+            android:contentDescription="@string/add_favorite" />
+
+        <TextView
+            android:id="@+id/label_fav_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_favorite"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/favorite_label_size" />
+    </LinearLayout>
+
+    <include
+        layout="@layout/part_home_fourth_column"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>

@@ -89,6 +89,8 @@
     <string name="settings_page_charging">Puntos de recarga</string>
     <string name="settings_shortcuts_page">Página de accesos</string>
     <string name="settings_shortcuts_page_hint">Mostrar la página de accesos en el carrusel</string>
+    <string name="settings_six_tile_home">Inicio de seis</string>
+    <string name="settings_six_tile_home_hint">Seis favoritos más pequeños en vez de tres tarjetas grandes</string>
     <string name="settings_updates">Actualizaciones</string>
     <string name="settings_update_on_launch">Buscar al inicio</string>
     <string name="settings_update_on_launch_hint">Buscar una versión nueva al arrancar el launcher</string>

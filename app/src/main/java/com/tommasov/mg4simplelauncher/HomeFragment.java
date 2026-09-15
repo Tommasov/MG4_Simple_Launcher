@@ -27,6 +27,19 @@ public class HomeFragment extends Fragment {
     private static final String PKG_FILES = "com.android.documentsui";
 
     private PreferencesManager preferencesManager;
+    /** Which arrangement is currently on screen, so a change in settings can be noticed. */
+    private boolean sixTiles;
+
+    /** Layout ids by slot. The first three are shared by both arrangements. */
+    private static final int[] CARD_IDS = {
+            R.id.card_fav_1, R.id.card_fav_2, R.id.card_fav_3,
+            R.id.card_fav_4, R.id.card_fav_5, R.id.card_fav_6};
+    private static final int[] ICON_IDS = {
+            R.id.icon_fav_1, R.id.icon_fav_2, R.id.icon_fav_3,
+            R.id.icon_fav_4, R.id.icon_fav_5, R.id.icon_fav_6};
+    private static final int[] LABEL_IDS = {
+            R.id.label_fav_1, R.id.label_fav_2, R.id.label_fav_3,
+            R.id.label_fav_4, R.id.label_fav_5, R.id.label_fav_6};
 
     private View[] favoriteCards;
     private ImageView[] favoriteIcons;
@@ -44,23 +57,37 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         preferencesManager = new PreferencesManager(requireContext());
+        inflateArrangement(preferencesManager.isSixTileHomeEnabled());
+    }
 
-        favoriteCards = new View[]{
-                view.findViewById(R.id.card_fav_1),
-                view.findViewById(R.id.card_fav_2),
-                view.findViewById(R.id.card_fav_3)};
-        favoriteIcons = new ImageView[]{
-                view.findViewById(R.id.icon_fav_1),
-                view.findViewById(R.id.icon_fav_2),
-                view.findViewById(R.id.icon_fav_3)};
-        favoriteLabels = new TextView[]{
-                view.findViewById(R.id.label_fav_1),
-                view.findViewById(R.id.label_fav_2),
-                view.findViewById(R.id.label_fav_3)};
+    /**
+     * Puts one of the two arrangements into the page and wires it up.
+     *
+     * <p>The favourites are either three large cards or six half tiles, and the choice is a
+     * setting the driver can change while this page sits in the background. Swapping the
+     * contents of the frame is enough: rebuilding the carousel page would be heavier and
+     * would lose the scroll position of the pages either side.
+     */
+    private void inflateArrangement(boolean sixTiles) {
+        ViewGroup container = requireView().findViewById(R.id.home_container);
+        container.removeAllViews();
+        LayoutInflater.from(requireContext()).inflate(
+                sixTiles ? R.layout.part_home_six : R.layout.part_home_classic, container, true);
+        this.sixTiles = sixTiles;
 
-        for (int i = 0; i < PreferencesManager.FAVORITE_COUNT; i++) {
+        int count = sixTiles
+                ? PreferencesManager.FAVORITE_COUNT_SIX
+                : PreferencesManager.FAVORITE_COUNT;
+        favoriteCards = new View[count];
+        favoriteIcons = new ImageView[count];
+        favoriteLabels = new TextView[count];
+        for (int i = 0; i < count; i++) {
+            // Ids run from 1 in the layouts, slots from 0 in storage.
+            favoriteCards[i] = container.findViewById(CARD_IDS[i]);
+            favoriteIcons[i] = container.findViewById(ICON_IDS[i]);
+            favoriteLabels[i] = container.findViewById(LABEL_IDS[i]);
+
             final int slot = i;
             favoriteCards[i].setOnClickListener(v -> onFavoriteClick(slot));
             favoriteCards[i].setOnLongClickListener(v -> {
@@ -69,21 +96,33 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        view.findViewById(R.id.card_all_apps).setOnClickListener(
+        container.findViewById(R.id.card_all_apps).setOnClickListener(
                 v -> openDrawer(AppDrawerActivity.MODE_ALL, -1));
 
         // Two fixed shortcuts to the Android 9 default Settings and Files apps.
-        settingsIcon = view.findViewById(R.id.icon_settings);
-        filesIcon = view.findViewById(R.id.icon_files);
+        settingsIcon = container.findViewById(R.id.icon_settings);
+        filesIcon = container.findViewById(R.id.icon_files);
         settingsIcon.setOnClickListener(v -> launch(PKG_SETTINGS));
         filesIcon.setOnClickListener(v -> launch(PKG_FILES));
+
+        bindAll();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // A favorite may have been (re)assigned in the picker, so rebind every time.
-        for (int i = 0; i < PreferencesManager.FAVORITE_COUNT; i++) {
+        // The arrangement can have been changed in settings while this page was in the
+        // background; rebuilding it here is the only moment the driver cannot see.
+        if (preferencesManager.isSixTileHomeEnabled() != sixTiles) {
+            inflateArrangement(!sixTiles);
+            return;
+        }
+        bindAll();
+    }
+
+    /** Rebinds everything: a favourite may have been assigned, or an app installed. */
+    private void bindAll() {
+        for (int i = 0; i < favoriteCards.length; i++) {
             bindFavorite(i);
         }
         // Re-resolve the fixed shortcut icons too, in case a target app was installed/updated.

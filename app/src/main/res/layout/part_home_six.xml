@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Home, six-tile arrangement: the same three columns the large cards occupy, counted as
+     halves. Nothing new is invented — a half card is already the unit of the fourth column
+     and of the shortcuts page, so these tiles wear the clothes the launcher already owns.
+
+     Slots are numbered down each column (1/4, 2/5, 3/6) so the first three land where the
+     three large cards were: switching arrangements leaves your apps where you left them. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:padding="@dimen/screen_padding">
+
+    <!-- Column 1: slots 1 / 4 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/card_fav_1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_1"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_fav_4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_4"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Column 2: slots 2 / 5 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/card_fav_2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_2"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_fav_5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_5"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Column 3: slots 3 / 6 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/card_gap"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/card_fav_3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/card_gap"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_3"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_fav_6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/smallcard_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/icon_fav_6"
+                android:layout_width="@dimen/grid_icon_size"
+                android:layout_height="@dimen/grid_icon_size"
+                android:contentDescription="@string/add_favorite" />
+
+            <TextView
+                android:id="@+id/label_fav_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/grid_label_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        layout="@layout/part_home_fourth_column"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>

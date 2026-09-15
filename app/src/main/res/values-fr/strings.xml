@@ -89,6 +89,8 @@
     <string name="settings_page_charging">Points de recharge</string>
     <string name="settings_shortcuts_page">Page des raccourcis</string>
     <string name="settings_shortcuts_page_hint">Afficher la page des raccourcis dans le carrousel</string>
+    <string name="settings_six_tile_home">Accueil à six</string>
+    <string name="settings_six_tile_home_hint">Six favoris plus petits au lieu de trois grandes cartes</string>
     <string name="settings_updates">Mises à jour</string>
     <string name="settings_update_on_launch">Au démarrage</string>
     <string name="settings_update_on_launch_hint">Chercher une nouvelle version au lancement</string>

@@ -89,6 +89,8 @@
     <string name="settings_page_charging">Ladepunkte</string>
     <string name="settings_shortcuts_page">Verknüpfungsseite</string>
     <string name="settings_shortcuts_page_hint">Die Verknüpfungsseite im Karussell anzeigen</string>
+    <string name="settings_six_tile_home">Sechs Kacheln</string>
+    <string name="settings_six_tile_home_hint">Sechs kleinere Favoriten statt drei großer Karten</string>
     <string name="settings_updates">Updates</string>
     <string name="settings_update_on_launch">Suche beim Start</string>
     <string name="settings_update_on_launch_hint">Beim Start des Launchers nach einer neuen Version suchen</string>
