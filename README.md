@@ -16,6 +16,10 @@ fits visually with the system, while providing a minimal, focused home screen.
   and you choose which page the launcher opens on.
 - **Three favorite cards** (home): three vertical cards, each launching one app of
   your choice. Tap a card to open its app; **long-press** to assign or change it.
+- **Six-tile home** (optional): the same three columns counted as halves, for six
+  smaller favourites instead of three large cards. The first three keep their slots,
+  so switching arrangements leaves your apps where you left them. **Off by default**
+  — turn it on in Settings.
 - **Fourth column** (home):
   - **All apps** (top card): every launchable app, in a grid.
   - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
@@ -143,8 +147,8 @@ app here never disturbs the home page.
 Reached from the button on the charging points page:
 
 - **Launch page**: which of the pages the launcher opens on.
-- **Features**: the shortcuts page, whether to look for updates at launch, and the
-  beta channel.
+- **Features**: the shortcuts page, the six-tile home, whether to look for updates
+  at launch, and the beta channel.
 - **Updates**: the installed version, and a manual check.
 - **System**: the technical details, and the diagnostics log.
 
