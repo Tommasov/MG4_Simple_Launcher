@@ -14,6 +14,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
+
 import java.io.File;
 
 /** Downloads the APK with the system {@link DownloadManager} and reports progress. */
@@ -75,6 +77,9 @@ public class ApkDownloader {
 
         registerCompleteReceiver();
         downloadId = downloadManager.enqueue(request);
+        DiagnosticsLog.log(appContext, TAG, "downloading " + info.apkUrl + " to "
+                + targetFile.getAbsolutePath() + ", free space "
+                + (dir.getUsableSpace() / (1024 * 1024)) + " MB");
         startPolling();
     }
 
@@ -143,15 +148,27 @@ public class ApkDownloader {
         unregisterReceiver();
 
         if (status == DownloadManager.STATUS_SUCCESSFUL && targetFile.exists()) {
+            DiagnosticsLog.log(appContext, TAG, "downloaded " + targetFile.length() + " bytes");
             callback.onProgress(100);
             callback.onComplete(targetFile);
         } else {
-            fail("download status=" + status + " reason=" + reason);
+            // Both halves matter: a successful status with no file at the expected path means
+            // DownloadManager renamed it — it appends a suffix rather than overwriting — while
+            // a failed status carries a reason code worth reading (1006 is out of space, 1004
+            // a truncated transfer, 1009 the destination already existing).
+            fail("download status=" + status + " reason=" + reason
+                    + ", file " + (targetFile.exists() ? "present" : "missing")
+                    + ", free space " + (targetFile.getParentFile() == null ? -1
+                            : targetFile.getParentFile().getUsableSpace() / (1024 * 1024))
+                    + " MB");
         }
     }
 
     private void fail(@NonNull String reason) {
         Log.w(TAG, reason);
+        // The car has no adb: without this line the driver sees "download failed" and we
+        // never learn why.
+        DiagnosticsLog.log(appContext, TAG, "failed: " + reason);
         stopPolling();
         unregisterReceiver();
         callback.onFailed(reason);
