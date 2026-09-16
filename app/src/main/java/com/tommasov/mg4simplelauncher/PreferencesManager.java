@@ -18,7 +18,6 @@ public class PreferencesManager {
     private static final String KEY_FAVORITE_PREFIX = "favorite_";
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
     private static final String KEY_DOCK_PREFIX = "dock_";
-    private static final String KEY_DATA_CYCLE_DAY = "data_cycle_day";
     private static final String KEY_BATTERY_KWH = "battery_kwh";
     private static final String KEY_HOME_PAGE = "home_page";
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
@@ -158,18 +157,6 @@ public class PreferencesManager {
     /** Puts a slot back to its factory app. */
     public void clearDockShortcut(int slot) {
         prefs.edit().remove(KEY_DOCK_PREFIX + slot).apply();
-    }
-
-    /**
-     * Day of the month MG's data allowance renews. Defaults to the first: most people do not
-     * know theirs until they look at a bill, and a wrong guess is visibly wrong on the gauge.
-     */
-    public int getDataCycleDay() {
-        return prefs.getInt(KEY_DATA_CYCLE_DAY, 1);
-    }
-
-    public void setDataCycleDay(int day) {
-        prefs.edit().putInt(KEY_DATA_CYCLE_DAY, day).apply();
     }
 
     /** The batteries this generation of MG4 was sold with, in usable kWh. */

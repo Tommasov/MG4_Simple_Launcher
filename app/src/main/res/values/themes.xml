@@ -9,8 +9,18 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
-    <!-- Drawer sits on a translucent scrim over the home wallpaper. -->
+    <!-- The drawer wears the home's own background rather than a flat colour of its own.
+
+         It used to be a grey we picked (#1e1f22 at night), and next to the home it read as a
+         different shade: the home is not flat, it is the SAIC artwork with a gentle gradient
+         around #2d2e2e, and no single value matches it everywhere. Using the same drawable
+         makes them the same surface by construction, which is what "all apps" should feel
+         like — the home with its icons spread out, not a panel floating over it.
+
+         For reference, the stock side dock is #f2f2f2 by day and #1c1c1c at night
+         (SystemUI's dockbar_bg_color): darker than the home, so matching it here would have
+         moved the drawer further from the page it opens over, not closer. -->
     <style name="Theme.MG4SimpleLauncher.Drawer" parent="Theme.MG4SimpleLauncher">
-        <item name="android:windowBackground">@color/drawer_background</item>
+        <item name="android:windowBackground">@drawable/bg_home</item>
     </style>
 </resources>

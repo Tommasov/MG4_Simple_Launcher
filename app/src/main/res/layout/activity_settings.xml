@@ -271,41 +271,6 @@
                 android:text="@string/settings_battery_hint"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/secondary_text_size" />
-
-            <LinearLayout
-                android:id="@+id/settings_cycle_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/icon_press_selector"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/data_cycle_day"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/charge_item_title_size" />
-
-                <TextView
-                    android:id="@+id/settings_cycle_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/charge_item_title_size" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_cycle_hint"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
         </LinearLayout>
 
         <!-- The launcher itself: which version is installed, whether a newer one exists, and

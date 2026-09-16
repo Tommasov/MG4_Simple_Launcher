@@ -3,7 +3,6 @@ package com.tommasov.mg4simplelauncher;
 import android.app.ActivityManager;
 import android.app.usage.StorageStatsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -24,8 +23,6 @@ import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,7 +58,6 @@ class TechnicalDetails {
     private final Map<String, TextView> values = new LinkedHashMap<>();
     /** The technology reading is explained to the log once, not every three seconds. */
     private boolean technologyExplained;
-    private ProgressBar gauge;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -108,45 +104,6 @@ class TechnicalDetails {
         row(middle, "technology", R.string.net_technology);
         row(middle, "signal", R.string.net_signal);
         row(middle, "roaming", R.string.net_roaming);
-
-        heading(right, R.string.data_usage);
-        row(right, "data", R.string.data_this_cycle);
-        right.addView(buildGauge());
-        row(right, "cycle", R.string.data_cycle_day);
-        // Both rows lead somewhere: one to Android's permission screen, one to the day the
-        // allowance renews. Nothing else on this screen is touchable, so they say so by
-        // doing something when touched rather than by looking like buttons.
-        clickable("data", v -> onDataRowTapped());
-        clickable("cycle", v -> {
-            if (DataUsage.hasUsageAccess(context)) {
-                chooseCycleDay();
-            } else {
-                onDataRowTapped();
-            }
-        });
-    }
-
-    /** The bar under the figure: a gauge is read faster than "412 MB of 1.0 GB". */
-    private View buildGauge() {
-        gauge = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
-        gauge.setMax(100);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(10));
-        params.topMargin = dp(12);
-        params.bottomMargin = dp(4);
-        gauge.setLayoutParams(params);
-        return gauge;
-    }
-
-    /** Makes the row holding {@code key} react to a touch, label and value together. */
-    private void clickable(@NonNull String key, @NonNull View.OnClickListener listener) {
-        TextView value = values.get(key);
-        if (value == null || !(value.getParent() instanceof View)) {
-            return;
-        }
-        View row = (View) value.getParent();
-        row.setOnClickListener(listener);
-        row.setBackgroundResource(R.drawable.icon_press_selector);
     }
 
     private void heading(@NonNull LinearLayout column, @StringRes int titleRes) {
@@ -230,7 +187,6 @@ class TechnicalDetails {
             bindStorage();
             bindNetwork();
             bindCellular();
-            bindData();
         } catch (Exception ignored) {
             // Keep the last good values until the next tick.
         }
@@ -387,103 +343,6 @@ class TechnicalDetails {
         } catch (Exception e) {
             set("roaming", null);
         }
-    }
-
-    /**
-     * Mobile data used against MG's included gigabyte.
-     *
-     * <p>Says which figure it is showing. A total for the cycle is what the driver wants; the
-     * since-boot fallback is labelled as such, because presenting it as a month's usage would
-     * be worse than showing nothing — it would read as "plenty left" on a car that restarts
-     * several times a day.
-     */
-    private void bindData() {
-        int cycleDay = new PreferencesManager(context).getDataCycleDay();
-        boolean allowed = DataUsage.hasUsageAccess(context);
-        DataUsage.Reading reading = DataUsage.read(context, cycleDay);
-
-        TextView label = labelOf("data");
-        if (label != null) {
-            label.setText(reading.source == DataUsage.Source.CYCLE
-                    ? R.string.data_this_cycle : R.string.data_since_boot);
-        }
-        set("data", context.getString(R.string.data_of,
-                formatBytes(reading.bytes), formatBytes(DataUsage.ALLOWANCE_BYTES)));
-        gauge.setProgress((int) Math.min(100,
-                reading.bytes * 100 / DataUsage.ALLOWANCE_BYTES));
-
-        // The second row carries whichever of the two things is worth saying. With usage
-        // access granted, when the allowance renews; without it, the way to get the real
-        // figure — which otherwise never gets offered, because the since-boot fallback
-        // always has some bytes in it and looks like an answer.
-        TextView cycleLabel = labelOf("cycle");
-        if (allowed) {
-            if (cycleLabel != null) {
-                cycleLabel.setText(R.string.data_cycle_day);
-            }
-            // The day alone. A full date here was both noise and wrong: it printed the day
-            // the current cycle started, under a label promising the next renewal, when the
-            // only fact that matters is which day of the month the allowance comes back.
-            set("cycle", String.valueOf(cycleDay));
-        } else {
-            if (cycleLabel != null) {
-                // Named after what granting it buys, not after the permission.
-                cycleLabel.setText(R.string.data_this_cycle);
-            }
-            set("cycle", context.getString(R.string.data_allow));
-        }
-    }
-
-    /** Opens Android's usage-access screen, where the driver grants (or refuses) the reading. */
-    private void onDataRowTapped() {
-        if (DataUsage.hasUsageAccess(context)) {
-            return;
-        }
-        try {
-            context.startActivity(DataUsage.usageAccessSettings()
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        } catch (Exception e) {
-            Dialogs.toast(context, R.string.data_allow_hint, Toast.LENGTH_LONG);
-        }
-    }
-
-    /** Which day of the month the allowance renews: MG does not start everyone's on the 1st. */
-    private void chooseCycleDay() {
-        PreferencesManager preferences = new PreferencesManager(context);
-        CharSequence[] days = new CharSequence[31];
-        for (int i = 0; i < days.length; i++) {
-            days[i] = String.valueOf(i + 1);
-        }
-        Dialogs.builder(context)
-                .setTitle(R.string.data_cycle_day_title)
-                .setSingleChoiceItems(days, preferences.getDataCycleDay() - 1,
-                        (dialog, which) -> {
-                            preferences.setDataCycleDay(which + 1);
-                            dialog.dismiss();
-                            refresh();
-                        })
-                .show();
-    }
-
-    @Nullable
-    private TextView labelOf(@NonNull String key) {
-        TextView value = values.get(key);
-        if (value == null || !(value.getParent() instanceof LinearLayout)) {
-            return null;
-        }
-        View first = ((LinearLayout) value.getParent()).getChildAt(0);
-        return first instanceof TextView ? (TextView) first : null;
-    }
-
-    /** "412 MB", "1.4 GB", "1 GB" — no decimals where they say nothing. */
-    private static String formatBytes(long bytes) {
-        double mb = bytes / (1024d * 1024d);
-        if (mb < 1024) {
-            return String.format(Locale.getDefault(), "%.0f MB", mb);
-        }
-        double gb = mb / 1024d;
-        return String.format(Locale.getDefault(),
-                gb == Math.floor(gb) ? "%.0f GB" : "%.1f GB", gb);
     }
 
     /**

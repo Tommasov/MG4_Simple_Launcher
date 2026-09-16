@@ -44,14 +44,6 @@
     <string name="net_technology">Tecnología</string>
     <string name="net_signal">Señal</string>
     <string name="net_roaming">Roaming</string>
-    <string name="data_usage">Datos móviles</string>
-    <string name="data_this_cycle">Este ciclo</string>
-    <string name="data_since_boot">Desde el arranque</string>
-    <string name="data_cycle_day">Se renueva el</string>
-    <string name="data_cycle_day_title">Día de renovación</string>
-    <string name="data_allow">Toca para permitir</string>
-    <string name="data_allow_hint">Android debe conceder el acceso de uso para leer el total mensual</string>
-    <string name="data_of">%1$s de %2$s</string>
     <string name="net_sim">SIM</string>
     <string name="sys_unknown">—</string>
     <string name="yes">Sí</string>
@@ -102,7 +94,6 @@
     <string name="settings_battery">Batería</string>
     <string name="settings_vehicle">Vehículo</string>
     <string name="settings_battery_hint">Necesaria para estimar la carga al llegar</string>
-    <string name="settings_cycle_hint">Día en que se renuevan los datos de MG</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimación para la ruta del navegador</string>
     <string name="trip_title">Viaje</string>

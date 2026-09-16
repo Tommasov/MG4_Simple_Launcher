@@ -49,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
         bindFeatures();
         bindSixTileHome();
         bindBattery();
-        bindDataCycle();
         bindUpdateOnLaunch();
         bindBetaChannel();
         bindUpdates();
@@ -110,27 +109,6 @@ public class SettingsActivity extends AppCompatActivity {
                         value.setText(getString(R.string.settings_battery_kwh, sizes[which]));
                         dialog.dismiss();
                     })
-                    .show();
-        });
-    }
-
-    /** Which day of the month MG's data allowance comes back. */
-    private void bindDataCycle() {
-        TextView value = findViewById(R.id.settings_cycle_value);
-        value.setText(String.valueOf(preferences.getDataCycleDay()));
-        findViewById(R.id.settings_cycle_row).setOnClickListener(v -> {
-            CharSequence[] days = new CharSequence[31];
-            for (int i = 0; i < days.length; i++) {
-                days[i] = String.valueOf(i + 1);
-            }
-            Dialogs.builder(this)
-                    .setTitle(R.string.data_cycle_day_title)
-                    .setSingleChoiceItems(days, preferences.getDataCycleDay() - 1,
-                            (dialog, which) -> {
-                                preferences.setDataCycleDay(which + 1);
-                                value.setText(String.valueOf(which + 1));
-                                dialog.dismiss();
-                            })
                     .show();
         });
     }
