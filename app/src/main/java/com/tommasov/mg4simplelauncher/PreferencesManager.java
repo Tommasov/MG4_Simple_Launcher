@@ -159,8 +159,25 @@ public class PreferencesManager {
         prefs.edit().remove(KEY_DOCK_PREFIX + slot).apply();
     }
 
-    /** The batteries this generation of MG4 was sold with, in usable kWh. */
+    /**
+     * The batteries this generation of MG4 was sold with, by the name on the spec sheet.
+     *
+     * <p>These are the gross figures the car is sold under, which is what an owner recognises
+     * — a driver looking for their own pack finds "64 kWh", not "61.7". Some later Standard
+     * Range builds are quoted at 49 kWh: that is the same pack measured as usable rather than
+     * gross, so it belongs to the 51 entry and does not need one of its own.
+     */
     public static final int[] BATTERY_SIZES = {51, 64, 77};
+
+    /**
+     * What is actually in there, in kWh, for each of the above.
+     *
+     * <p>A pack never gives up all of its nameplate: the BMS keeps a buffer at both ends. On
+     * these three it is 50.8, 61.7 and 74.4, so using the gross figure would inflate the
+     * available energy by three to four percent — and inflate the arrival estimate with it,
+     * in the optimistic direction that the whole feature exists to avoid.
+     */
+    private static final double[] BATTERY_USABLE_KWH = {50.8, 61.7, 74.4};
 
     /**
      * Usable battery capacity, needed to turn "kWh per 100 km" into kilometres. The car does
@@ -173,6 +190,21 @@ public class PreferencesManager {
 
     public void setBatteryCapacityKwh(int kwh) {
         prefs.edit().putInt(KEY_BATTERY_KWH, kwh).apply();
+    }
+
+    /**
+     * Usable energy of the chosen pack, which is what every calculation wants. Falls back to
+     * the nameplate figure for a value this build does not know, which is still closer than
+     * refusing to answer.
+     */
+    public double getUsableBatteryKwh() {
+        int chosen = getBatteryCapacityKwh();
+        for (int i = 0; i < BATTERY_SIZES.length; i++) {
+            if (BATTERY_SIZES[i] == chosen) {
+                return BATTERY_USABLE_KWH[i];
+            }
+        }
+        return chosen;
     }
 
     public boolean isSixTileHomeEnabled() {

@@ -93,7 +93,7 @@
     <string name="charging_note_separator">· Charge à l\'arrivée estimée</string>
     <string name="settings_battery">Batterie</string>
     <string name="settings_vehicle">Véhicule</string>
-    <string name="settings_battery_hint">Nécessaire pour estimer la charge à l\'arrivée</string>
+    <string name="settings_battery_hint">Nécessaire pour estimer la charge à l\'arrivée — choisissez la taille de votre fiche</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimation pour l\'itinéraire du GPS</string>
     <string name="trip_title">Trajet</string>

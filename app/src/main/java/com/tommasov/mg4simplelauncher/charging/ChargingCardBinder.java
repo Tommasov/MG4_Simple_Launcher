@@ -239,7 +239,7 @@ public class ChargingCardBinder {
                 if (arrival == null) {
                     return;
                 }
-                int kwh = new PreferencesManager(context).getBatteryCapacityKwh();
+                double kwh = new PreferencesManager(context).getUsableBatteryKwh();
                 arrival = arrival.onRoute(trip, kwh);
                 showTrip(trip);
                 redraw();

@@ -93,7 +93,7 @@
     <string name="charging_note_separator">· Carica all\'arrivo stimata</string>
     <string name="settings_battery">Batteria</string>
     <string name="settings_vehicle">Vettura</string>
-    <string name="settings_battery_hint">Serve per stimare la carica all\'arrivo</string>
+    <string name="settings_battery_hint">Serve per stimare la carica all\'arrivo — scegli la taglia del tuo libretto</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Stima sul percorso nel navigatore</string>
     <string name="trip_title">Viaggio</string>

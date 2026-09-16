@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -84,39 +85,34 @@ public class SettingsActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Which battery this car has. Asked rather than detected because no adapter call reports
-     * it, and without it the launcher cannot turn a consumption figure into kilometres — the
-     * whole correction for the route ahead rests on this one number.
-     */
     /** The beta mark, on only while the driver is actually on that channel. */
     private void bindBetaBadge() {
         findViewById(R.id.settings_beta_badge).setVisibility(
                 preferences.isBetaChannelEnabled() ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * Which battery this car has. Asked rather than detected because no adapter call reports
+     * it, and without it the launcher cannot turn a consumption figure into kilometres — the
+     * whole correction for the route ahead rests on this one number.
+     */
     private void bindBattery() {
-        TextView value = findViewById(R.id.settings_battery_value);
-        value.setText(getString(R.string.settings_battery_kwh,
-                preferences.getBatteryCapacityKwh()));
-        findViewById(R.id.settings_battery_row).setOnClickListener(v -> {
-            int[] sizes = PreferencesManager.BATTERY_SIZES;
-            CharSequence[] labels = new CharSequence[sizes.length];
-            int current = 0;
-            for (int i = 0; i < sizes.length; i++) {
-                labels[i] = getString(R.string.settings_battery_kwh, sizes[i]);
-                if (sizes[i] == preferences.getBatteryCapacityKwh()) {
-                    current = i;
+        int[] sizes = PreferencesManager.BATTERY_SIZES;
+        int[] ids = {R.id.battery_51, R.id.battery_64, R.id.battery_77};
+        RadioGroup group = findViewById(R.id.settings_battery_group);
+        for (int i = 0; i < ids.length && i < sizes.length; i++) {
+            RadioButton button = findViewById(ids[i]);
+            button.setText(getString(R.string.settings_battery_kwh, sizes[i]));
+            if (sizes[i] == preferences.getBatteryCapacityKwh()) {
+                group.check(ids[i]);
+            }
+        }
+        group.setOnCheckedChangeListener((g, checkedId) -> {
+            for (int i = 0; i < ids.length && i < sizes.length; i++) {
+                if (ids[i] == checkedId) {
+                    preferences.setBatteryCapacityKwh(sizes[i]);
                 }
             }
-            Dialogs.builder(this)
-                    .setTitle(R.string.settings_battery)
-                    .setSingleChoiceItems(labels, current, (dialog, which) -> {
-                        preferences.setBatteryCapacityKwh(sizes[which]);
-                        value.setText(getString(R.string.settings_battery_kwh, sizes[which]));
-                        dialog.dismiss();
-                    })
-                    .show();
         });
     }
 

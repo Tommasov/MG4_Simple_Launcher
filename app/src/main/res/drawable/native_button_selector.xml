@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Native-style tonal button, mirroring the SAIC launcher's rounded surfaces
-     (pressed/normal selector + rounded-rect shape, no Material chrome). -->
+     (pressed/normal selector + rounded-rect shape, no Material chrome).
+
+     The fill is a tint of the text colour, so it inverts with the theme: a dark wash on the
+     light background, a light one on the dark. The hairline outline exists for the dark theme
+     alone — a 12% wash over charcoal is nearly invisible, and without an edge the button
+     stops looking like something you can press. In the light theme the same colour is
+     transparent, so nothing changes there. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/native_button_radius" />
             <solid android:color="@color/button_surface_pressed" />
+            <stroke android:width="1dp" android:color="@color/button_border" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/native_button_radius" />
             <solid android:color="@color/button_surface" />
+            <stroke android:width="1dp" android:color="@color/button_border" />
         </shape>
     </item>
 </selector>

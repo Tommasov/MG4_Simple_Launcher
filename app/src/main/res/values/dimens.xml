@@ -46,6 +46,9 @@
     <dimen name="filter_tab_text_size">18sp</dimen>
     <dimen name="settings_tab_text_size">28sp</dimen>
     <dimen name="settings_tab_height">72dp</dimen>
+    <!-- A row that navigates. Shorter than a choice: it carries a line of text and an arrow,
+         not a state, and three of them have to fit under the version summary. -->
+    <dimen name="settings_action_height">76dp</dimen>
     <!-- The card artwork paints its own shadow, and it stretches with the view: on a
          full-width card the left edge alone eats about 48dp, far more than the 24dp used
          on the narrow cards. These keep the text on the card face instead of the shadow. -->

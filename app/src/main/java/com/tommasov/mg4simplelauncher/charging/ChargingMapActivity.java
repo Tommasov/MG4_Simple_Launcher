@@ -352,7 +352,7 @@ public class ChargingMapActivity extends AppCompatActivity
                 }
                 ArrivalCharge onRoute = estimate.onRoute(
                         trip, new PreferencesManager(ChargingMapActivity.this)
-                                .getBatteryCapacityKwh());
+                                .getUsableBatteryKwh());
                 adapter.setArrivalCharge(onRoute);
                 TextView note = findViewById(R.id.charging_arrival_note);
                 note.setText(onRoute.isRouteCorrected()

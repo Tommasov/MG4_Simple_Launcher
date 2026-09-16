@@ -93,7 +93,7 @@
     <string name="charging_note_separator">· La carga al llegar es una estimación</string>
     <string name="settings_battery">Batería</string>
     <string name="settings_vehicle">Vehículo</string>
-    <string name="settings_battery_hint">Necesaria para estimar la carga al llegar</string>
+    <string name="settings_battery_hint">Necesaria para estimar la carga al llegar — elige el tamaño de tu ficha</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimación para la ruta del navegador</string>
     <string name="trip_title">Viaje</string>

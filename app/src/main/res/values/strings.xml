@@ -92,7 +92,7 @@
     <string name="charging_note_separator">· Arrival charge is an estimate</string>
     <string name="settings_battery">Battery</string>
     <string name="settings_vehicle">Vehicle</string>
-    <string name="settings_battery_hint">Needed to estimate charge on arrival</string>
+    <string name="settings_battery_hint">Needed to estimate charge on arrival — pick the size on your spec sheet</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimate for the route in the navigator</string>
     <string name="trip_title">Journey</string>

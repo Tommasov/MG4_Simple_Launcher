@@ -97,13 +97,16 @@
                 android:id="@+id/settings_home_page_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@drawable/bg_choice_group"
+                android:divider="@drawable/choice_divider"
+                android:orientation="vertical"
+                android:showDividers="middle">
 
                 <RadioButton
                     android:id="@+id/home_page_main"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_tab_height"
-                    android:background="@drawable/filter_tab_selector"
+                    android:background="@drawable/choice_item_selector"
                     android:button="@null"
                     android:checked="true"
                     android:ellipsize="end"
@@ -120,8 +123,7 @@
                     android:id="@+id/home_page_shortcuts"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_tab_height"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/filter_tab_selector"
+                    android:background="@drawable/choice_item_selector"
                     android:button="@null"
                     android:ellipsize="end"
                     android:gravity="center"
@@ -137,8 +139,7 @@
                     android:id="@+id/home_page_system"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_tab_height"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/filter_tab_selector"
+                    android:background="@drawable/choice_item_selector"
                     android:button="@null"
                     android:ellipsize="end"
                     android:gravity="center"
@@ -238,39 +239,70 @@
                 android:layout_marginBottom="12dp"
                 android:background="@color/hairline" />
 
-            <LinearLayout
-                android:id="@+id/settings_battery_row"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_press_selector"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/settings_battery"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/charge_item_title_size" />
-
-                <TextView
-                    android:id="@+id/settings_battery_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/charge_item_title_size" />
-            </LinearLayout>
+                android:text="@string/settings_battery"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/charge_item_title_size" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:text="@string/settings_battery_hint"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/secondary_text_size" />
+
+            <!-- Three sizes, three buttons, the way the launch page picks its page. A list
+                 of three is not worth a dialogue: the choice is visible, the current one is
+                 marked, and the column no longer holds a single line adrift in empty space. -->
+            <RadioGroup
+                android:id="@+id/settings_battery_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_choice_group"
+                android:divider="@drawable/choice_divider"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <RadioButton
+                    android:id="@+id/battery_51"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_tab_height"
+                    android:background="@drawable/choice_item_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/filter_tab_text"
+                    android:textSize="@dimen/settings_tab_text_size" />
+
+                <RadioButton
+                    android:id="@+id/battery_64"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_tab_height"
+                    android:background="@drawable/choice_item_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/filter_tab_text"
+                    android:textSize="@dimen/settings_tab_text_size" />
+
+                <RadioButton
+                    android:id="@+id/battery_77"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_tab_height"
+                    android:background="@drawable/choice_item_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/filter_tab_text"
+                    android:textSize="@dimen/settings_tab_text_size" />
+            </RadioGroup>
         </LinearLayout>
 
         <!-- The launcher itself: which version is installed, whether a newer one exists, and
@@ -345,43 +377,100 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
 
-            <TextView
+            <!-- Actions, not choices: each one leaves this screen. A row with an arrow
+                 says that before the label is read, and it keeps the filled surfaces in this
+                 screen meaning one thing only — the option currently in force. -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/hairline" />
+
+            <LinearLayout
                 android:id="@+id/settings_open_technical"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_tab_height"
-                android:background="@drawable/native_button_selector"
+                android:layout_height="@dimen/settings_action_height"
+                android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
-                android:text="@string/sys_technical"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/drawer_button_size" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sys_technical"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/hairline" />
+
+            <LinearLayout
                 android:id="@+id/settings_check_updates"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_tab_height"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/native_button_selector"
+                android:layout_height="@dimen/settings_action_height"
+                android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
-                android:text="@string/update_check_action"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/drawer_button_size" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/update_check_action"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/hairline" />
+
+            <LinearLayout
                 android:id="@+id/settings_open_diagnostics"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_tab_height"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/native_button_selector"
+                android:layout_height="@dimen/settings_action_height"
+                android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
-                android:text="@string/diagnostics_open"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/drawer_button_size" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/diagnostics_open"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/hairline" />
+</LinearLayout>
     </LinearLayout>
 </LinearLayout>
