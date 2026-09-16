@@ -1,13 +1,18 @@
 package com.tommasov.mg4simplelauncher.charging;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tommasov.mg4simplelauncher.R;
@@ -33,6 +38,9 @@ public class ChargePointAdapter
     private final boolean showNavigate;
     /** Id of the row matching the highlighted map pin; -1 when nothing is selected. */
     private long selectedId = -1;
+    /** Null until the car answers, and on trims that never will. */
+    @Nullable
+    private ArrivalCharge arrival;
 
     public ChargePointAdapter(@NonNull Listener listener, boolean showNavigate) {
         this.listener = listener;
@@ -47,6 +55,15 @@ public class ChargePointAdapter
     }
 
     /** Lights the row for {@code point} so list and map agree on what is selected. */
+    /**
+     * Supplies (or withdraws) the estimate of charge left on arrival. The list is built from
+     * Open Charge Map before the car has answered, so this lands afterwards and redraws.
+     */
+    public void setArrivalCharge(@Nullable ArrivalCharge estimate) {
+        this.arrival = estimate;
+        notifyDataSetChanged();
+    }
+
     public void setSelected(@NonNull ChargePoint point) {
         if (selectedId == point.id) {
             return;
@@ -79,6 +96,8 @@ public class ChargePointAdapter
                         .getString(R.string.charging_power_kw, point.maxPowerKw)
                 : "");
 
+        bindArrival(holder.arrival, point);
+
         holder.navigate.setVisibility(showNavigate ? View.VISIBLE : View.GONE);
         holder.itemView.setActivated(point.id == selectedId);
         holder.itemView.setOnClickListener(v -> listener.onSelect(point));
@@ -88,6 +107,39 @@ public class ChargePointAdapter
     @Override
     public int getItemCount() {
         return points.size();
+    }
+
+    /**
+     * Charge expected on arrival, when both the car and Open Charge Map have supplied their
+     * half of it. Colour carries the warning: the number alone is easy to read past on a
+     * screen the driver glances at.
+     */
+    private void bindArrival(@NonNull TextView view, @NonNull ChargePoint point) {
+        if (arrival == null || !point.hasDistance()) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+        int percent = arrival.percentOnArrival(point.distanceKm);
+        Context context = view.getContext();
+        int colour = ContextCompat.getColor(context, colourFor(percent));
+        view.setText(context.getString(R.string.charging_arrival_percent, percent));
+        view.setTextColor(colour);
+        // The glyph is a compound drawable, so it needs tinting alongside the text rather
+        // than inheriting the colour the way a child ImageView would.
+        TextViewCompat.setCompoundDrawableTintList(view, ColorStateList.valueOf(colour));
+        view.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Thresholds, not a gradient: 15% is roughly the point at which an MG4 driver starts
+     * planning the next stop, and 5% is where the car itself begins to nag.
+     */
+    @ColorRes
+    static int colourFor(int percent) {
+        if (percent <= 5) {
+            return R.color.charge_none;
+        }
+        return percent <= 15 ? R.color.charge_low : R.color.text_secondary;
     }
 
     /**
@@ -110,6 +162,7 @@ public class ChargePointAdapter
         final TextView title;
         final TextView operator;
         final TextView distance;
+        final TextView arrival;
         final TextView power;
         final ImageView navigate;
 
@@ -118,6 +171,7 @@ public class ChargePointAdapter
             title = itemView.findViewById(R.id.charge_title);
             operator = itemView.findViewById(R.id.charge_operator);
             distance = itemView.findViewById(R.id.charge_distance);
+            arrival = itemView.findViewById(R.id.charge_arrival);
             power = itemView.findViewById(R.id.charge_power);
             navigate = itemView.findViewById(R.id.charge_navigate);
         }

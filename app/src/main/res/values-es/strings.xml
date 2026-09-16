@@ -67,6 +67,13 @@
     <string name="charging_error">No se han podido cargar los puntos de recarga</string>
     <string name="charging_distance_km">%1$.1f km</string>
     <string name="charging_power_kw">%1$.0f kW</string>
+    <!-- Estimated state of charge on arrival at a station. -->
+    <string name="charging_arrival_percent">%1$d%%</string>
+    <string name="charging_arrival_summary">%1$d%% al llegar</string>
+    <string name="charging_arrival_note">La carga al llegar es una estimación</string>
+    <!-- The same note with the separator that divides it from the
+         attribution on the card, where the two share a line. -->
+    <string name="charging_note_separator">· La carga al llegar es una estimación</string>
     <string name="charging_access_membership">Socios</string>
     <string name="charging_access_notice">Con aviso</string>
     <string name="charging_access_private">Privada</string>

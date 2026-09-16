@@ -109,6 +109,7 @@
     <dimen name="charge_glyph_height">21dp</dimen>
     <dimen name="charge_glyph_width_bolt">12dp</dimen>
     <dimen name="charge_glyph_width_lock">16dp</dimen>
+    <dimen name="charge_glyph_width_battery">13dp</dimen>
 
     <!-- Downloads list: three lines of text beside a button, so a touch taller than the
          charging rows, which carry two. -->

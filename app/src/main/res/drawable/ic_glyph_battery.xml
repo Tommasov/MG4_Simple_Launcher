@@ -1,0 +1,27 @@
+<!-- Arrival-charge glyph. Drawn to the same recipe as the bolt and the padlock it sits with:
+     21dp tall, same weight, tinted by the view rather than coloured here, so the row can turn
+     it amber or red with the number it belongs to.
+
+     An outline with a low fill rather than a solid silhouette: the shape has to read as
+     "how much is left", not as "battery", at a glance from a driving position. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="13dp"
+    android:height="21dp"
+    android:viewportWidth="13"
+    android:viewportHeight="21"
+    android:tint="@color/text_secondary">
+    <!-- Terminal. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4.5 0h4v2.5h-4z" />
+    <!-- Case. -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M2.25 3.25h8.5a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1 -1.5 1.5h-8.5a1.5 1.5 0 0 1 -1.5 -1.5v-14a1.5 1.5 0 0 1 1.5 -1.5z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" />
+    <!-- Charge left. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M2.75 11h7.5v7.25a1 1 0 0 1 -1 1h-5.5a1 1 0 0 1 -1 -1z" />
+</vector>

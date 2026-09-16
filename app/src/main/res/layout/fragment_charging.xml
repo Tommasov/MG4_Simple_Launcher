@@ -90,12 +90,30 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/info_card_body_size" />
 
-            <TextView
+            <!-- Attribution, and the caveat on the arrival figures next to it: the same
+                 quiet line the driver already skips, which is where a caveat belongs. -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/charging_attribution"
-                android:textColor="@color/text_tertiary"
-                android:textSize="@dimen/secondary_text_size" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/charging_attribution"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <TextView
+                    android:id="@+id/charging_arrival_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/charging_note_separator"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="@dimen/secondary_text_size"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Both act on the card: reload it now, and choose what it lists. -->

@@ -41,6 +41,26 @@
             android:id="@+id/summary_extras"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <!-- Charge left on arrival, last on the line: it is the only figure here that
+             depends on the car rather than on the station, and it is what decides whether
+             the rest of the row is worth reading. Hidden when the car has not answered. -->
+        <ImageView
+            android:id="@+id/summary_arrival_icon"
+            android:layout_width="@dimen/charge_glyph_width_battery"
+            android:layout_height="@dimen/charge_glyph_height"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_glyph_battery"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/summary_arrival"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/charge_detail_size"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

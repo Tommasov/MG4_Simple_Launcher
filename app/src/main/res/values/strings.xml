@@ -66,6 +66,13 @@
     <string name="charging_error">Unable to load charging points</string>
     <string name="charging_distance_km">%1$.1f km</string>
     <string name="charging_power_kw">%1$.0f kW</string>
+    <!-- Estimated state of charge on arrival at a station. -->
+    <string name="charging_arrival_percent">%1$d%%</string>
+    <string name="charging_arrival_summary">%1$d%% on arrival</string>
+    <string name="charging_arrival_note">Arrival charge is an estimate</string>
+    <!-- The same note with the separator that divides it from the
+         attribution on the card, where the two share a line. -->
+    <string name="charging_note_separator">· Arrival charge is an estimate</string>
     <string name="charging_access_membership">Members</string>
     <string name="charging_access_notice">By arrangement</string>
     <string name="charging_access_private">Private</string>

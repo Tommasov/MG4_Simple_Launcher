@@ -28,6 +28,7 @@ import com.tommasov.mg4simplelauncher.AppLauncher;
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.R;
+import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
@@ -304,10 +305,39 @@ public class ChargingMapActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Asks the car for charge and range so the rows can say what is left on arrival.
+     *
+     * <p>Taken once per search rather than followed live: the figure moves slowly compared
+     * with the list it annotates, and a station that reads 40% on arrival does not become a
+     * different decision a kilometre later. The vehicle marker follows the driver; this does
+     * not need to.
+     */
+    private void readVehicle() {
+        VehicleData.read(this, new VehicleData.Callback() {
+            @Override
+            public void onState(@NonNull VehicleData.State state) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                ArrivalCharge estimate = ArrivalCharge.from(state);
+                adapter.setArrivalCharge(estimate);
+                findViewById(R.id.charging_arrival_note)
+                        .setVisibility(estimate == null ? View.GONE : View.VISIBLE);
+            }
+
+            @Override
+            public void onUnavailable() {
+                // Trim without the adapter service: the rows stay as they were.
+            }
+        });
+    }
+
     private void load() {
         if (origin == null || !OpenChargeMapClient.hasApiKey()) {
             return;
         }
+        readVehicle();
         showStatus(R.string.charging_loading);
         client.nearby(origin.getLatitude(), origin.getLongitude(), filter, MAX_RESULTS,
                 new OpenChargeMapClient.Callback() {

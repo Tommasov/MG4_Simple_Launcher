@@ -8,6 +8,11 @@
     <color name="accent">#056eff</color>
     <color name="accent_pressed">#0455cc</color>
     <color name="scrim">#66000000</color>
+
+    <!-- Arrival charge: comfortable, thin, out of reach. Muted on purpose — these sit in a
+         list the driver scans, and a saturated red row would shout over the station names. -->
+    <color name="charge_low">#b26a00</color>
+    <color name="charge_none">#b3261e</color>
     <color name="drawer_background">#f2ffffff</color>
 
     <!-- Tonal surface for the native-style drawer buttons (tints of text_primary). -->

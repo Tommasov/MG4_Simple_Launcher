@@ -160,6 +160,19 @@
             android:text="@string/charging_attribution"
             android:textColor="@color/text_tertiary"
             android:textSize="@dimen/secondary_text_size" />
+
+        <!-- Shown only once the car has supplied a reading: without one there are no
+             estimates on screen for it to qualify. -->
+        <TextView
+            android:id="@+id/charging_arrival_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="@dimen/charge_list_inset"
+            android:text="@string/charging_arrival_note"
+            android:textColor="@color/text_tertiary"
+            android:textSize="@dimen/secondary_text_size"
+            android:visibility="gone" />
     </LinearLayout>
 
     <!-- Right: the map, with the navigation action floating over it once a point is picked -->

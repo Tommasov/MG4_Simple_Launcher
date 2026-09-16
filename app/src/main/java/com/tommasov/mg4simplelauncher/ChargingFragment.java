@@ -48,8 +48,16 @@ public class ChargingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Deliberately not on a ticker: Open Charge Map bans callers that poll it.
-        chargingCard.loadOnce();
+        // Never on a ticker: Open Charge Map bans callers that poll it. The card follows the
+        // car instead, and searches again only once it has travelled far enough to matter.
+        chargingCard.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Swiped away: no reason to keep the receiver running for a page nobody is looking at.
+        chargingCard.stop();
     }
 
     @Override

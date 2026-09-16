@@ -75,6 +75,20 @@
             android:textColor="@color/accent"
             android:textSize="@dimen/secondary_text_size"
             android:textStyle="bold" />
+
+        <!-- Charge left on arrival. Hidden unless the car supplies range and state of
+             charge, so on a trim without the adapter the row looks exactly as before. -->
+        <TextView
+            android:id="@+id/charge_arrival"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_glyph_battery"
+            android:gravity="center_vertical"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/secondary_text_size"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView
