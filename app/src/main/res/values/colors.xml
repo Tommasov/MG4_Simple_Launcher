@@ -6,6 +6,13 @@
     <!-- Dimmed tone the SAIC tab bar uses for unselected tabs. -->
     <color name="text_tertiary">#503c4143</color>
     <color name="accent">#056eff</color>
+
+    <!-- The beta channel mark. Acid lime, chosen because nothing else in this launcher is
+         anywhere near it: the SAIC palette is greys, a blue accent and two warning tones, so
+         a driver who sees this knows at a glance they are not on the stable build. Dark text
+         goes on top; the pill carries the colour. -->
+    <color name="beta_badge">#c6ff00</color>
+    <color name="beta_badge_text">#1a1a1a</color>
     <color name="accent_pressed">#0455cc</color>
     <color name="scrim">#66000000</color>
 

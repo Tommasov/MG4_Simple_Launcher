@@ -49,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         bindFeatures();
         bindSixTileHome();
         bindBattery();
+        bindBetaBadge();
         bindUpdateOnLaunch();
         bindBetaChannel();
         bindUpdates();
@@ -88,6 +89,12 @@ public class SettingsActivity extends AppCompatActivity {
      * it, and without it the launcher cannot turn a consumption figure into kilometres — the
      * whole correction for the route ahead rests on this one number.
      */
+    /** The beta mark, on only while the driver is actually on that channel. */
+    private void bindBetaBadge() {
+        findViewById(R.id.settings_beta_badge).setVisibility(
+                preferences.isBetaChannelEnabled() ? View.VISIBLE : View.GONE);
+    }
+
     private void bindBattery() {
         TextView value = findViewById(R.id.settings_battery_value);
         value.setText(getString(R.string.settings_battery_kwh,
@@ -137,6 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
                 checked -> {
                     if (!checked) {
                         preferences.setBetaChannelEnabled(false);
+                        bindBetaBadge();
                         return;
                     }
                     // Warn on the way in, never on the way out: joining is what has a
@@ -145,8 +153,12 @@ public class SettingsActivity extends AppCompatActivity {
                     Dialogs.builder(this)
                             .setTitle(R.string.beta_channel_title)
                             .setMessage(R.string.beta_channel_warning)
-                            .setPositiveButton(R.string.beta_channel_join,
-                                    (dialog, which) -> preferences.setBetaChannelEnabled(true))
+                            .setPositiveButton(R.string.beta_channel_join, (dialog, which) -> {
+                                preferences.setBetaChannelEnabled(true);
+                                // The mark follows the switch at once: leaving it until the
+                                // screen is reopened would make the driver doubt the toggle.
+                                bindBetaBadge();
+                            })
                             .setNegativeButton(R.string.update_action_later,
                                     (dialog, which) -> revertToggle(R.id.toggle_beta_channel))
                             .setOnCancelListener(

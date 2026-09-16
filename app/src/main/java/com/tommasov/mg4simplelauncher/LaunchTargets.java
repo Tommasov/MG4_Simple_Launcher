@@ -166,26 +166,35 @@ public final class LaunchTargets {
      * actually has.
      *
      * <p>Only exported and enabled activities are listed — the rest would refuse to start
-     * anyway — and packages that already appear in the app drawer are left out, since those
-     * are apps and belong in the other list.
+     * anyway — and the ones that already have an icon in the drawer are left out, since those
+     * are apps and belong in the other list. Their siblings are not: an app with an icon can
+     * still hold screens worth reaching directly.
      */
     @NonNull
     public static List<ActivityTarget> vehicleScreens(@NonNull Context context) {
         PackageManager pm = context.getPackageManager();
-        Set<String> launchable = new HashSet<>();
+        // The activities that already have an icon in the drawer, named one by one.
+        Set<String> inDrawer = new HashSet<>();
         Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
         for (ResolveInfo ri : pm.queryIntentActivities(launcher, 0)) {
-            launchable.add(ri.activityInfo.packageName);
+            inDrawer.add(ri.activityInfo.packageName + "/" + ri.activityInfo.name);
         }
 
         List<ActivityTarget> screens = new ArrayList<>();
         for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_ACTIVITIES)) {
-            if (info.activities == null || !looksLikeVehicle(info.packageName)
-                    || launchable.contains(info.packageName)) {
+            if (info.activities == null || !looksLikeVehicle(info.packageName)) {
                 continue;
             }
             for (ActivityInfo activity : info.activities) {
                 if (!activity.exported || !activity.enabled) {
+                    continue;
+                }
+                // Skipped one activity at a time, not one package at a time. Dropping the
+                // whole package because it appears in the drawer also dropped everything
+                // else inside it: on this car that hid the charging management screen of
+                // com.saicmotor.hmi.vehiclesettings behind the fact that the app it belongs
+                // to has an icon — and that screen is the most useful of the lot.
+                if (inDrawer.contains(activity.packageName + "/" + activity.name)) {
                     continue;
                 }
                 screens.add(new ActivityTarget(

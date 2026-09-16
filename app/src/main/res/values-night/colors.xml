@@ -4,8 +4,14 @@
     <color name="text_primary">#f2f5f7</color>
     <color name="text_secondary">#99ffffff</color>
     <color name="text_tertiary">#52ffffff</color>
-    <color name="accent">#056eff</color>
-    <color name="accent_pressed">#0455cc</color>
+    <!-- The day-time blue is SAIC's own (#056eff, the launcher's carplay button), and on the
+         night background it falls to 3:1 against text that should read at 4.5:1 — it looks
+         muddy rather than bright. The constructor solves it the same way in its own dark
+         theme: vehiclesettings keeps charging_mode_color at #4b8fff by day and lifts it to
+         #b2cfff at night. This sits between the two, at 6.2:1, bright enough to read at a
+         glance without turning the accent into a highlighter. -->
+    <color name="accent">#7fb0ff</color>
+    <color name="accent_pressed">#5d95e6</color>
     <color name="scrim">#99000000</color>
     <color name="drawer_background">#f21e1f22</color>
 </resources>

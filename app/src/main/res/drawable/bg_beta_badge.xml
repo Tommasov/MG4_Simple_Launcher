@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Behind the BETA mark. A filled pill with dark text on it, rather than coloured text:
+     a fluorescent colour has to sit on something to stay legible, and the same pill works on
+     both the light and the dark background without a second palette. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/beta_badge" />
+    <corners android:radius="6dp" />
+</shape>

@@ -129,6 +129,7 @@
     <string name="settings_update_on_launch">Buscar al inicio</string>
     <string name="settings_update_on_launch_hint">Buscar una versión nueva al arrancar el launcher</string>
     <string name="settings_version">Instalada: %1$s (%2$d)</string>
+    <string name="beta_badge">BETA</string>
     <string name="settings_features">Funciones</string>
     <!-- Beta release channel -->
     <string name="beta_channel_title">Canal beta</string>

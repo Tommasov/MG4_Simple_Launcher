@@ -55,6 +55,10 @@
     <!-- Stack traces, not prose: small and dense beats legible-at-a-glance. -->
     <dimen name="diagnostics_text_size">16sp</dimen>
     <dimen name="settings_toggle_height">88dp</dimen>
+    <!-- Between one switchable feature and the next. Without it the hint of one row sat
+         against the title of the one below, and the column read as a wall of text rather
+         than as four separate things. -->
+    <dimen name="settings_toggle_gap">18dp</dimen>
     <!-- Charging card backdrop. The bolt never fills the box it is given — no scaleType
          nor a background drawable made it do so — so these numbers were tuned by eye on the
          head-unit emulator rather than derived. The two margins differ because the card
