@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -23,8 +24,12 @@ import androidx.fragment.app.Fragment;
 public class HomeFragment extends Fragment {
 
     // Android 9 default Settings and Files packages, launched by the two fixed shortcuts.
-    private static final String PKG_SETTINGS = "com.android.settings";
-    private static final String PKG_FILES = "com.android.documentsui";
+    /**
+     * What the two small slots hold until the driver says otherwise. Files first, Settings
+     * second, reading left to right as they always have.
+     */
+    private static final String[] DOCK_DEFAULTS = {
+            "com.android.documentsui", "com.android.settings"};
 
     private PreferencesManager preferencesManager;
     /** Which arrangement is currently on screen, so a change in settings can be noticed. */
@@ -44,8 +49,8 @@ public class HomeFragment extends Fragment {
     private View[] favoriteCards;
     private ImageView[] favoriteIcons;
     private TextView[] favoriteLabels;
-    private ImageView settingsIcon;
-    private ImageView filesIcon;
+    /** The two small shortcuts under "All apps": index 0 on the left, 1 on the right. */
+    private final ImageView[] dockIcons = new ImageView[PreferencesManager.DOCK_COUNT];
 
     @Nullable
     @Override
@@ -100,10 +105,16 @@ public class HomeFragment extends Fragment {
                 v -> openDrawer(AppDrawerActivity.MODE_ALL, -1));
 
         // Two fixed shortcuts to the Android 9 default Settings and Files apps.
-        settingsIcon = container.findViewById(R.id.icon_settings);
-        filesIcon = container.findViewById(R.id.icon_files);
-        settingsIcon.setOnClickListener(v -> launch(PKG_SETTINGS));
-        filesIcon.setOnClickListener(v -> launch(PKG_FILES));
+        dockIcons[0] = container.findViewById(R.id.icon_files);
+        dockIcons[1] = container.findViewById(R.id.icon_settings);
+        for (int i = 0; i < dockIcons.length; i++) {
+            final int slot = i;
+            dockIcons[i].setOnClickListener(v -> launch(dockPackage(slot)));
+            dockIcons[i].setOnLongClickListener(v -> {
+                onDockLongClick(slot);
+                return true;
+            });
+        }
 
         bindAll();
     }
@@ -126,8 +137,9 @@ public class HomeFragment extends Fragment {
             bindFavorite(i);
         }
         // Re-resolve the fixed shortcut icons too, in case a target app was installed/updated.
-        bindFixedApp(settingsIcon, PKG_SETTINGS);
-        bindFixedApp(filesIcon, PKG_FILES);
+        for (int i = 0; i < dockIcons.length; i++) {
+            bindFixedApp(dockIcons[i], dockPackage(i));
+        }
     }
 
     private void bindFavorite(int slot) {
@@ -163,6 +175,39 @@ public class HomeFragment extends Fragment {
     }
 
     /** Shows the app's launcher icon, or a placeholder if it isn't installed on this build. */
+    /**
+     * Long-press on one of the two small slots. Untouched, it goes straight to the picker,
+     * the way the favourite cards do; once the driver has put something of their own there,
+     * it offers the way back as well — these are the only slots with a factory app to return
+     * to, and without this the only route back to Settings would be to remember its name in
+     * a list of forty.
+     */
+    private void onDockLongClick(int slot) {
+        if (preferencesManager.getDockShortcut(slot) == null) {
+            openDrawer(AppDrawerActivity.MODE_PICK, slot, AppDrawerActivity.TARGET_DOCK);
+            return;
+        }
+        new AlertDialog.Builder(requireContext())
+                .setItems(new CharSequence[]{
+                        getString(R.string.grid_slot_change),
+                        getString(R.string.dock_slot_reset)}, (dialog, which) -> {
+                    if (which == 0) {
+                        openDrawer(AppDrawerActivity.MODE_PICK, slot,
+                                AppDrawerActivity.TARGET_DOCK);
+                    } else {
+                        preferencesManager.clearDockShortcut(slot);
+                        bindFixedApp(dockIcons[slot], dockPackage(slot));
+                    }
+                })
+                .show();
+    }
+
+    /** The driver's choice for one of the two small slots, or the factory app. */
+    private String dockPackage(int slot) {
+        String chosen = preferencesManager.getDockShortcut(slot);
+        return chosen != null ? chosen : DOCK_DEFAULTS[slot];
+    }
+
     private void bindFixedApp(ImageView view, String pkg) {
         Drawable icon = AppIcons.highRes(requireContext(), pkg);
         if (icon != null) {
@@ -179,9 +224,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void openDrawer(String mode, int slot) {
+        openDrawer(mode, slot, AppDrawerActivity.TARGET_HOME);
+    }
+
+    private void openDrawer(String mode, int slot, String target) {
         Intent intent = new Intent(requireContext(), AppDrawerActivity.class);
         intent.putExtra(AppDrawerActivity.EXTRA_MODE, mode);
         intent.putExtra(AppDrawerActivity.EXTRA_SLOT, slot);
+        intent.putExtra(AppDrawerActivity.EXTRA_TARGET, target);
         startActivity(intent);
     }
 }

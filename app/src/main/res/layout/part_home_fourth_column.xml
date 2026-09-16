@@ -28,12 +28,15 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Two fixed shortcuts (Files + Settings), icons only, side by side on a single card. -->
+    <!-- The dock: two shortcuts the driver chooses, side by side, with no card behind them.
+         Bare on purpose. Everything else on this page is an app sitting on a card, and these
+         two are not that: they hold their place whichever way the favourites are arranged,
+         three large cards or six small ones. Taking the card away says so without a label —
+         the icons belong to the page rather than to a slot on it. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/smallcard_selector"
         android:gravity="center"
         android:orientation="horizontal">
 

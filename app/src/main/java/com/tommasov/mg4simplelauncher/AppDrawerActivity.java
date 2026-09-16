@@ -41,6 +41,8 @@ public class AppDrawerActivity extends AppCompatActivity {
     public static final String MODE_PICK = "pick";
     public static final String TARGET_HOME = "home";
     public static final String TARGET_GRID = "grid";
+    /** The two small shortcuts under "All apps" on the home page. */
+    public static final String TARGET_DOCK = "dock";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -157,6 +159,8 @@ public class AppDrawerActivity extends AppCompatActivity {
                 PreferencesManager prefs = new PreferencesManager(this);
                 if (TARGET_GRID.equals(target)) {
                     prefs.setGridFavorite(slot, app.packageName);
+                } else if (TARGET_DOCK.equals(target)) {
+                    prefs.setDockShortcut(slot, app.packageName);
                 } else {
                     prefs.setFavorite(slot, app.packageName);
                 }

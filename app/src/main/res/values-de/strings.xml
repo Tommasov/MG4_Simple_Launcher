@@ -14,6 +14,7 @@
     <!-- Dritte Karussellseite: Raster mit zuweisbaren Verknüpfungen -->
     <string name="grid_slot_change">App ändern</string>
     <string name="grid_slot_remove">Entfernen</string>
+    <string name="dock_slot_reset">Standard wiederherstellen</string>
 
     <!-- Zweite Karussellseite: Live-Systeminfos -->
     <string name="sys_technical">Technische Daten</string>

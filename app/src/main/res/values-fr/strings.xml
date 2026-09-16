@@ -14,6 +14,7 @@
     <!-- Troisième page du carrousel : grille de raccourcis attribuables -->
     <string name="grid_slot_change">Changer d\'application</string>
     <string name="grid_slot_remove">Retirer</string>
+    <string name="dock_slot_reset">Rétablir par défaut</string>
 
     <!-- Deuxième page du carrousel : infos système en direct -->
     <string name="sys_technical">Détails techniques</string>

@@ -14,6 +14,7 @@
     <!-- Tercera página del carrusel: cuadrícula de accesos directos asignables -->
     <string name="grid_slot_change">Cambiar app</string>
     <string name="grid_slot_remove">Quitar</string>
+    <string name="dock_slot_reset">Restaurar la predeterminada</string>
 
     <!-- Segunda página del carrusel: info del sistema en vivo -->
     <string name="sys_technical">Detalles técnicos</string>

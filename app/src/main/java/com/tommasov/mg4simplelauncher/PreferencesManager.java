@@ -3,6 +3,7 @@ package com.tommasov.mg4simplelauncher;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tommasov.mg4simplelauncher.charging.ChargingFilter;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ public class PreferencesManager {
     private static final String PREFS_NAME = "mg4_system_launcher";
     private static final String KEY_FAVORITE_PREFIX = "favorite_";
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
+    private static final String KEY_DOCK_PREFIX = "dock_";
     private static final String KEY_HOME_PAGE = "home_page";
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     private static final String KEY_BETA_CHANNEL = "beta_channel";
@@ -32,6 +34,18 @@ public class PreferencesManager {
     public static final int FAVORITE_COUNT_SIX = 6;
     /** Four columns of two half cards, matching the 1920x720 head unit. */
     public static final int GRID_FAVORITE_COUNT = 8;
+
+    /**
+     * The two small shortcuts under "All apps", in both home arrangements.
+     *
+     * <p>They were the Android Files and Settings apps, fixed. That made them the only two
+     * places on the home the driver could not change, and redundant besides: both are one tap
+     * away in the drawer, and can sit on a favourite card or a shortcut tile like anything
+     * else. They keep those two as their factory setting — a launcher set as the home screen
+     * should not bury the way back to Android's settings — but nothing stops the driver from
+     * putting something else there.
+     */
+    public static final int DOCK_COUNT = 2;
     /** Tile count shipped in 1.5, before the grid was resized to half cards. */
     private static final int LEGACY_GRID_FAVORITE_COUNT = 12;
 
@@ -129,6 +143,21 @@ public class PreferencesManager {
     }
 
     /** Whether the home shows six half tiles instead of three large cards. */
+    /** The app in one of the two small slots, or null when the driver has never chosen. */
+    @Nullable
+    public String getDockShortcut(int slot) {
+        return prefs.getString(KEY_DOCK_PREFIX + slot, null);
+    }
+
+    public void setDockShortcut(int slot, @NonNull String packageName) {
+        prefs.edit().putString(KEY_DOCK_PREFIX + slot, packageName).apply();
+    }
+
+    /** Puts a slot back to its factory app. */
+    public void clearDockShortcut(int slot) {
+        prefs.edit().remove(KEY_DOCK_PREFIX + slot).apply();
+    }
+
     public boolean isSixTileHomeEnabled() {
         return prefs.getBoolean(KEY_SIX_TILE_HOME, false);
     }

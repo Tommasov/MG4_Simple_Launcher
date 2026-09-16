@@ -14,6 +14,7 @@
     <!-- Terza pagina del carousel: griglia di scorciatoie assegnabili -->
     <string name="grid_slot_change">Cambia app</string>
     <string name="grid_slot_remove">Rimuovi</string>
+    <string name="dock_slot_reset">Ripristina predefinita</string>
 
     <!-- Seconda pagina del carousel: info di sistema live -->
     <string name="sys_technical">Dettagli tecnici</string>

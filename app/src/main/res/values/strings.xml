@@ -13,6 +13,7 @@
     <!-- Third carousel page: assignable shortcut grid -->
     <string name="grid_slot_change">Change app</string>
     <string name="grid_slot_remove">Remove</string>
+    <string name="dock_slot_reset">Restore default</string>
 
     <!-- Second carousel page: live system info -->
     <string name="sys_technical">Technical details</string>
