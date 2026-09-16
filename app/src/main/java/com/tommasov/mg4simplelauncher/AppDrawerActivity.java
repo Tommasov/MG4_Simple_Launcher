@@ -266,13 +266,13 @@ public class AppDrawerActivity extends AppCompatActivity {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             // Some head-unit builds strip the Settings details screen.
-            Toast.makeText(this, R.string.app_info_unavailable, Toast.LENGTH_SHORT).show();
+            Dialogs.toast(this, R.string.app_info_unavailable, Toast.LENGTH_SHORT);
         }
     }
 
     private void launch(String packageName) {
         if (!AppLauncher.launch(this, packageName)) {
-            Toast.makeText(this, packageName, Toast.LENGTH_SHORT).show();
+            Dialogs.toast(this, packageName, Toast.LENGTH_SHORT);
         }
     }
 

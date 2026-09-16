@@ -168,7 +168,7 @@ public class HomeFragment extends Fragment {
         }
         if (!AppLauncher.launch(requireContext(), pkg)) {
             // Not launchable anymore: let the user reassign the slot.
-            Toast.makeText(requireContext(), pkg, Toast.LENGTH_SHORT).show();
+            Dialogs.toast(requireContext(), pkg, Toast.LENGTH_SHORT);
             openDrawer(AppDrawerActivity.MODE_PICK, slot);
         }
     }
@@ -220,8 +220,7 @@ public class HomeFragment extends Fragment {
         if (!AppLauncher.launch(requireContext(), pkg)) {
             // Names the failure rather than the id: a driver reading "act:com.saic…" learns
             // nothing, and the only useful fact is that this car will not open it.
-            Toast.makeText(requireContext(), R.string.target_unavailable,
-                    Toast.LENGTH_SHORT).show();
+            Dialogs.toast(requireContext(), R.string.target_unavailable, Toast.LENGTH_SHORT);
         }
     }
 

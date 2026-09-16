@@ -246,7 +246,7 @@ public class UpdateManager {
 
     private void toast(int resId) {
         if (!activity.isFinishing()) {
-            Toast.makeText(activity, resId, Toast.LENGTH_SHORT).show();
+            Dialogs.toast(activity, resId, Toast.LENGTH_SHORT);
         }
     }
 }

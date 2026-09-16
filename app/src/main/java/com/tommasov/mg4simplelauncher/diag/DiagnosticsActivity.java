@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
 
 /**
@@ -33,7 +34,7 @@ public class DiagnosticsActivity extends AppCompatActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(
                         ClipData.newPlainText("diagnostics", content.getText()));
-                Toast.makeText(this, R.string.diagnostics_copied, Toast.LENGTH_SHORT).show();
+                Dialogs.toast(this, R.string.diagnostics_copied, Toast.LENGTH_SHORT);
             }
         });
 

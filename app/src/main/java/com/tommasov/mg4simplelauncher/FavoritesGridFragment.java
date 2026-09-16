@@ -156,8 +156,7 @@ public class FavoritesGridFragment extends Fragment {
         }
         if (!AppLauncher.launch(requireContext(), pkg)) {
             // Not launchable anymore: say so plainly and let the user reassign the slot.
-            Toast.makeText(requireContext(), R.string.target_unavailable,
-                    Toast.LENGTH_SHORT).show();
+            Dialogs.toast(requireContext(), R.string.target_unavailable, Toast.LENGTH_SHORT);
             openPicker(slot);
         }
     }

@@ -414,7 +414,7 @@ class TechnicalDetails {
             context.startActivity(DataUsage.usageAccessSettings()
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         } catch (Exception e) {
-            Toast.makeText(context, R.string.data_allow_hint, Toast.LENGTH_LONG).show();
+            Dialogs.toast(context, R.string.data_allow_hint, Toast.LENGTH_LONG);
         }
     }
 

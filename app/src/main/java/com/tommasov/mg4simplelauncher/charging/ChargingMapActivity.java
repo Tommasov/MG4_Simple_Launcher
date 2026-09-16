@@ -28,6 +28,7 @@ import com.tommasov.mg4simplelauncher.AppLauncher;
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.PreferencesManager;
+import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
 import com.tommasov.mg4simplelauncher.vehicle.TripForecast;
 import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
@@ -673,7 +674,7 @@ public class ChargingMapActivity extends AppCompatActivity
                 return;
             }
         }
-        Toast.makeText(this, R.string.charging_no_navigation, Toast.LENGTH_SHORT).show();
+        Dialogs.toast(this, R.string.charging_no_navigation, Toast.LENGTH_SHORT);
     }
 
     @Override

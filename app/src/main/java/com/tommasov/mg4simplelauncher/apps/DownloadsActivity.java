@@ -239,7 +239,7 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
     }
 
     private void toast(@StringRes int message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Dialogs.toast(this, message, Toast.LENGTH_LONG);
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.tommasov.mg4simplelauncher;
 import android.content.Context;
 import android.content.res.Configuration;
 
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 
@@ -34,6 +37,23 @@ public final class Dialogs {
     private static final float FONT_SCALE = 1.4f;
 
     private Dialogs() {
+    }
+
+    /**
+     * A toast at the same enlarged size as the dialogs.
+     *
+     * <p>A toast built with the activity keeps the system's own text size, which on this
+     * screen is a line of grey you cannot read before it fades — and a message nobody can
+     * read in the seconds it lasts might as well not be shown.
+     */
+    public static void toast(@NonNull Context context, @StringRes int messageRes, int duration) {
+        Toast.makeText(scaled(context), messageRes, duration).show();
+    }
+
+    /** As above, for a message that is not a resource. */
+    public static void toast(@NonNull Context context, @NonNull CharSequence message,
+                             int duration) {
+        Toast.makeText(scaled(context), message, duration).show();
     }
 
     /** An {@link AlertDialog.Builder} whose text is sized for the car. */
