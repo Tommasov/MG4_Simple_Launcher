@@ -164,4 +164,8 @@
     <string name="target_display">Display</string>
     <string name="target_apps">Installed apps</string>
     <string name="target_screens">Screens</string>
+    <string name="target_vehicle">Vehicle</string>
+    <string name="target_unavailable">Not available on this vehicle</string>
+    <string name="drawer_empty">Nothing to show here</string>
+    <string name="drawer_empty_vehicle">No vehicle screens found. This car\'s software is not one this build recognises.</string>
 </resources>

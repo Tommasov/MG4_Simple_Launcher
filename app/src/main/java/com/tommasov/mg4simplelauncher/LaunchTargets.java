@@ -1,8 +1,13 @@
 package com.tommasov.mg4simplelauncher;
 
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 
@@ -13,11 +18,16 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.apps.DownloadsActivity;
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.charging.ChargingMapActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * What a tile can hold besides an app.
@@ -43,6 +53,21 @@ public final class LaunchTargets {
     private static final String SYSTEM_PREFIX = "sys:";
     /** One of this launcher's own screens. */
     private static final String OWN_PREFIX = "own:";
+    /** A specific activity, as {@code act:package/class}: the vehicle's own screens. */
+    private static final String ACTIVITY_PREFIX = "act:";
+
+    /**
+     * Package name fragments that mark software belonging to the car rather than to Android.
+     *
+     * <p>A guess, and knowingly so: there is no flag that says "this belongs to the vehicle".
+     * These are the vendors that ship on this head unit, matched on the package name because
+     * the labels are inconsistent and often absent. A few unrelated packages slipping in
+     * costs nothing — they appear in a chooser and get ignored — whereas missing the climate
+     * or camera screens would cost the whole feature.
+     */
+    private static final String[] VEHICLE_HINTS = {
+            "saic", "roewe", "aroundview", "avm", "hmi", "vehicle", "carservice",
+    };
 
     /** One thing a tile can be pointed at. */
     public static final class Target {
@@ -113,7 +138,113 @@ public final class LaunchTargets {
 
     /** True when this stored value is one of these rather than a package name. */
     public static boolean isTarget(@Nullable String id) {
-        return id != null && (id.startsWith(SYSTEM_PREFIX) || id.startsWith(OWN_PREFIX));
+        return id != null && (id.startsWith(SYSTEM_PREFIX) || id.startsWith(OWN_PREFIX)
+                || id.startsWith(ACTIVITY_PREFIX));
+    }
+
+    /** The id under which a vehicle screen is stored. */
+    @NonNull
+    public static String activityId(@NonNull ComponentName component) {
+        return ACTIVITY_PREFIX + component.getPackageName() + "/" + component.getClassName();
+    }
+
+    @Nullable
+    private static ComponentName componentOf(@NonNull String id) {
+        if (!id.startsWith(ACTIVITY_PREFIX)) {
+            return null;
+        }
+        String[] parts = id.substring(ACTIVITY_PREFIX.length()).split("/", 2);
+        return parts.length == 2 ? new ComponentName(parts[0], parts[1]) : null;
+    }
+
+    /**
+     * Every exported activity belonging to the car's own software.
+     *
+     * <p>Found by asking the package manager rather than by carrying a list: these screens
+     * differ between trims and firmware versions, and a hard-coded name that is wrong on
+     * someone's car is worse than no entry at all. What comes back is what this vehicle
+     * actually has.
+     *
+     * <p>Only exported and enabled activities are listed — the rest would refuse to start
+     * anyway — and packages that already appear in the app drawer are left out, since those
+     * are apps and belong in the other list.
+     */
+    @NonNull
+    public static List<ActivityTarget> vehicleScreens(@NonNull Context context) {
+        PackageManager pm = context.getPackageManager();
+        Set<String> launchable = new HashSet<>();
+        Intent launcher = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+        for (ResolveInfo ri : pm.queryIntentActivities(launcher, 0)) {
+            launchable.add(ri.activityInfo.packageName);
+        }
+
+        List<ActivityTarget> screens = new ArrayList<>();
+        for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_ACTIVITIES)) {
+            if (info.activities == null || !looksLikeVehicle(info.packageName)
+                    || launchable.contains(info.packageName)) {
+                continue;
+            }
+            for (ActivityInfo activity : info.activities) {
+                if (!activity.exported || !activity.enabled) {
+                    continue;
+                }
+                screens.add(new ActivityTarget(
+                        new ComponentName(activity.packageName, activity.name),
+                        readableName(pm, activity)));
+            }
+        }
+        Collections.sort(screens, (a, b) -> a.label.compareToIgnoreCase(b.label));
+        return screens;
+    }
+
+    /** One of the car's screens, found at runtime. */
+    public static final class ActivityTarget {
+        public final ComponentName component;
+        public final String label;
+
+        ActivityTarget(ComponentName component, String label) {
+            this.component = component;
+            this.label = label;
+        }
+
+        @NonNull
+        public String id() {
+            return activityId(component);
+        }
+    }
+
+    private static boolean looksLikeVehicle(@NonNull String packageName) {
+        String lower = packageName.toLowerCase(Locale.ROOT);
+        for (String hint : VEHICLE_HINTS) {
+            if (lower.contains(hint)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Something a person can read. Vendor activities usually carry no label of their own, in
+     * which case the class name is all there is: "AroundViewActivity" becomes "Around View",
+     * which is not a title but beats a package path in a chooser.
+     */
+    @NonNull
+    private static String readableName(@NonNull PackageManager pm, @NonNull ActivityInfo info) {
+        CharSequence label = info.loadLabel(pm);
+        String appLabel = String.valueOf(info.applicationInfo.loadLabel(pm));
+        if (label != null && label.length() > 0 && !label.toString().equals(appLabel)) {
+            return label.toString();
+        }
+        String simple = info.name.substring(info.name.lastIndexOf('.') + 1);
+        if (simple.endsWith("Activity")) {
+            simple = simple.substring(0, simple.length() - "Activity".length());
+        }
+        // CamelCase into words, keeping runs of capitals together so AVM stays AVM.
+        String spaced = simple.replaceAll("(?<=[a-z0-9])(?=[A-Z])", " ")
+                .replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ")
+                .replace('_', ' ')
+                .trim();
+        return spaced.isEmpty() ? info.name : spaced;
     }
 
     /** The target for a stored id, or null when it names one this build does not know. */
@@ -140,6 +271,15 @@ public final class LaunchTargets {
         if (target != null) {
             return target.icon(context);
         }
+        ComponentName component = componentOf(id);
+        if (component != null) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                return pm.getActivityInfo(component, 0).loadIcon(pm);
+            } catch (PackageManager.NameNotFoundException e) {
+                return null;
+            }
+        }
         return isTarget(id) ? null : AppIcons.highRes(context, id);
     }
 
@@ -149,6 +289,15 @@ public final class LaunchTargets {
         Target target = find(id);
         if (target != null) {
             return target.label(context);
+        }
+        ComponentName component = componentOf(id);
+        if (component != null) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                return readableName(pm, pm.getActivityInfo(component, 0));
+            } catch (PackageManager.NameNotFoundException e) {
+                return null;
+            }
         }
         if (isTarget(id)) {
             return null;
@@ -175,14 +324,26 @@ public final class LaunchTargets {
         if (intent.resolveActivity(context.getPackageManager()) == null) {
             return false;
         }
-        context.startActivity(intent);
-        return true;
+        try {
+            context.startActivity(intent);
+            return true;
+        } catch (SecurityException | ActivityNotFoundException e) {
+            // Vehicle activities are declared exported and still refuse to start: some want a
+            // vendor permission, others only run when the car itself asks. The tile reports
+            // the refusal instead of taking the launcher down with it.
+            DiagnosticsLog.log(context, "LaunchTargets", "refused " + id + ": " + e);
+            return false;
+        }
     }
 
     @Nullable
     private static Intent intentFor(@NonNull Context context, @NonNull String id) {
         if (id.startsWith(SYSTEM_PREFIX)) {
             return new Intent(id.substring(SYSTEM_PREFIX.length()));
+        }
+        ComponentName activity = componentOf(id);
+        if (activity != null) {
+            return new Intent().setComponent(activity);
         }
         if (!id.startsWith(OWN_PREFIX)) {
             return null;

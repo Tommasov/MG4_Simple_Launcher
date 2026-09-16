@@ -165,4 +165,8 @@
     <string name="target_display">Schermo</string>
     <string name="target_apps">App installate</string>
     <string name="target_screens">Schermate</string>
+    <string name="target_vehicle">Vettura</string>
+    <string name="target_unavailable">Non disponibile su questa vettura</string>
+    <string name="drawer_empty">Niente da mostrare</string>
+    <string name="drawer_empty_vehicle">Nessuna schermata di bordo trovata. Il software di questa vettura non è fra quelli riconosciuti.</string>
 </resources>

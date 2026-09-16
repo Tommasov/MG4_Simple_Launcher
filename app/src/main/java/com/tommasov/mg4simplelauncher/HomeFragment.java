@@ -218,7 +218,10 @@ public class HomeFragment extends Fragment {
 
     private void launch(String pkg) {
         if (!AppLauncher.launch(requireContext(), pkg)) {
-            Toast.makeText(requireContext(), pkg, Toast.LENGTH_SHORT).show();
+            // Names the failure rather than the id: a driver reading "act:com.saic…" learns
+            // nothing, and the only useful fact is that this car will not open it.
+            Toast.makeText(requireContext(), R.string.target_unavailable,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

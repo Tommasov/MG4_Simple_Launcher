@@ -165,4 +165,8 @@
     <string name="target_display">Écran</string>
     <string name="target_apps">Applis installées</string>
     <string name="target_screens">Écrans</string>
+    <string name="target_vehicle">Véhicule</string>
+    <string name="target_unavailable">Non disponible sur ce véhicule</string>
+    <string name="drawer_empty">Rien à afficher</string>
+    <string name="drawer_empty_vehicle">Aucun écran du véhicule trouvé. Le logiciel de cette voiture n\'est pas reconnu.</string>
 </resources>

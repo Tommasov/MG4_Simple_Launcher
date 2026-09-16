@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +45,11 @@ public class AppDrawerActivity extends AppCompatActivity {
      * a different kind of thing, and mixed in they read as nine odd-looking apps.
      */
     public static final String MODE_PICK_SCREENS = "pick_screens";
+    /**
+     * The picker, showing the car's own screens: every exported activity belonging to the
+     * vehicle's software, found on this vehicle rather than read from a list.
+     */
+    public static final String MODE_PICK_VEHICLE = "pick_vehicle";
     public static final String MODE_PICK = "pick";
     public static final String TARGET_HOME = "home";
     public static final String TARGET_GRID = "grid";
@@ -78,27 +84,23 @@ public class AppDrawerActivity extends AppCompatActivity {
         // Explicit back affordance for the head unit, mirroring the system back gesture.
         findViewById(R.id.drawer_back_button).setOnClickListener(v -> finish());
 
-        // One button, three jobs depending on where we are: reach the system apps from the
-        // "all apps" drawer, and swap between apps and screens while picking.
-        TextView headerButton = findViewById(R.id.system_apps_button);
+        // Where each of the two header buttons goes depends on which list is on screen: the
+        // two it is not showing. In the browsing drawer the second one has nothing to do.
+        TextView primary = findViewById(R.id.system_apps_button);
+        TextView secondary = findViewById(R.id.secondary_header_button);
         if (MODE_ALL.equals(mode)) {
-            headerButton.setText(R.string.system_apps);
-            headerButton.setOnClickListener(v -> startActivity(
-                    drawerIntent(MODE_SYSTEM, slot, target)));
+            switchTo(primary, R.string.system_apps, MODE_SYSTEM, false);
         } else if (MODE_PICK.equals(mode)) {
-            headerButton.setText(R.string.target_screens);
-            headerButton.setOnClickListener(v -> {
-                startActivity(drawerIntent(MODE_PICK_SCREENS, slot, target));
-                finish();
-            });
+            switchTo(primary, R.string.target_screens, MODE_PICK_SCREENS, true);
+            switchTo(secondary, R.string.target_vehicle, MODE_PICK_VEHICLE, true);
         } else if (MODE_PICK_SCREENS.equals(mode)) {
-            headerButton.setText(R.string.all_apps);
-            headerButton.setOnClickListener(v -> {
-                startActivity(drawerIntent(MODE_PICK, slot, target));
-                finish();
-            });
+            switchTo(primary, R.string.all_apps, MODE_PICK, true);
+            switchTo(secondary, R.string.target_vehicle, MODE_PICK_VEHICLE, true);
+        } else if (MODE_PICK_VEHICLE.equals(mode)) {
+            switchTo(primary, R.string.all_apps, MODE_PICK, true);
+            switchTo(secondary, R.string.target_screens, MODE_PICK_SCREENS, true);
         } else {
-            headerButton.setVisibility(View.GONE);
+            primary.setVisibility(View.GONE);
         }
 
         RecyclerView grid = findViewById(R.id.app_grid);
@@ -106,6 +108,22 @@ public class AppDrawerActivity extends AppCompatActivity {
         grid.setLayoutManager(new GridLayoutManager(this, span));
 
         loadApps(grid);
+    }
+
+    /**
+     * Points a header button at another list. {@code replace} closes this one on the way, so
+     * the three picker lists stay siblings instead of stacking up behind each other.
+     */
+    private void switchTo(TextView button, @StringRes int labelRes, String newMode,
+                          boolean replace) {
+        button.setText(labelRes);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(v -> {
+            startActivity(drawerIntent(newMode, slot, target));
+            if (replace) {
+                finish();
+            }
+        });
     }
 
     /** The same screen again, in another mode, carrying the slot it is filling. */
@@ -125,6 +143,8 @@ public class AppDrawerActivity extends AppCompatActivity {
                 return getString(R.string.pick_favorite_title);
             case MODE_PICK_SCREENS:
                 return getString(R.string.target_screens);
+            case MODE_PICK_VEHICLE:
+                return getString(R.string.target_vehicle);
             default:
                 return getString(R.string.all_apps);
         }
@@ -140,9 +160,14 @@ public class AppDrawerActivity extends AppCompatActivity {
                 // In the picker a long-press would fight the tap-to-assign gesture, so the
                 // app-details shortcut only exists in the browsing drawers.
                 AppListAdapter.OnAppClickListener longClick =
-                        MODE_PICK.equals(mode) || MODE_PICK_SCREENS.equals(mode)
+                        mode != null && mode.startsWith(MODE_PICK)
                                 ? null : this::onAppLongClick;
                 grid.setAdapter(new AppListAdapter(apps, this::onAppClick, longClick));
+
+                TextView empty = findViewById(R.id.drawer_empty);
+                empty.setText(MODE_PICK_VEHICLE.equals(mode)
+                        ? R.string.drawer_empty_vehicle : R.string.drawer_empty);
+                empty.setVisibility(apps.isEmpty() ? View.VISIBLE : View.GONE);
             });
         });
     }
@@ -150,6 +175,9 @@ public class AppDrawerActivity extends AppCompatActivity {
     private List<AppInfo> queryApps() {
         if (MODE_PICK_SCREENS.equals(mode)) {
             return screenTargets();
+        }
+        if (MODE_PICK_VEHICLE.equals(mode)) {
+            return vehicleTargets();
         }
         PackageManager pm = getPackageManager();
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -197,8 +225,23 @@ public class AppDrawerActivity extends AppCompatActivity {
         return targets;
     }
 
+    /**
+     * The car's screens, as found on this vehicle. Each keeps the icon of the package it
+     * belongs to: they are unlabelled system components, and the icon is the only thing that
+     * tells the climate screens from the camera ones at a glance.
+     */
+    private List<AppInfo> vehicleTargets() {
+        List<AppInfo> targets = new ArrayList<>();
+        for (LaunchTargets.ActivityTarget screen : LaunchTargets.vehicleScreens(this)) {
+            targets.add(new AppInfo(screen.label, screen.id(),
+                    LaunchTargets.iconFor(this, screen.id()), true));
+        }
+        return targets;
+    }
+
     private void onAppClick(AppInfo app) {
-        if (MODE_PICK.equals(mode) || MODE_PICK_SCREENS.equals(mode)) {
+        if (MODE_PICK.equals(mode) || MODE_PICK_SCREENS.equals(mode)
+                || MODE_PICK_VEHICLE.equals(mode)) {
             if (slot >= 0) {
                 PreferencesManager prefs = new PreferencesManager(this);
                 if (TARGET_GRID.equals(target)) {

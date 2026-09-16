@@ -35,6 +35,24 @@
             tools:ignore="HardcodedText"
             xmlns:tools="http://schemas.android.com/tools" />
 
+        <!-- Two switches, because while picking there are three lists to move between:
+             apps, Android's screens and the car's. Which labels they carry is decided in
+             code, since it depends on where you already are. -->
+        <TextView
+            android:id="@+id/secondary_header_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/system_apps_button"
             android:layout_width="wrap_content"
@@ -51,10 +69,27 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/app_grid"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/app_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
+        <!-- A list can legitimately come back empty — a vehicle whose software this build
+             does not recognise — and an empty screen with no explanation reads as a fault. -->
+        <TextView
+            android:id="@+id/drawer_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="@dimen/info_card_padding"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/info_card_body_size"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>
