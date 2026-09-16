@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Launcher settings. Landscape (MG4 head unit): one card per setting, side by side like
-     every other page. Stacked full-width cards were tried first and do not work here — the
-     card artwork carries its own intrinsic height, so a full-width card grows far taller
-     than its content and pushes the rest off screen. -->
+<!-- Launcher settings, in four columns across the head unit's width.
+
+     No cards. On a page made of cards the driver's thumb goes to swipe them, because on every
+     other page of this launcher a card is something you move between — and here there is
+     nothing to swipe to, so the gesture just fails. Headings with a rule under them group the
+     same content without promising a carousel that does not exist.
+
+     Stacked full-width cards were tried before that and failed differently: the card artwork
+     carries its own intrinsic height, so a full-width card grows far taller than its content
+     and pushes the rest off screen. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,17 +58,23 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/card_gap"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
             android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
+            android:paddingTop="4dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_home_page"
                 android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
+                android:textSize="@dimen/info_card_title_size"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/hairline" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -72,11 +84,12 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/info_card_body_size" />
 
+            <!-- A fixed gap, not a stretching one: with the cards gone there is no box for
+                 the empty space to belong to, so pushing the buttons to the bottom edge left
+                 each column looking like it had lost its middle. -->
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
+                android:layout_height="20dp" />
 
             <!-- Stacked rather than in a row: three tabs side by side inside one card would
                  leave each too narrow for its label. -->
@@ -146,17 +159,23 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/card_gap"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
             android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
+            android:paddingTop="4dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_features"
                 android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
+                android:textSize="@dimen/info_card_title_size"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/hairline" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -196,17 +215,23 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/card_gap"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
             android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
+            android:paddingTop="4dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_updates"
                 android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
+                android:textSize="@dimen/info_card_title_size"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/hairline" />
 
             <TextView
                 android:id="@+id/settings_version"
@@ -216,11 +241,12 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/info_card_body_size" />
 
+            <!-- A fixed gap, not a stretching one: with the cards gone there is no box for
+                 the empty space to belong to, so pushing the buttons to the bottom edge left
+                 each column looking like it had lost its middle. -->
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
+                android:layout_height="20dp" />
 
             <TextView
                 android:id="@+id/settings_check_updates"
@@ -242,17 +268,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
             android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
+            android:paddingTop="4dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_system"
                 android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
+                android:textSize="@dimen/info_card_title_size"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/hairline" />
 
             <TextView
                 android:id="@+id/settings_diagnostics_summary"
@@ -262,11 +294,12 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/info_card_body_size" />
 
+            <!-- A fixed gap, not a stretching one: with the cards gone there is no box for
+                 the empty space to belong to, so pushing the buttons to the bottom edge left
+                 each column looking like it had lost its middle. -->
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
+                android:layout_height="20dp" />
 
             <TextView
                 android:id="@+id/settings_open_technical"

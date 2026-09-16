@@ -34,8 +34,6 @@ import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -298,12 +296,25 @@ class TechnicalDetails {
                     int down = caps.getLinkDownstreamBandwidthKbps();
                     link = down > 0 ? (down / 1000) + " Mbps" : null;
                 } else if (caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    type = context.getString(R.string.net_ethernet);
+                    // On this vehicle the TBOX hangs off an internal Ethernet interface, so
+                    // the car's own SIM reaches Android as a wired connection. "Ethernet" is
+                    // technically right and useless: nobody plugged a cable into their MG4.
+                    type = context.getString(hasVehicleSim(context)
+                            ? R.string.net_onboard : R.string.net_ethernet);
+                    int down = caps.getLinkDownstreamBandwidthKbps();
+                    link = down > 0 ? (down / 1000) + " Mbps" : null;
                 }
             }
         }
         set("connection", type);
         set("link", link);
+    }
+
+    /** Whether the car has a SIM of its own, ready and registered. */
+    private static boolean hasVehicleSim(@NonNull Context context) {
+        TelephonyManager tm =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
     }
 
     /**
@@ -381,8 +392,10 @@ class TechnicalDetails {
             if (cycleLabel != null) {
                 cycleLabel.setText(R.string.data_cycle_day);
             }
-            set("cycle", DateFormat.getDateInstance(DateFormat.MEDIUM)
-                    .format(new Date(DataUsage.cycleStart(cycleDay))));
+            // The day alone. A full date here was both noise and wrong: it printed the day
+            // the current cycle started, under a label promising the next renewal, when the
+            // only fact that matters is which day of the month the allowance comes back.
+            set("cycle", String.valueOf(cycleDay));
         } else {
             if (cycleLabel != null) {
                 // Named after what granting it buys, not after the permission.

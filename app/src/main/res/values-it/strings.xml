@@ -28,6 +28,7 @@
     <string name="net_wifi">Wi-Fi</string>
     <string name="net_mobile">Dati mobili</string>
     <string name="net_ethernet">Ethernet</string>
+    <string name="net_onboard">Rete di bordo (TBOX)</string>
     <string name="net_offline">Non connesso</string>
     <string name="sys_uptime">Acceso da %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>

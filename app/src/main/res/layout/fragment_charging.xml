@@ -77,8 +77,6 @@
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
-                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_4" />
-                <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_5" />
             </LinearLayout>
 
             <TextView

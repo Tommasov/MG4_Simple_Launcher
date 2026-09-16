@@ -45,7 +45,13 @@ import java.util.function.Consumer;
 public class ChargingCardBinder {
 
     /** What the card lists. Six fills its height at the size the entries are set in. */
-    private static final int SUMMARY_COUNT = 6;
+    /**
+     * Stations listed on the card. Four, not six: on the vehicle the last row was cut off by
+     * the bottom edge — the head unit leaves less height than the emulator does, and the line
+     * of attribution and caveats underneath takes its share. A row that is half visible is
+     * worse than one that is absent, because it looks like a fault.
+     */
+    private static final int SUMMARY_COUNT = 4;
 
     /**
      * How far the car must travel before the card asks Open Charge Map again.
@@ -107,8 +113,8 @@ public class ChargingCardBinder {
         groupLabel = page.findViewById(R.id.charge_group_label);
         arrivalNote = page.findViewById(R.id.charging_arrival_note);
 
-        int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1, R.id.charge_row_2,
-                R.id.charge_row_3, R.id.charge_row_4, R.id.charge_row_5};
+        int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1,
+                R.id.charge_row_2, R.id.charge_row_3};
         for (int i = 0; i < SUMMARY_COUNT; i++) {
             View row = page.findViewById(rowIds[i]);
             names[i] = row.findViewById(R.id.summary_name);

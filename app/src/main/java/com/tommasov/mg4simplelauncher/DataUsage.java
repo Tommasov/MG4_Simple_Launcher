@@ -22,8 +22,10 @@ import java.util.Calendar;
  * map updates and telemetry, so the first warning that it has run out is usually the moment
  * something stops working.
  *
- * <p>Counts only the cellular transport, so a phone hotspot does not pollute the figure: the
- * question is what went over MG's SIM, not what the head unit transferred.
+ * <p>Counts the car's own connection and not a phone hotspot: the question is what went over
+ * MG's allowance, not what the head unit transferred. On this vehicle that means adding the
+ * cellular and Ethernet totals together, because the modem sits in the TBOX and reaches
+ * Android over an internal wired interface — a cellular-only figure reads zero here.
  *
  * <p>Two sources, because the good one needs the driver's consent. {@link NetworkStatsManager}
  * gives real totals for an arbitrary period, and asks for the "usage access" permission that
@@ -97,14 +99,17 @@ final class DataUsage {
                 NetworkStatsManager stats = (NetworkStatsManager)
                         context.getSystemService(Context.NETWORK_STATS_SERVICE);
                 if (stats != null) {
-                    // A null subscriber id means "every subscriber": asking for the real one
-                    // would need READ_PHONE_STATE, and this head unit has a single SIM.
-                    NetworkStats.Bucket bucket = stats.querySummaryForDevice(
-                            ConnectivityManager.TYPE_MOBILE, null,
-                            cycleStart(cycleDay), System.currentTimeMillis());
-                    if (bucket != null) {
-                        return new Reading(bucket.getRxBytes() + bucket.getTxBytes(),
-                                Source.CYCLE);
+                    long start = cycleStart(cycleDay);
+                    long now = System.currentTimeMillis();
+                    // Both transports, added together. The vehicle's modem lives in the TBOX
+                    // and reaches Android over an internal Ethernet interface, so its traffic
+                    // is filed as wired and a mobile-only total reads zero on the car that
+                    // most needs the figure. Nothing else is plugged into an MG4, so whatever
+                    // Ethernet carries here went over MG's allowance too.
+                    long total = deviceBytes(stats, ConnectivityManager.TYPE_MOBILE, start, now)
+                            + deviceBytes(stats, ConnectivityManager.TYPE_ETHERNET, start, now);
+                    if (total > 0) {
+                        return new Reading(total, Source.CYCLE);
                     }
                 }
             } catch (Exception ignored) {
@@ -116,6 +121,23 @@ final class DataUsage {
             return new Reading(sinceBoot, Source.SINCE_BOOT);
         }
         return new Reading(0, Source.NONE);
+    }
+
+    /**
+     * Bytes over one transport, or zero when this firmware will not report it. Asked
+     * separately so that one refusal does not take the other total with it.
+     */
+    private static long deviceBytes(@NonNull NetworkStatsManager stats, int networkType,
+                                    long start, long end) {
+        try {
+            // A null subscriber id means "every subscriber": asking for the real one would
+            // need READ_PHONE_STATE, and this head unit has a single SIM.
+            NetworkStats.Bucket bucket =
+                    stats.querySummaryForDevice(networkType, null, start, end);
+            return bucket == null ? 0 : bucket.getRxBytes() + bucket.getTxBytes();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     /** Midnight on the most recent {@code cycleDay}. */
