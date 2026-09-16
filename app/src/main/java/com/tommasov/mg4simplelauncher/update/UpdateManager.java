@@ -1,6 +1,7 @@
 package com.tommasov.mg4simplelauncher.update;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.PreferencesManager;
+import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
 
 import java.io.File;
@@ -104,7 +106,7 @@ public class UpdateManager {
         if (!TextUtils.isEmpty(info.changelog)) {
             message += "\n\n" + info.changelog;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+        AlertDialog.Builder builder = Dialogs.builder(activity)
                 .setTitle(R.string.update_available_title)
                 .setMessage(message)
                 .setCancelable(!info.mandatory)
@@ -119,7 +121,7 @@ public class UpdateManager {
     private void onInstallChosen(@NonNull UpdateInfo info) {
         // Android won't install from this app until the user allows "unknown apps".
         if (!ApkInstaller.canInstall(activity)) {
-            new AlertDialog.Builder(activity)
+            Dialogs.builder(activity)
                     .setTitle(R.string.update_permission_title)
                     .setMessage(R.string.update_permission_message)
                     .setPositiveButton(R.string.update_permission_open_settings,
@@ -176,23 +178,27 @@ public class UpdateManager {
     // --- progress dialog --------------------------------------------------
 
     private void showProgressDialog() {
-        LinearLayout layout = new LinearLayout(activity);
+        // Built with the dialog's own context, or this text would stay small while the title
+        // and the cancel button around it grew.
+        Context dialogContext = Dialogs.scaled(activity);
+        LinearLayout layout = new LinearLayout(dialogContext);
         layout.setOrientation(LinearLayout.VERTICAL);
         int pad = (int) (24 * activity.getResources().getDisplayMetrics().density);
         layout.setPadding(pad, pad, pad, pad);
 
-        progressText = new TextView(activity);
+        progressText = new TextView(dialogContext);
         progressText.setText(activity.getString(R.string.update_downloading, 0));
         progressText.setGravity(Gravity.CENTER);
 
-        progressBar = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar = new ProgressBar(
+                dialogContext, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setMax(100);
         progressBar.setIndeterminate(true);
 
         layout.addView(progressText);
         layout.addView(progressBar);
 
-        progressDialog = new AlertDialog.Builder(activity)
+        progressDialog = Dialogs.builder(activity)
                 .setTitle(R.string.update_downloading_title)
                 .setView(layout)
                 .setCancelable(false)

@@ -1,5 +1,6 @@
 package com.tommasov.mg4simplelauncher.apps;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tommasov.mg4simplelauncher.BuildConfig;
+import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.update.ApkDownloader;
@@ -106,7 +108,7 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
         // Android refuses installs from an app without this permission, and the refusal is
         // silent from here: better to ask now than to download ten megabytes for nothing.
         if (!ApkInstaller.canInstall(this)) {
-            new AlertDialog.Builder(this)
+            Dialogs.builder(this)
                     .setTitle(R.string.update_permission_title)
                     .setMessage(R.string.update_permission_message)
                     .setPositiveButton(R.string.update_permission_open_settings,
@@ -188,23 +190,27 @@ public class DownloadsActivity extends AppCompatActivity implements CatalogAdapt
      * one has always looked right.
      */
     private void showProgress(@NonNull String appName) {
-        LinearLayout layout = new LinearLayout(this);
+        // Built with the dialog's own context, or this text would stay small while the title
+        // and the cancel button around it grew.
+        Context dialogContext = Dialogs.scaled(this);
+        LinearLayout layout = new LinearLayout(dialogContext);
         layout.setOrientation(LinearLayout.VERTICAL);
         int pad = (int) (24 * getResources().getDisplayMetrics().density);
         layout.setPadding(pad, pad, pad, pad);
 
-        progressText = new TextView(this);
+        progressText = new TextView(dialogContext);
         progressText.setText(getString(R.string.update_downloading, 0));
         progressText.setGravity(Gravity.CENTER);
 
-        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar = new ProgressBar(
+                dialogContext, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setMax(100);
         progressBar.setIndeterminate(true);
 
         layout.addView(progressText);
         layout.addView(progressBar);
 
-        progress = new AlertDialog.Builder(this)
+        progress = Dialogs.builder(this)
                 .setTitle(appName)
                 .setView(layout)
                 .setCancelable(false)

@@ -167,7 +167,7 @@ public class FavoritesGridFragment extends Fragment {
             return;
         }
         // Unlike the three home cards, a shortcut tile can also be emptied again.
-        new AlertDialog.Builder(requireContext())
+        Dialogs.builder(requireContext())
                 .setTitle(slotLabels[slot].getText())
                 .setItems(new CharSequence[]{
                         getString(R.string.grid_slot_change),

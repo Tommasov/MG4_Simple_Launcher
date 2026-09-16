@@ -187,7 +187,7 @@ public class HomeFragment extends Fragment {
             openDrawer(AppDrawerActivity.MODE_PICK, slot, AppDrawerActivity.TARGET_DOCK);
             return;
         }
-        new AlertDialog.Builder(requireContext())
+        Dialogs.builder(requireContext())
                 .setItems(new CharSequence[]{
                         getString(R.string.grid_slot_change),
                         getString(R.string.dock_slot_reset)}, (dialog, which) -> {

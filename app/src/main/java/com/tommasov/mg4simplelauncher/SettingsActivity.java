@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
                     // Warn on the way in, never on the way out: joining is what has a
                     // one-way consequence, since Android will not install the older stable
                     // build over a newer beta.
-                    new AlertDialog.Builder(this)
+                    Dialogs.builder(this)
                             .setTitle(R.string.beta_channel_title)
                             .setMessage(R.string.beta_channel_warning)
                             .setPositiveButton(R.string.beta_channel_join,

@@ -19,6 +19,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.PreferencesManager;
+import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
 import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
@@ -212,7 +213,7 @@ public class ChargingCardBinder {
                 checked = i;
             }
         }
-        new AlertDialog.Builder(context)
+        Dialogs.builder(context)
                 .setTitle(R.string.charging_card_options)
                 .setSingleChoiceItems(labels, checked, (dialog, which) -> {
                     preferences.setChargingCardFilter(CHOICES[which]);
