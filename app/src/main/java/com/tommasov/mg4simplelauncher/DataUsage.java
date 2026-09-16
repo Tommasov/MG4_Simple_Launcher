@@ -12,6 +12,8 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 
+import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
+
 import java.util.Calendar;
 
 /**
@@ -38,6 +40,8 @@ import java.util.Calendar;
  * bill on their own clock; this is a gauge, not a statement.
  */
 final class DataUsage {
+
+    private static final String TAG = "DataUsage";
 
     /** What MG includes. Not configurable yet: every car on this firmware has the same one. */
     static final long ALLOWANCE_BYTES = 1024L * 1024L * 1024L;
@@ -106,10 +110,20 @@ final class DataUsage {
                     // is filed as wired and a mobile-only total reads zero on the car that
                     // most needs the figure. Nothing else is plugged into an MG4, so whatever
                     // Ethernet carries here went over MG's allowance too.
-                    long total = deviceBytes(stats, ConnectivityManager.TYPE_MOBILE, start, now)
-                            + deviceBytes(stats, ConnectivityManager.TYPE_ETHERNET, start, now);
-                    if (total > 0) {
-                        return new Reading(total, Source.CYCLE);
+                    long mobile = deviceBytes(stats, ConnectivityManager.TYPE_MOBILE, start, now);
+                    long wired = deviceBytes(stats, ConnectivityManager.TYPE_ETHERNET, start, now);
+                    // Written down because on the vehicle this is the only way to see which
+                    // of the two carries the TBOX's traffic — and whether a zero is a real
+                    // zero or a transport nobody is counting.
+                    DiagnosticsLog.log(context, TAG,
+                            "cycle bytes mobile=" + mobile + " ethernet=" + wired);
+                    if (mobile >= 0 || wired >= 0) {
+                        // A successful query that returns nothing is an answer: the allowance
+                        // has just renewed, or nothing has been sent yet. Falling back to the
+                        // since-boot figure here would replace a true zero with a number that
+                        // means something else entirely.
+                        return new Reading(Math.max(0, mobile) + Math.max(0, wired),
+                                Source.CYCLE);
                     }
                 }
             } catch (Exception ignored) {
@@ -124,8 +138,9 @@ final class DataUsage {
     }
 
     /**
-     * Bytes over one transport, or zero when this firmware will not report it. Asked
-     * separately so that one refusal does not take the other total with it.
+     * Bytes over one transport, or -1 when this firmware would not report it. Negative rather
+     * than zero so that a refusal can be told apart from a genuine "nothing yet", which are
+     * different facts and want different words on screen.
      */
     private static long deviceBytes(@NonNull NetworkStatsManager stats, int networkType,
                                     long start, long end) {
@@ -134,9 +149,9 @@ final class DataUsage {
             // need READ_PHONE_STATE, and this head unit has a single SIM.
             NetworkStats.Bucket bucket =
                     stats.querySummaryForDevice(networkType, null, start, end);
-            return bucket == null ? 0 : bucket.getRxBytes() + bucket.getTxBytes();
+            return bucket == null ? -1 : bucket.getRxBytes() + bucket.getTxBytes();
         } catch (Exception e) {
-            return 0;
+            return -1;
         }
     }
 
