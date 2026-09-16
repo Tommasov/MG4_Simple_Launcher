@@ -19,6 +19,7 @@ public class PreferencesManager {
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
     private static final String KEY_DOCK_PREFIX = "dock_";
     private static final String KEY_DATA_CYCLE_DAY = "data_cycle_day";
+    private static final String KEY_BATTERY_KWH = "battery_kwh";
     private static final String KEY_HOME_PAGE = "home_page";
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     private static final String KEY_BETA_CHANNEL = "beta_channel";
@@ -169,6 +170,22 @@ public class PreferencesManager {
 
     public void setDataCycleDay(int day) {
         prefs.edit().putInt(KEY_DATA_CYCLE_DAY, day).apply();
+    }
+
+    /** The batteries this generation of MG4 was sold with, in usable kWh. */
+    public static final int[] BATTERY_SIZES = {51, 64, 77};
+
+    /**
+     * Usable battery capacity, needed to turn "kWh per 100 km" into kilometres. The car does
+     * not report it, so it is asked once; the larger pack is the default because it is the
+     * one most of these cars carry.
+     */
+    public int getBatteryCapacityKwh() {
+        return prefs.getInt(KEY_BATTERY_KWH, 64);
+    }
+
+    public void setBatteryCapacityKwh(int kwh) {
+        prefs.edit().putInt(KEY_BATTERY_KWH, kwh).apply();
     }
 
     public boolean isSixTileHomeEnabled() {

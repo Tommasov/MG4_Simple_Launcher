@@ -48,6 +48,8 @@ public class SettingsActivity extends AppCompatActivity {
         bindHomePage();
         bindFeatures();
         bindSixTileHome();
+        bindBattery();
+        bindDataCycle();
         bindUpdateOnLaunch();
         bindBetaChannel();
         bindUpdates();
@@ -80,6 +82,57 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     updateShortcutsOptionVisibility(checked);
                 });
+    }
+
+    /**
+     * Which battery this car has. Asked rather than detected because no adapter call reports
+     * it, and without it the launcher cannot turn a consumption figure into kilometres — the
+     * whole correction for the route ahead rests on this one number.
+     */
+    private void bindBattery() {
+        TextView value = findViewById(R.id.settings_battery_value);
+        value.setText(getString(R.string.settings_battery_kwh,
+                preferences.getBatteryCapacityKwh()));
+        findViewById(R.id.settings_battery_row).setOnClickListener(v -> {
+            int[] sizes = PreferencesManager.BATTERY_SIZES;
+            CharSequence[] labels = new CharSequence[sizes.length];
+            int current = 0;
+            for (int i = 0; i < sizes.length; i++) {
+                labels[i] = getString(R.string.settings_battery_kwh, sizes[i]);
+                if (sizes[i] == preferences.getBatteryCapacityKwh()) {
+                    current = i;
+                }
+            }
+            Dialogs.builder(this)
+                    .setTitle(R.string.settings_battery)
+                    .setSingleChoiceItems(labels, current, (dialog, which) -> {
+                        preferences.setBatteryCapacityKwh(sizes[which]);
+                        value.setText(getString(R.string.settings_battery_kwh, sizes[which]));
+                        dialog.dismiss();
+                    })
+                    .show();
+        });
+    }
+
+    /** Which day of the month MG's data allowance comes back. */
+    private void bindDataCycle() {
+        TextView value = findViewById(R.id.settings_cycle_value);
+        value.setText(String.valueOf(preferences.getDataCycleDay()));
+        findViewById(R.id.settings_cycle_row).setOnClickListener(v -> {
+            CharSequence[] days = new CharSequence[31];
+            for (int i = 0; i < days.length; i++) {
+                days[i] = String.valueOf(i + 1);
+            }
+            Dialogs.builder(this)
+                    .setTitle(R.string.data_cycle_day_title)
+                    .setSingleChoiceItems(days, preferences.getDataCycleDay() - 1,
+                            (dialog, which) -> {
+                                preferences.setDataCycleDay(which + 1);
+                                value.setText(String.valueOf(which + 1));
+                                dialog.dismiss();
+                            })
+                    .show();
+        });
     }
 
     private void bindSixTileHome() {

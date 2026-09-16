@@ -205,11 +205,16 @@
                     <include
                         layout="@layout/part_settings_toggle"
                         android:id="@+id/toggle_beta_channel" />
+
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
 
-        <!-- Updates -->
+        <!-- What the launcher has to be told about this particular car. Both of these are
+             facts the vehicle knows and will not report: no adapter call gives the pack size,
+             and nothing at all knows when MG's data allowance renews. They sit together
+             because they are the same kind of thing — the car's own details — rather than
+             settings about how the launcher behaves. -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -221,7 +226,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_updates"
+                android:text="@string/settings_vehicle"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/info_card_title_size"
                 android:textStyle="bold" />
@@ -233,37 +238,80 @@
                 android:layout_marginBottom="12dp"
                 android:background="@color/hairline" />
 
-            <TextView
-                android:id="@+id/settings_version"
+            <LinearLayout
+                android:id="@+id/settings_battery_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
-
-            <!-- A fixed gap, not a stretching one: with the cards gone there is no box for
-                 the empty space to belong to, so pushing the buttons to the bottom edge left
-                 each column looking like it had lost its middle. -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <TextView
-                android:id="@+id/settings_check_updates"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_tab_height"
-                android:background="@drawable/native_button_selector"
+                android:background="@drawable/icon_press_selector"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center"
-                android:text="@string/update_check_action"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/drawer_button_size" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/settings_battery"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
+
+                <TextView
+                    android:id="@+id/settings_battery_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/charge_item_title_size" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_battery_hint"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <LinearLayout
+                android:id="@+id/settings_cycle_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/icon_press_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/data_cycle_day"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
+
+                <TextView
+                    android:id="@+id/settings_cycle_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/charge_item_title_size" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_cycle_hint"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/secondary_text_size" />
         </LinearLayout>
 
-        <!-- System: the two screens you only open when something wants looking at. They
-             share a card because they answer the same question — what is this thing doing —
-             and because neither is worth a carousel page nobody reads while driving. -->
+        <!-- The launcher itself: which version is installed, whether a newer one exists, and
+             the two screens you open when something wants looking at. Updates used to have a
+             column of their own for one line and one button; they answer the same question as
+             the rest of this one — what is this thing doing — so they share it. -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -285,6 +333,13 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="12dp"
                 android:background="@color/hairline" />
+
+            <TextView
+                android:id="@+id/settings_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/info_card_body_size" />
 
             <TextView
                 android:id="@+id/settings_diagnostics_summary"
@@ -310,6 +365,19 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/sys_technical"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/drawer_button_size" />
+
+            <TextView
+                android:id="@+id/settings_check_updates"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_tab_height"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/native_button_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/update_check_action"
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/drawer_button_size" />
 

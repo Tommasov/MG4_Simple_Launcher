@@ -98,6 +98,12 @@
     <!-- The same note with the separator that divides it from the
          attribution on the card, where the two share a line. -->
     <string name="charging_note_separator">· Ladestand bei Ankunft ist geschätzt</string>
+    <string name="settings_battery">Batterie</string>
+    <string name="settings_vehicle">Fahrzeug</string>
+    <string name="settings_battery_hint">Nötig für die Ladeschätzung bei Ankunft</string>
+    <string name="settings_cycle_hint">Tag, an dem das MG-Datenvolumen erneuert wird</string>
+    <string name="settings_battery_kwh">%1$d kWh</string>
+    <string name="charging_note_route">Schätzung für die Route im Navi</string>
     <string name="charging_access_membership">Mitglieder</string>
     <string name="charging_access_notice">Nach Anmeldung</string>
     <string name="charging_access_private">Privat</string>

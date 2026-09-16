@@ -27,7 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tommasov.mg4simplelauncher.AppLauncher;
 import com.tommasov.mg4simplelauncher.BuildConfig;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
+import com.tommasov.mg4simplelauncher.PreferencesManager;
 import com.tommasov.mg4simplelauncher.R;
+import com.tommasov.mg4simplelauncher.vehicle.TripForecast;
 import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
 import org.osmdroid.config.Configuration;
@@ -324,11 +326,41 @@ public class ChargingMapActivity extends AppCompatActivity
                 adapter.setArrivalCharge(estimate);
                 findViewById(R.id.charging_arrival_note)
                         .setVisibility(estimate == null ? View.GONE : View.VISIBLE);
+                if (estimate != null) {
+                    correctForRoute(estimate);
+                }
             }
 
             @Override
             public void onUnavailable() {
                 // Trim without the adapter service: the rows stay as they were.
+            }
+        });
+    }
+
+    /**
+     * Asks the navigator what journey is ahead and, if the route costs more than the recent
+     * driving, redraws the list with the pessimistic figure. Silent when nothing is running.
+     */
+    private void correctForRoute(@NonNull ArrivalCharge estimate) {
+        TripForecast.read(this, new TripForecast.Callback() {
+            @Override
+            public void onTrip(@NonNull TripForecast.Trip trip) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                ArrivalCharge onRoute = estimate.onRoute(
+                        trip, new PreferencesManager(ChargingMapActivity.this)
+                                .getBatteryCapacityKwh());
+                adapter.setArrivalCharge(onRoute);
+                TextView note = findViewById(R.id.charging_arrival_note);
+                note.setText(onRoute.isRouteCorrected()
+                        ? R.string.charging_note_route : R.string.charging_note_separator);
+            }
+
+            @Override
+            public void onNoTrip() {
+                // No destination set: the car's own range is the right answer.
             }
         });
     }

@@ -98,6 +98,12 @@
     <!-- The same note with the separator that divides it from the
          attribution on the card, where the two share a line. -->
     <string name="charging_note_separator">· La carga al llegar es una estimación</string>
+    <string name="settings_battery">Batería</string>
+    <string name="settings_vehicle">Vehículo</string>
+    <string name="settings_battery_hint">Necesaria para estimar la carga al llegar</string>
+    <string name="settings_cycle_hint">Día en que se renuevan los datos de MG</string>
+    <string name="settings_battery_kwh">%1$d kWh</string>
+    <string name="charging_note_route">Estimación para la ruta del navegador</string>
     <string name="charging_access_membership">Socios</string>
     <string name="charging_access_notice">Con aviso</string>
     <string name="charging_access_private">Privada</string>

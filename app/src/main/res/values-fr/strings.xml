@@ -98,6 +98,12 @@
     <!-- The same note with the separator that divides it from the
          attribution on the card, where the two share a line. -->
     <string name="charging_note_separator">· Charge à l\'arrivée estimée</string>
+    <string name="settings_battery">Batterie</string>
+    <string name="settings_vehicle">Véhicule</string>
+    <string name="settings_battery_hint">Nécessaire pour estimer la charge à l\'arrivée</string>
+    <string name="settings_cycle_hint">Jour de renouvellement du forfait MG</string>
+    <string name="settings_battery_kwh">%1$d kWh</string>
+    <string name="charging_note_route">Estimation pour l\'itinéraire du GPS</string>
     <string name="charging_access_membership">Membres</string>
     <string name="charging_access_notice">Sur réservation</string>
     <string name="charging_access_private">Privée</string>

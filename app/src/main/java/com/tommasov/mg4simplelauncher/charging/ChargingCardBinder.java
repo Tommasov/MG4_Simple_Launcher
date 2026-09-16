@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import com.tommasov.mg4simplelauncher.PreferencesManager;
 import com.tommasov.mg4simplelauncher.Dialogs;
 import com.tommasov.mg4simplelauncher.R;
+import com.tommasov.mg4simplelauncher.vehicle.TripForecast;
 import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class ChargingCardBinder {
     private final View[] extras = new View[SUMMARY_COUNT];
     private final ImageView[] arrivalIcons = new ImageView[SUMMARY_COUNT];
     private final TextView[] arrivals = new TextView[SUMMARY_COUNT];
-    private final View arrivalNote;
+    private final TextView arrivalNote;
 
     /** Set once the card has shown results, so returning to the page costs no request. */
     private boolean loaded;
@@ -193,9 +194,13 @@ public class ChargingCardBinder {
             public void onState(@NonNull VehicleData.State state) {
                 arrival = ArrivalCharge.from(state);
                 arrivalNote.setVisibility(arrival == null ? View.GONE : View.VISIBLE);
-                if (arrival != null && !lastPoints.isEmpty()) {
-                    bind(lastPoints);
+                if (arrival == null) {
+                    return;
                 }
+                redraw();
+                // Then ask the navigator what is ahead, and correct the figure if the route
+                // is dearer than the driving that produced the car's range.
+                askRoute();
             }
 
             @Override
@@ -204,6 +209,42 @@ public class ChargingCardBinder {
                 arrivalNote.setVisibility(View.GONE);
             }
         });
+    }
+
+    /**
+     * Corrects the estimate for the journey the navigator is running, when there is one.
+     *
+     * <p>Runs after the vehicle reading rather than instead of it: without a destination there
+     * is nothing to correct, and the figure from the car is the right answer for someone
+     * looking for a charger on the way to wherever they happen to be going.
+     */
+    private void askRoute() {
+        Context context = card.getContext();
+        TripForecast.read(context, new TripForecast.Callback() {
+            @Override
+            public void onTrip(@NonNull TripForecast.Trip trip) {
+                if (arrival == null) {
+                    return;
+                }
+                int kwh = new PreferencesManager(context).getBatteryCapacityKwh();
+                arrival = arrival.onRoute(trip, kwh);
+                redraw();
+            }
+
+            @Override
+            public void onNoTrip() {
+                // Nothing to correct against: the car's own range stands.
+            }
+        });
+    }
+
+    /** Redraws the rows and says which of the two estimates is on screen. */
+    private void redraw() {
+        arrivalNote.setText(arrival != null && arrival.isRouteCorrected()
+                ? R.string.charging_note_route : R.string.charging_note_separator);
+        if (!lastPoints.isEmpty()) {
+            bind(lastPoints);
+        }
     }
 
     /** Lets the driver pick which network the card lists, and reloads it on the spot. */

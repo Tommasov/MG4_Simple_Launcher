@@ -3,6 +3,7 @@ package com.tommasov.mg4simplelauncher.charging;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tommasov.mg4simplelauncher.vehicle.TripForecast;
 import com.tommasov.mg4simplelauncher.vehicle.VehicleData;
 
 /**
@@ -35,12 +36,30 @@ public final class ArrivalCharge {
      */
     private static final float ROAD_FACTOR = 1.3f;
 
+    /**
+     * Consumption against average speed, in kWh/100 km: {@code a + b·v²}.
+     *
+     * <p>Two points of an MG4 fix the curve — about 13 at 50 km/h and about 23 at 130 — and
+     * the square term is not a curve-fitting trick but the shape of aerodynamic drag, which
+     * is what makes a motorway leg expensive. It predicts ~18 at 100 km/h, which is the
+     * figure owners report.
+     *
+     * <p>Approximate, and only used for the *difference* between two ways of driving: what it
+     * has to get right is that 130 costs the better part of twice what 50 does, not the
+     * second decimal of either.
+     */
+    private static final double CONSUMPTION_BASE = 11.3;
+    private static final double CONSUMPTION_DRAG = 6.94e-4;
+
     private final int batteryPercent;
     private final float kmPerPercent;
+    /** From the route ahead, when the navigator has one; never larger than the above. */
+    private final float routeKmPerPercent;
 
-    private ArrivalCharge(int batteryPercent, float kmPerPercent) {
+    private ArrivalCharge(int batteryPercent, float kmPerPercent, float routeKmPerPercent) {
         this.batteryPercent = batteryPercent;
         this.kmPerPercent = kmPerPercent;
+        this.routeKmPerPercent = routeKmPerPercent;
     }
 
     /**
@@ -56,7 +75,50 @@ public final class ArrivalCharge {
         if (state.rangeKm == VehicleData.UNKNOWN || state.rangeKm <= 0) {
             return null;
         }
-        return new ArrivalCharge(state.batteryPercent, state.rangeKm / (float) state.batteryPercent);
+        float kmPerPercent = state.rangeKm / (float) state.batteryPercent;
+        return new ArrivalCharge(state.batteryPercent, kmPerPercent, kmPerPercent);
+    }
+
+    /**
+     * The same reading, corrected for the journey the navigator has been given.
+     *
+     * <p>The car's own range assumes you carry on driving as you have been. Set off from home
+     * after a week in town and point the navigator at a motorway, and that assumption is
+     * generous by half: a stop that reads as comfortably in reach is not. The navigator knows
+     * the route, so the average speed it predicts says what the next hundred kilometres will
+     * actually cost.
+     *
+     * <p>Only ever pessimistic. If the route ahead is slower than the recent driving — a
+     * motorway run ending in city traffic — the car's own figure is kept, because the battery
+     * does not gain range from good news and a driver who runs out because the launcher was
+     * optimistic is owed a better excuse than arithmetic.
+     *
+     * @param batteryKwh usable capacity of this trim, in kWh.
+     */
+    @NonNull
+    public ArrivalCharge onRoute(@NonNull TripForecast.Trip trip, double batteryKwh) {
+        double routeConsumption = consumptionAt(trip.averageSpeedKmh);
+        if (routeConsumption <= 0) {
+            return this;
+        }
+        // Energy on board now, spent at the rate the route implies.
+        double energyKwh = batteryKwh * batteryPercent / 100d;
+        double routeKm = energyKwh / routeConsumption * 100d;
+        float perPercent = (float) (routeKm / batteryPercent);
+        if (perPercent >= kmPerPercent) {
+            return this;
+        }
+        return new ArrivalCharge(batteryPercent, kmPerPercent, perPercent);
+    }
+
+    /** kWh per 100 km at a given average speed. */
+    static double consumptionAt(double speedKmh) {
+        return CONSUMPTION_BASE + CONSUMPTION_DRAG * speedKmh * speedKmh;
+    }
+
+    /** True when the route ahead is dearer than the driving behind, so the two differ. */
+    public boolean isRouteCorrected() {
+        return routeKmPerPercent < kmPerPercent;
     }
 
     /**
@@ -72,7 +134,7 @@ public final class ArrivalCharge {
         if (straightLineKm <= 0) {
             return batteryPercent;
         }
-        double used = (straightLineKm * ROAD_FACTOR) / kmPerPercent;
+        double used = (straightLineKm * ROAD_FACTOR) / routeKmPerPercent;
         return (int) Math.max(0, Math.round(batteryPercent - used));
     }
 }
