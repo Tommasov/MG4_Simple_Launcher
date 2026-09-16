@@ -33,6 +33,9 @@
     <!-- Charging screen: tab height and text match the SAIC top tab bar. -->
     <dimen name="filter_tab_height">85dp</dimen>
     <dimen name="charge_list_width">640dp</dimen>
+    <!-- Between two stations on the card. Wider since the card went from six rows to four:
+         the height freed up is better spent separating what is left than left at the bottom. -->
+    <dimen name="charge_summary_gap">26dp</dimen>
     <!-- The system tab bar sits at 28sp, and the settings tabs match it: they span a whole
          card. The charging filters cannot — four long labels share 640dp there. -->
     <!-- 18, not 20: the tabs are inset by charge_list_inset to line up with the rows below,

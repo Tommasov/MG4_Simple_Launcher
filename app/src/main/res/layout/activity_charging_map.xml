@@ -152,27 +152,34 @@
                 android:visibility="gone" />
         </FrameLayout>
 
-        <TextView
+        <!-- Attribution and the caveat on one line, the way the card carries them. Stacked
+             they took two lines off the bottom of the list for what is a single aside. -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginStart="@dimen/charge_list_inset"
-            android:text="@string/charging_attribution"
-            android:textColor="@color/text_tertiary"
-            android:textSize="@dimen/secondary_text_size" />
+            android:orientation="horizontal">
 
-        <!-- Shown only once the car has supplied a reading: without one there are no
-             estimates on screen for it to qualify. -->
-        <TextView
-            android:id="@+id/charging_arrival_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginStart="@dimen/charge_list_inset"
-            android:text="@string/charging_arrival_note"
-            android:textColor="@color/text_tertiary"
-            android:textSize="@dimen/secondary_text_size"
-            android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/charging_attribution"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <TextView
+                android:id="@+id/charging_arrival_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/charging_note_separator"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/secondary_text_size"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Right: the map, with the navigation action floating over it once a point is picked -->
