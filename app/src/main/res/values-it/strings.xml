@@ -103,7 +103,12 @@
     <string name="settings_battery_hint">Serve per stimare la carica all\'arrivo</string>
     <string name="settings_cycle_hint">Giorno in cui si rinnova il traffico MG</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
-    <string name="charging_note_route">Stima sul percorso nel navigatore</string>
+    <string name="charging_note_route">· Stima sul percorso nel navigatore</string>
+    <string name="trip_title">Viaggio</string>
+    <string name="trip_none">Nessun percorso nel navigatore</string>
+    <string name="trip_remaining">%1$.0f km al traguardo</string>
+    <string name="trip_arrival_percent">%1$d%% all\'arrivo</string>
+    <string name="trip_stop_needed">Serve una sosta di ricarica</string>
     <string name="charging_access_membership">Soci</string>
     <string name="charging_access_notice">Su prenotazione</string>
     <string name="charging_access_private">Privata</string>

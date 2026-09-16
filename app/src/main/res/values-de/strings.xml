@@ -103,7 +103,12 @@
     <string name="settings_battery_hint">Nötig für die Ladeschätzung bei Ankunft</string>
     <string name="settings_cycle_hint">Tag, an dem das MG-Datenvolumen erneuert wird</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
-    <string name="charging_note_route">Schätzung für die Route im Navi</string>
+    <string name="charging_note_route">· Schätzung für die Route im Navi</string>
+    <string name="trip_title">Fahrt</string>
+    <string name="trip_none">Keine Route im Navi</string>
+    <string name="trip_remaining">noch %1$.0f km</string>
+    <string name="trip_arrival_percent">%1$d%% bei Ankunft</string>
+    <string name="trip_stop_needed">Ein Ladestopp ist nötig</string>
     <string name="charging_access_membership">Mitglieder</string>
     <string name="charging_access_notice">Nach Anmeldung</string>
     <string name="charging_access_private">Privat</string>

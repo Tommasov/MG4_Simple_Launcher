@@ -72,6 +72,12 @@ public class ChargingCardBinder {
      * kilometres actually count down as you drive rather than jump every few minutes.
      */
     private static final float REDRAW_METRES = 200f;
+    /**
+     * Below this on arrival, the journey needs a charging stop. Ten percent rather than zero:
+     * arriving on fumes is not arriving, and a driver deciding at 200 km/h of closing speed
+     * deserves the warning while there are still stations behind them.
+     */
+    private static final int STOP_NEEDED_PERCENT = 10;
     /** The networks the gear offers, in the order the dialog lists them. */
     private static final ChargingFilter[] CHOICES = {
             ChargingFilter.ALL, ChargingFilter.MOTORWAY,
@@ -89,6 +95,9 @@ public class ChargingCardBinder {
     private final ImageView[] arrivalIcons = new ImageView[SUMMARY_COUNT];
     private final TextView[] arrivals = new TextView[SUMMARY_COUNT];
     private final TextView arrivalNote;
+    private final TextView tripStatus;
+    private final TextView tripArrival;
+    private final TextView tripAdvice;
 
     /** Set once the card has shown results, so returning to the page costs no request. */
     private boolean loaded;
@@ -113,6 +122,10 @@ public class ChargingCardBinder {
         status = page.findViewById(R.id.charging_card_status);
         groupLabel = page.findViewById(R.id.charge_group_label);
         arrivalNote = page.findViewById(R.id.charging_arrival_note);
+        tripStatus = page.findViewById(R.id.trip_status);
+        tripArrival = page.findViewById(R.id.trip_arrival);
+        tripAdvice = page.findViewById(R.id.trip_advice);
+        showNoTrip();
 
         int[] rowIds = {R.id.charge_row_0, R.id.charge_row_1,
                 R.id.charge_row_2, R.id.charge_row_3};
@@ -228,14 +241,50 @@ public class ChargingCardBinder {
                 }
                 int kwh = new PreferencesManager(context).getBatteryCapacityKwh();
                 arrival = arrival.onRoute(trip, kwh);
+                showTrip(trip);
                 redraw();
             }
 
             @Override
             public void onNoTrip() {
                 // Nothing to correct against: the car's own range stands.
+                showNoTrip();
             }
         });
+    }
+
+    /**
+     * The journey panel: how far there is to go, and what is left in the battery on arrival.
+     *
+     * <p>That second figure is the most trustworthy number on this page. Everywhere else the
+     * distance comes from Open Charge Map as the crow flies and has to be inflated by a
+     * guessed road factor; here the navigator has measured the actual route. So it is the one
+     * printed large.
+     */
+    private void showTrip(@NonNull TripForecast.Trip trip) {
+        Context context = card.getContext();
+        tripStatus.setText(context.getString(R.string.trip_remaining, trip.distanceKm));
+        if (arrival == null) {
+            tripArrival.setVisibility(View.GONE);
+            tripAdvice.setVisibility(View.GONE);
+            return;
+        }
+        int percent = arrival.percentAfterRoad(trip.distanceKm);
+        tripArrival.setText(context.getString(R.string.trip_arrival_percent, percent));
+        tripArrival.setVisibility(View.VISIBLE);
+        tripArrival.setTextColor(ContextCompat.getColor(context,
+                ChargePointAdapter.colourFor(percent)));
+        // Said in words, not left to the reader: at this charge the journey does not finish,
+        // and the four stations on the left are suddenly the point of the screen.
+        tripAdvice.setVisibility(percent <= STOP_NEEDED_PERCENT ? View.VISIBLE : View.GONE);
+        tripAdvice.setText(R.string.trip_stop_needed);
+    }
+
+    /** No destination set: say so, rather than leaving half the card blank. */
+    private void showNoTrip() {
+        tripStatus.setText(R.string.trip_none);
+        tripArrival.setVisibility(View.GONE);
+        tripAdvice.setVisibility(View.GONE);
     }
 
     /** Redraws the rows and says which of the two estimates is on screen. */

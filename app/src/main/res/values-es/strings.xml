@@ -103,7 +103,12 @@
     <string name="settings_battery_hint">Necesaria para estimar la carga al llegar</string>
     <string name="settings_cycle_hint">Día en que se renuevan los datos de MG</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
-    <string name="charging_note_route">Estimación para la ruta del navegador</string>
+    <string name="charging_note_route">· Estimación para la ruta del navegador</string>
+    <string name="trip_title">Viaje</string>
+    <string name="trip_none">Sin ruta en el navegador</string>
+    <string name="trip_remaining">faltan %1$.0f km</string>
+    <string name="trip_arrival_percent">%1$d%% al llegar</string>
+    <string name="trip_stop_needed">Hace falta una parada de carga</string>
     <string name="charging_access_membership">Socios</string>
     <string name="charging_access_notice">Con aviso</string>
     <string name="charging_access_private">Privada</string>

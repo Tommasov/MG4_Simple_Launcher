@@ -131,10 +131,18 @@ public final class ArrivalCharge {
      * @param straightLineKm distance as Open Charge Map gives it, in kilometres.
      */
     public int percentOnArrival(double straightLineKm) {
-        if (straightLineKm <= 0) {
+        return percentAfterRoad(straightLineKm * ROAD_FACTOR);
+    }
+
+    /**
+     * The same figure for a distance already measured along roads — the navigator's own
+     * remaining distance, which needs no correcting because nothing was guessed about it.
+     */
+    public int percentAfterRoad(double roadKm) {
+        if (roadKm <= 0) {
             return batteryPercent;
         }
-        double used = (straightLineKm * ROAD_FACTOR) / routeKmPerPercent;
+        double used = roadKm / routeKmPerPercent;
         return (int) Math.max(0, Math.round(batteryPercent - used));
     }
 }

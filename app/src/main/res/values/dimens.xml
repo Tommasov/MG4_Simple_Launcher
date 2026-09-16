@@ -36,6 +36,9 @@
     <!-- Between two stations on the card. Wider since the card went from six rows to four:
          the height freed up is better spent separating what is left than left at the bottom. -->
     <dimen name="charge_summary_gap">26dp</dimen>
+    <!-- Charge left on arrival at the destination: the most solid number on this page, since
+         the navigator measures that distance along roads instead of across country. -->
+    <dimen name="trip_arrival_size">44sp</dimen>
     <!-- The system tab bar sits at 28sp, and the settings tabs match it: they span a whole
          card. The charging filters cannot — four long labels share 640dp there. -->
     <!-- 18, not 20: the tabs are inset by charge_list_inset to line up with the rows below,

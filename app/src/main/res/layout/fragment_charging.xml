@@ -60,8 +60,15 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="14dp"
-                android:orientation="vertical"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
                 android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <!-- Says which network is on show, so the chosen filter is never a mystery. -->
                 <TextView
@@ -77,6 +84,54 @@
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_1" />
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_2" />
                 <include layout="@layout/part_charge_summary" android:id="@+id/charge_row_3" />
+            </LinearLayout>
+
+                <!-- The journey, on the half of the card the list never used. Everything here
+                     comes from the navigator: how far there is to go, and — through the same
+                     arithmetic as the rows on the left — what is left in the battery when you
+                     get there. No other screen in this car puts those two together. -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/detail_column_gap"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/trip_title"
+                        android:textColor="@color/accent"
+                        android:textSize="@dimen/charge_detail_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/trip_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/charge_detail_size" />
+
+                    <TextView
+                        android:id="@+id/trip_arrival"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/trip_arrival_size"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/trip_advice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/charge_low"
+                        android:textSize="@dimen/charge_detail_size"
+                        android:visibility="gone" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView

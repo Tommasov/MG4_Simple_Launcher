@@ -102,7 +102,12 @@
     <string name="settings_battery_hint">Needed to estimate charge on arrival</string>
     <string name="settings_cycle_hint">Day MG\'s data allowance renews</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
-    <string name="charging_note_route">Estimate for the route in the navigator</string>
+    <string name="charging_note_route">· Estimate for the route in the navigator</string>
+    <string name="trip_title">Journey</string>
+    <string name="trip_none">No route in the navigator</string>
+    <string name="trip_remaining">%1$.0f km to go</string>
+    <string name="trip_arrival_percent">%1$d%% on arrival</string>
+    <string name="trip_stop_needed">A charging stop is needed</string>
     <string name="charging_access_membership">Members</string>
     <string name="charging_access_notice">By arrangement</string>
     <string name="charging_access_private">Private</string>

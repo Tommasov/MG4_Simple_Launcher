@@ -103,7 +103,12 @@
     <string name="settings_battery_hint">Nécessaire pour estimer la charge à l\'arrivée</string>
     <string name="settings_cycle_hint">Jour de renouvellement du forfait MG</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
-    <string name="charging_note_route">Estimation pour l\'itinéraire du GPS</string>
+    <string name="charging_note_route">· Estimation pour l\'itinéraire du GPS</string>
+    <string name="trip_title">Trajet</string>
+    <string name="trip_none">Aucun itinéraire dans le GPS</string>
+    <string name="trip_remaining">%1$.0f km restants</string>
+    <string name="trip_arrival_percent">%1$d%% à l\'arrivée</string>
+    <string name="trip_stop_needed">Un arrêt de recharge est nécessaire</string>
     <string name="charging_access_membership">Membres</string>
     <string name="charging_access_notice">Sur réservation</string>
     <string name="charging_access_private">Privée</string>
