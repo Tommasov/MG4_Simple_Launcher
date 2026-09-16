@@ -22,6 +22,7 @@
     <string name="settings_system">System</string>
     <string name="sys_memory">Speicher</string>
     <string name="sys_storage">Speicherplatz</string>
+    <string name="sys_webview">WebView</string>
     <string name="sys_network">Netzwerk</string>
     <string name="sys_used_total">belegt / gesamt</string>
     <string name="sys_free_total">frei / gesamt</string>

@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.os.SystemClock;
 import android.os.storage.StorageManager;
+import android.webkit.WebView;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
@@ -98,6 +99,7 @@ class TechnicalDetails {
         row(left, "uptime", R.string.sys_uptime_label);
         row(left, "memory", R.string.sys_memory);
         row(left, "storage", R.string.sys_storage);
+        row(left, "webview", R.string.sys_webview);
 
         heading(middle, R.string.sys_network);
         row(middle, "connection", R.string.net_connection);
@@ -244,6 +246,33 @@ class TechnicalDetails {
             set("launcher", pi.versionName + " (" + pi.getLongVersionCode() + ")");
         } catch (PackageManager.NameNotFoundException e) {
             set("launcher", null);
+        }
+        set("webview", webViewVersion());
+    }
+
+    /**
+     * Which Chromium renders web content here, and how old it is.
+     *
+     * <p>Worth a line of its own on a head unit without Play Services: the system WebView
+     * never updates, so it is frozen at whatever the firmware shipped. Everything that
+     * displays a web page on this car — the HTML viewer, any app with an embedded view, and
+     * anything we might build — runs on that engine and inherits both its abilities and its
+     * unpatched holes. The version is the only way to know which.
+     */
+    @Nullable
+    private String webViewVersion() {
+        try {
+            PackageInfo info = WebView.getCurrentWebViewPackage();
+            if (info == null) {
+                return null;
+            }
+            String version = info.versionName;
+            // Chromium version strings are four parts; the first is the one that dates it.
+            int dot = version == null ? -1 : version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            return major + " (" + version + ")";
+        } catch (Exception e) {
+            return null;
         }
     }
 
