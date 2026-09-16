@@ -144,18 +144,17 @@ public class HomeFragment extends Fragment {
 
     private void bindFavorite(int slot) {
         String pkg = preferencesManager.getFavorite(slot);
-        PackageManager pm = requireContext().getPackageManager();
         if (pkg != null) {
-            try {
-                ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
-                CharSequence label = pm.getApplicationLabel(ai);
-                favoriteIcons[slot].setImageDrawable(AppIcons.highRes(requireContext(), pkg));
+            CharSequence label = LaunchTargets.labelFor(requireContext(), pkg);
+            Drawable icon = LaunchTargets.iconFor(requireContext(), pkg);
+            if (label != null && icon != null) {
+                favoriteIcons[slot].setImageDrawable(icon);
                 favoriteLabels[slot].setText(label);
                 return;
-            } catch (PackageManager.NameNotFoundException e) {
-                // App was uninstalled; fall through to the empty state.
-                preferencesManager.clearFavorite(slot);
             }
+            // An app since uninstalled, or a screen this build no longer knows: free the
+            // slot rather than leaving a tile that does nothing when pressed.
+            preferencesManager.clearFavorite(slot);
         }
         favoriteIcons[slot].setImageResource(R.drawable.ic_add);
         favoriteLabels[slot].setText(R.string.add_favorite);
@@ -209,7 +208,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindFixedApp(ImageView view, String pkg) {
-        Drawable icon = AppIcons.highRes(requireContext(), pkg);
+        Drawable icon = LaunchTargets.iconFor(requireContext(), pkg);
         if (icon != null) {
             view.setImageDrawable(icon);
         } else {

@@ -112,12 +112,13 @@ public class FavoritesGridFragment extends Fragment {
                 if (pkg == null) {
                     continue;
                 }
-                try {
-                    ApplicationInfo ai = pm.getApplicationInfo(pkg, 0);
-                    labels[i] = pm.getApplicationLabel(ai).toString();
-                    icons[i] = AppIcons.highRes(ctx, pkg);
-                } catch (PackageManager.NameNotFoundException e) {
-                    // App was uninstalled; free the slot and leave the tile empty.
+                CharSequence label = LaunchTargets.labelFor(ctx, pkg);
+                Drawable icon = LaunchTargets.iconFor(ctx, pkg);
+                if (label != null && icon != null) {
+                    labels[i] = label.toString();
+                    icons[i] = icon;
+                } else {
+                    // App uninstalled, or a screen this build no longer knows: free the slot.
                     preferencesManager.clearGridFavorite(i);
                 }
             }

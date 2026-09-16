@@ -38,6 +38,12 @@ public class AppDrawerActivity extends AppCompatActivity {
     public static final String EXTRA_TARGET = "target";
     public static final String MODE_ALL = "all";
     public static final String MODE_SYSTEM = "system";
+    /**
+     * The picker, showing screens instead of apps: Android's settings pages and the
+     * launcher's own. Kept a separate list rather than sitting on top of the apps — they are
+     * a different kind of thing, and mixed in they read as nine odd-looking apps.
+     */
+    public static final String MODE_PICK_SCREENS = "pick_screens";
     public static final String MODE_PICK = "pick";
     public static final String TARGET_HOME = "home";
     public static final String TARGET_GRID = "grid";
@@ -72,16 +78,27 @@ public class AppDrawerActivity extends AppCompatActivity {
         // Explicit back affordance for the head unit, mirroring the system back gesture.
         findViewById(R.id.drawer_back_button).setOnClickListener(v -> finish());
 
-        // System apps are reached from the "all apps" drawer header; redundant elsewhere.
-        View systemApps = findViewById(R.id.system_apps_button);
+        // One button, three jobs depending on where we are: reach the system apps from the
+        // "all apps" drawer, and swap between apps and screens while picking.
+        TextView headerButton = findViewById(R.id.system_apps_button);
         if (MODE_ALL.equals(mode)) {
-            systemApps.setOnClickListener(v -> {
-                Intent intent = new Intent(this, AppDrawerActivity.class);
-                intent.putExtra(EXTRA_MODE, MODE_SYSTEM);
-                startActivity(intent);
+            headerButton.setText(R.string.system_apps);
+            headerButton.setOnClickListener(v -> startActivity(
+                    drawerIntent(MODE_SYSTEM, slot, target)));
+        } else if (MODE_PICK.equals(mode)) {
+            headerButton.setText(R.string.target_screens);
+            headerButton.setOnClickListener(v -> {
+                startActivity(drawerIntent(MODE_PICK_SCREENS, slot, target));
+                finish();
+            });
+        } else if (MODE_PICK_SCREENS.equals(mode)) {
+            headerButton.setText(R.string.all_apps);
+            headerButton.setOnClickListener(v -> {
+                startActivity(drawerIntent(MODE_PICK, slot, target));
+                finish();
             });
         } else {
-            systemApps.setVisibility(View.GONE);
+            headerButton.setVisibility(View.GONE);
         }
 
         RecyclerView grid = findViewById(R.id.app_grid);
@@ -91,12 +108,23 @@ public class AppDrawerActivity extends AppCompatActivity {
         loadApps(grid);
     }
 
+    /** The same screen again, in another mode, carrying the slot it is filling. */
+    private Intent drawerIntent(String newMode, int slot, String target) {
+        Intent intent = new Intent(this, AppDrawerActivity.class);
+        intent.putExtra(EXTRA_MODE, newMode);
+        intent.putExtra(EXTRA_SLOT, slot);
+        intent.putExtra(EXTRA_TARGET, target);
+        return intent;
+    }
+
     private String titleForMode() {
         switch (mode) {
             case MODE_SYSTEM:
                 return getString(R.string.system_apps);
             case MODE_PICK:
                 return getString(R.string.pick_favorite_title);
+            case MODE_PICK_SCREENS:
+                return getString(R.string.target_screens);
             default:
                 return getString(R.string.all_apps);
         }
@@ -112,13 +140,17 @@ public class AppDrawerActivity extends AppCompatActivity {
                 // In the picker a long-press would fight the tap-to-assign gesture, so the
                 // app-details shortcut only exists in the browsing drawers.
                 AppListAdapter.OnAppClickListener longClick =
-                        MODE_PICK.equals(mode) ? null : this::onAppLongClick;
+                        MODE_PICK.equals(mode) || MODE_PICK_SCREENS.equals(mode)
+                                ? null : this::onAppLongClick;
                 grid.setAdapter(new AppListAdapter(apps, this::onAppClick, longClick));
             });
         });
     }
 
     private List<AppInfo> queryApps() {
+        if (MODE_PICK_SCREENS.equals(mode)) {
+            return screenTargets();
+        }
         PackageManager pm = getPackageManager();
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -153,8 +185,20 @@ public class AppDrawerActivity extends AppCompatActivity {
         return apps;
     }
 
+    /**
+     * The things a tile can hold besides an app, dressed as apps so the same grid, the same
+     * adapter and the same tap-to-assign carry them.
+     */
+    private List<AppInfo> screenTargets() {
+        List<AppInfo> targets = new ArrayList<>();
+        for (LaunchTargets.Target target : LaunchTargets.all()) {
+            targets.add(new AppInfo(target.label(this), target.id, target.icon(this), false));
+        }
+        return targets;
+    }
+
     private void onAppClick(AppInfo app) {
-        if (MODE_PICK.equals(mode)) {
+        if (MODE_PICK.equals(mode) || MODE_PICK_SCREENS.equals(mode)) {
             if (slot >= 0) {
                 PreferencesManager prefs = new PreferencesManager(this);
                 if (TARGET_GRID.equals(target)) {

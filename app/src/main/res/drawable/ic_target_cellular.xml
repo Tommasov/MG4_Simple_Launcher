@@ -1,0 +1,12 @@
+<!-- Mobile data settings. Three rising bars rather than the filled triangle: at tile size the
+     triangle reads as an arrow, and the bars cannot be mistaken for anything else. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/text_primary">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M3.5 14h3.2v6.5H3.5zm6.9-4.5h3.2v11h-3.2zm6.9-5h3.2v16h-3.2z" />
+</vector>

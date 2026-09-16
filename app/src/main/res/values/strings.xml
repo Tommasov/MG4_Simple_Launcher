@@ -156,4 +156,12 @@
     <string name="downloads_available">Version %1$s</string>
     <string name="downloads_update_from">Update to %1$s</string>
     <string name="downloads_current">Up to date, version %1$s</string>
+
+    <!-- Things a tile can hold besides an app. -->
+    <string name="target_wifi">Wi-Fi</string>
+    <string name="target_bluetooth">Bluetooth</string>
+    <string name="target_mobile_data">Mobile data</string>
+    <string name="target_display">Display</string>
+    <string name="target_apps">Installed apps</string>
+    <string name="target_screens">Screens</string>
 </resources>
