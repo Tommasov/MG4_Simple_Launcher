@@ -19,6 +19,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- Read how much mobile data the car has used this month. Granted by hand in
+         Android's settings rather than by a dialog; without it the screen falls back to the
+         figure since boot and says so. -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".diag.LauncherApplication"
         android:allowBackup="true"

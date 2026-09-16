@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Technical details, on a screen of their own. They used to sit on the tools page, where
-     they were the one card nobody needs while driving; here they are four cards across the
-     full width, which is room enough to read them without squinting. -->
+<!-- Technical details, on a screen of their own.
+
+     No cards. They were four, one per subject, and each had to be a card's worth of content
+     or look empty — which capped the screen at what four cards hold just as more was worth
+     saying about the car's own connection. A list of labelled rows in two columns holds
+     twenty readings as comfortably as eight, reads down a column instead of zig-zagging
+     between boxes, and leaves the bottom free for the one thing here that wants to be drawn
+     rather than written.
+
+     The rows themselves are built in code: adding a reading should not mean editing a
+     layout, and nothing here is worth an <include> per line. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,6 +45,9 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Three columns. Left: the machine. Middle: what it is connected to. Right: what that
+         connection has cost against MG's monthly gigabyte. Three because the screen is 1920
+         wide and a column that runs past the bottom edge is worse than one that is short. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,151 +56,27 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- The device itself: model, Android version, uptime, launcher build -->
         <LinearLayout
+            android:id="@+id/details_left"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/card_gap"
+            android:layout_marginEnd="@dimen/detail_column_gap"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
-            android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_device"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_device_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="6dp"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/info_card_body_size" />
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
+            android:id="@+id/details_middle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/card_gap"
+            android:layout_marginEnd="@dimen/detail_column_gap"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
-            android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_memory"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_marginTop="16dp"
-                android:id="@+id/tv_memory_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_used_total"
-                android:textColor="@color/text_tertiary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/card_gap"
-            android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
-            android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_storage"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_marginTop="16dp"
-                android:id="@+id/tv_storage_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_free_total"
-                android:textColor="@color/text_tertiary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@+id/details_right"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/smallcard_selector"
-            android:orientation="vertical"
-            android:padding="@dimen/info_card_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sys_network"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/small_card_label_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_marginTop="16dp"
-                android:id="@+id/tv_network_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/sys_value_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_network_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_tertiary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </LinearLayout>
 </LinearLayout>

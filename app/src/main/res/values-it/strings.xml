@@ -32,6 +32,28 @@
     <string name="sys_uptime">Acceso da %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
+    <string name="sys_model">Modello</string>
+    <string name="sys_android_label">Android</string>
+    <string name="sys_launcher_label">Launcher</string>
+    <string name="sys_uptime_label">Acceso da</string>
+    <string name="net_connection">Connessione</string>
+    <string name="net_link_speed">Velocità</string>
+    <string name="net_operator">Operatore</string>
+    <string name="net_technology">Tecnologia</string>
+    <string name="net_signal">Segnale</string>
+    <string name="net_roaming">Roaming</string>
+    <string name="data_usage">Dati mobili</string>
+    <string name="data_this_cycle">Questo ciclo</string>
+    <string name="data_since_boot">Dall\'avvio</string>
+    <string name="data_cycle_day">Si rinnova il</string>
+    <string name="data_cycle_day_title">Giorno di rinnovo</string>
+    <string name="data_allow">Tocca per consentire</string>
+    <string name="data_allow_hint">Android deve concedere l\'accesso ai dati d\'uso per leggere il totale mensile</string>
+    <string name="data_of">%1$s di %2$s</string>
+    <string name="net_sim">SIM</string>
+    <string name="sys_unknown">—</string>
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
 
     <!-- Aggiornamento in-app -->
     <string name="update_check_action">Cerca aggiornamenti</string>

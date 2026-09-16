@@ -18,4 +18,7 @@
     <!-- Tonal surface for the native-style drawer buttons (tints of text_primary). -->
     <color name="button_surface">#1f3c4143</color>
     <color name="button_surface_pressed">#3d3c4143</color>
+
+    <!-- The line under a row of readings: present enough to group, faint enough to ignore. -->
+    <color name="hairline">#14000000</color>
 </resources>

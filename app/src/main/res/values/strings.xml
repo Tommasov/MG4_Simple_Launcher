@@ -31,6 +31,28 @@
     <string name="sys_uptime">Uptime %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
+    <string name="sys_model">Model</string>
+    <string name="sys_android_label">Android</string>
+    <string name="sys_launcher_label">Launcher</string>
+    <string name="sys_uptime_label">Uptime</string>
+    <string name="net_connection">Connection</string>
+    <string name="net_link_speed">Link speed</string>
+    <string name="net_operator">Operator</string>
+    <string name="net_technology">Technology</string>
+    <string name="net_signal">Signal</string>
+    <string name="net_roaming">Roaming</string>
+    <string name="data_usage">Mobile data</string>
+    <string name="data_this_cycle">This cycle</string>
+    <string name="data_since_boot">Since start-up</string>
+    <string name="data_cycle_day">Renews on</string>
+    <string name="data_cycle_day_title">Day the allowance renews</string>
+    <string name="data_allow">Tap to allow</string>
+    <string name="data_allow_hint">Android must grant usage access before the monthly total can be read</string>
+    <string name="data_of">%1$s of %2$s</string>
+    <string name="net_sim">SIM</string>
+    <string name="sys_unknown">—</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- In-app updater -->
     <string name="update_check_action">Check for updates</string>

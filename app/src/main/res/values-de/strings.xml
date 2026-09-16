@@ -32,6 +32,28 @@
     <string name="sys_uptime">Laufzeit %1$s</string>
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
+    <string name="sys_model">Modell</string>
+    <string name="sys_android_label">Android</string>
+    <string name="sys_launcher_label">Launcher</string>
+    <string name="sys_uptime_label">Laufzeit</string>
+    <string name="net_connection">Verbindung</string>
+    <string name="net_link_speed">Geschwindigkeit</string>
+    <string name="net_operator">Netzbetreiber</string>
+    <string name="net_technology">Technik</string>
+    <string name="net_signal">Signal</string>
+    <string name="net_roaming">Roaming</string>
+    <string name="data_usage">Mobile Daten</string>
+    <string name="data_this_cycle">Dieser Zeitraum</string>
+    <string name="data_since_boot">Seit dem Start</string>
+    <string name="data_cycle_day">Erneuert am</string>
+    <string name="data_cycle_day_title">Tag der Erneuerung</string>
+    <string name="data_allow">Zum Erlauben tippen</string>
+    <string name="data_allow_hint">Android muss den Nutzungszugriff erlauben, damit der Monatswert gelesen werden kann</string>
+    <string name="data_of">%1$s von %2$s</string>
+    <string name="net_sim">SIM</string>
+    <string name="sys_unknown">—</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
 
     <!-- In-App-Update -->
     <string name="update_check_action">Nach Updates suchen</string>
