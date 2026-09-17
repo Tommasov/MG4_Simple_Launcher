@@ -69,6 +69,33 @@ public final class LaunchTargets {
             "saic", "roewe", "aroundview", "avm", "hmi", "vehicle", "carservice",
     };
 
+    /**
+     * Screens that are never offered as a tile, whatever they are called on a given car.
+     *
+     * <p>These are the emergency-call screens. Opening one from here was tried on a real
+     * vehicle and it is bad in two different ways.
+     *
+     * <p>The first is mechanical: {@code com.saicmotor.hmi.btcall.ECallActivity} is declared
+     * {@code singleInstance} with its own theme, so it takes over its own task and sits there
+     * — the head unit had to be restarted to get out of it.
+     *
+     * <p>The second is worse and is the reason this list exists rather than a bug report.
+     * That activity is only the display for a call somebody else has placed: its package
+     * holds no calling permission at all, just {@code READ_CALL_LOG} and {@code READ_CONTACTS}.
+     * Started on its own it shows an emergency call in progress, with the avatar and the
+     * running timer, while nothing whatever has been dialled. A driver who reaches that screen
+     * in the seconds after a crash would believe help is on its way. No tile is worth that.
+     *
+     * <p>The neighbouring {@code com.saicmotor.rescuecall} is excluded for the opposite
+     * reason: that one does hold {@code CALL_PHONE} and {@code BIND_INCALL_SERVICE}, and is
+     * what the SOS button uses to dial a real number. It is reachable from the drawer, which
+     * is the vehicle's own decision; it does not also need to be one tap away on the home
+     * screen, where it can be hit by mistake.
+     */
+    private static final String[] OFF_LIMITS = {
+            "ecall", "bcall", "rescuecall", "emergency", "sos",
+    };
+
     /** One thing a tile can be pointed at. */
     public static final class Target {
         public final String id;
@@ -197,6 +224,9 @@ public final class LaunchTargets {
                 if (inDrawer.contains(activity.packageName + "/" + activity.name)) {
                     continue;
                 }
+                if (isOffLimits(activity.packageName, activity.name)) {
+                    continue;
+                }
                 screens.add(new ActivityTarget(
                         new ComponentName(activity.packageName, activity.name),
                         readableName(pm, activity)));
@@ -220,6 +250,22 @@ public final class LaunchTargets {
         public String id() {
             return activityId(component);
         }
+    }
+
+    /**
+     * Whether this is one of the screens that must never be offered. Matched on fragments of
+     * the name rather than on exact components, because the names differ between trims and
+     * firmware versions and a list that is right on one car and wrong on another would be
+     * worse than useless here. A screen wrongly excluded costs one entry in a chooser.
+     */
+    private static boolean isOffLimits(@NonNull String packageName, @NonNull String className) {
+        String lower = (packageName + "/" + className).toLowerCase(Locale.ROOT);
+        for (String fragment : OFF_LIMITS) {
+            if (lower.contains(fragment)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean looksLikeVehicle(@NonNull String packageName) {
@@ -325,6 +371,14 @@ public final class LaunchTargets {
      * real possibility on a vendor Android.
      */
     public static boolean launch(@NonNull Context context, @NonNull String id) {
+        ComponentName stored = componentOf(id);
+        if (stored != null && isOffLimits(stored.getPackageName(), stored.getClassName())) {
+            // Checked again here and not only where the list is built: a tile assigned before
+            // this build existed still holds its id, and the emergency screens are exactly
+            // the ones that must not open because somebody picked one last week.
+            DiagnosticsLog.log(context, "LaunchTargets", "refused off-limits " + id);
+            return false;
+        }
         Intent intent = intentFor(context, id);
         if (intent == null) {
             return false;
