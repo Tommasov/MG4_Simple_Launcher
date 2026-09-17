@@ -140,10 +140,15 @@
     <!-- On-device diagnostics log -->
     <string name="diagnostics_title">Diagnostic</string>
     <string name="diagnostics_open">Ouvrir le journal</string>
-    <string name="diagnostics_copy">Copier</string>
+    <string name="diagnostics_send">Envoyer</string>
+    <string name="diagnostics_sending">Envoi…</string>
+    <string name="diagnostics_sent">Journal envoyé</string>
+    <string name="diagnostics_send_failed">Impossible d\'envoyer le journal</string>
+    <string name="diagnostics_send_title">Envoyer un rapport</string>
+    <string name="diagnostics_send_explain">Le journal est envoyé à l’auteur de l’application, avec la version et le modèle de l’unité. Il peut contenir des positions GPS et les noms des applications installées. Rien n’est envoyé avant que vous touchiez Envoyer.</string>
+    <string name="diagnostics_send_note_hint">Que faisiez-vous ? (facultatif)</string>
     <string name="diagnostics_clear">Vider</string>
     <string name="diagnostics_empty">Le journal est vide</string>
-    <string name="diagnostics_copied">Journal copié</string>
     <plurals name="diagnostics_lines">
         <item quantity="one">%d ligne</item>
         <item quantity="other">%d lignes</item>

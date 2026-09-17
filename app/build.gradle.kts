@@ -49,6 +49,29 @@ android {
             "\"https://ws2.tommasovietina.it/mg4/apps.json\""
         )
 
+        // The author's probe, which is where the diagnostics log is sent from the car: the
+        // head unit has no adb, no usable browser and — checked in the firmware — not one
+        // app that accepts a share, so an upload is the only way a report leaves the vehicle.
+        buildConfigField(
+            "String",
+            "PROBE_URL",
+            "\"https://ws2.tommasovietina.it/mg4/probe.php\""
+        )
+
+        // Write key of the probe. It ships inside the APK, so everyone who installs the
+        // launcher has it and anyone who unzips one can read it — which is why the probe
+        // does nothing but accept a report: it has no way to read one back, list what is
+        // there or delete anything, and reports are collected over FTP instead.
+        buildConfigField(
+            "String",
+            "PROBE_KEY",
+            "\"${apiKeys.getProperty("probe.key", "")}\""
+        )
+
+        // Which app a report came from: the probe keeps one drawer per app, so the swipe
+        // helper and anything else written for this car can post to the same place.
+        buildConfigField("String", "PROBE_APP", "\"launcher\"")
+
         // Open Charge Map key; empty when apikeys.properties is absent.
         buildConfigField(
             "String",

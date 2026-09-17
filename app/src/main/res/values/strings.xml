@@ -139,10 +139,15 @@
     <!-- On-device diagnostics log -->
     <string name="diagnostics_title">Diagnostics</string>
     <string name="diagnostics_open">Open log</string>
-    <string name="diagnostics_copy">Copy</string>
+    <string name="diagnostics_send">Send</string>
+    <string name="diagnostics_sending">Sending…</string>
+    <string name="diagnostics_sent">Log sent</string>
+    <string name="diagnostics_send_failed">The log could not be sent</string>
+    <string name="diagnostics_send_title">Send a report</string>
+    <string name="diagnostics_send_explain">The log goes to the app author, along with the version and the model of the head unit. It can contain position fixes and the names of the apps you have installed. Nothing is sent until you tap Send.</string>
+    <string name="diagnostics_send_note_hint">What were you doing? (optional)</string>
     <string name="diagnostics_clear">Clear</string>
     <string name="diagnostics_empty">The log is empty</string>
-    <string name="diagnostics_copied">Log copied</string>
     <plurals name="diagnostics_lines">
         <item quantity="one">%d line</item>
         <item quantity="other">%d lines</item>

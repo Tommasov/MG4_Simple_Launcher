@@ -140,10 +140,15 @@
     <!-- On-device diagnostics log -->
     <string name="diagnostics_title">Diagnose</string>
     <string name="diagnostics_open">Protokoll öffnen</string>
-    <string name="diagnostics_copy">Kopieren</string>
+    <string name="diagnostics_send">Senden</string>
+    <string name="diagnostics_sending">Wird gesendet…</string>
+    <string name="diagnostics_sent">Protokoll gesendet</string>
+    <string name="diagnostics_send_failed">Protokoll konnte nicht gesendet werden</string>
+    <string name="diagnostics_send_title">Bericht senden</string>
+    <string name="diagnostics_send_explain">Das Protokoll geht an den Autor der App, zusammen mit Version und Modell der Kopfeinheit. Es kann GPS-Positionen und die Namen installierter Apps enthalten. Vor dem Tippen auf Senden wird nichts übertragen.</string>
+    <string name="diagnostics_send_note_hint">Was haben Sie gerade getan? (optional)</string>
     <string name="diagnostics_clear">Leeren</string>
     <string name="diagnostics_empty">Das Protokoll ist leer</string>
-    <string name="diagnostics_copied">Protokoll kopiert</string>
     <plurals name="diagnostics_lines">
         <item quantity="one">%d Zeile</item>
         <item quantity="other">%d Zeilen</item>

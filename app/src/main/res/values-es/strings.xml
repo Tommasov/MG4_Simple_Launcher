@@ -140,10 +140,15 @@
     <!-- On-device diagnostics log -->
     <string name="diagnostics_title">Diagnóstico</string>
     <string name="diagnostics_open">Abrir registro</string>
-    <string name="diagnostics_copy">Copiar</string>
+    <string name="diagnostics_send">Enviar</string>
+    <string name="diagnostics_sending">Enviando…</string>
+    <string name="diagnostics_sent">Registro enviado</string>
+    <string name="diagnostics_send_failed">No se ha podido enviar el registro</string>
+    <string name="diagnostics_send_title">Enviar un informe</string>
+    <string name="diagnostics_send_explain">El registro va al autor de la aplicación, junto con la versión y el modelo de la unidad. Puede contener posiciones GPS y los nombres de las aplicaciones instaladas. No se envía nada hasta que pulses Enviar.</string>
+    <string name="diagnostics_send_note_hint">¿Qué estabas haciendo? (opcional)</string>
     <string name="diagnostics_clear">Vaciar</string>
     <string name="diagnostics_empty">El registro está vacío</string>
-    <string name="diagnostics_copied">Registro copiado</string>
     <plurals name="diagnostics_lines">
         <item quantity="one">%d línea</item>
         <item quantity="other">%d líneas</item>
