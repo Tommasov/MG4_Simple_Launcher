@@ -23,4 +23,13 @@
     <color name="button_border">#33ffffff</color>
     <color name="choice_border">#33ffffff</color>
     <color name="choice_selected">#33ffffff</color>
+
+    <!-- The two arrival-charge warnings, which were never given a night value and so kept
+         their daylight ones: #b3261e reads at 2.5:1 on this background and #b26a00 at 3.9:1,
+         against the 4.5:1 a line of text needs. On the car the red was simply not there.
+         These are the same two tones lifted for a dark ground, 7.2:1 and 9.5:1, and they stay
+         well apart in hue — which is what carries the meaning, since at equal lightness an
+         amber always looks brighter than a red and no amount of tuning changes that. -->
+    <color name="charge_low">#ffb74d</color>
+    <color name="charge_none">#ff8a80</color>
 </resources>
