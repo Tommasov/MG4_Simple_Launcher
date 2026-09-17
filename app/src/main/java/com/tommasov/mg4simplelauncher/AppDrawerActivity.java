@@ -63,6 +63,10 @@ public class AppDrawerActivity extends AppCompatActivity {
     private String target;
     private int slot;
 
+    private RecyclerView grid;
+    /** What the grid is showing, to tell a real change from a pointless rebuild. */
+    private List<String> shownKeys = Collections.emptyList();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,11 +107,28 @@ public class AppDrawerActivity extends AppCompatActivity {
             primary.setVisibility(View.GONE);
         }
 
-        RecyclerView grid = findViewById(R.id.app_grid);
+        grid = findViewById(R.id.app_grid);
         int span = Math.max(4, getResources().getConfiguration().screenWidthDp / 130);
         grid.setLayoutManager(new GridLayoutManager(this, span));
 
         loadApps(grid);
+    }
+
+    /**
+     * Reads the list again on the way back in.
+     *
+     * <p>A long-press here leads to Android's app-details screen, and from there to
+     * uninstalling. Coming back, the drawer still listed the app that no longer exists —
+     * tapping it did nothing, which looks like the launcher being broken rather than the app
+     * being gone. The same read also picks up an app installed while we were away, which is
+     * the other half of the same trip: the Downloads screen installs one and returns here.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (grid != null && grid.getAdapter() != null) {
+            loadApps(grid);
+        }
     }
 
     /**
@@ -153,10 +174,21 @@ public class AppDrawerActivity extends AppCompatActivity {
     private void loadApps(RecyclerView grid) {
         executor.execute(() -> {
             List<AppInfo> apps = queryApps();
+            List<String> keys = new ArrayList<>(apps.size());
+            for (AppInfo app : apps) {
+                keys.add(app.packageName);
+            }
             mainHandler.post(() -> {
                 if (isFinishing() || isDestroyed()) {
                     return;
                 }
+                // Nothing changed: leave the grid alone. Rebuilding it would throw away the
+                // scroll position, so coming back from an app's details would jump to the top
+                // of the list every time — for nothing, since usually nothing was uninstalled.
+                if (grid.getAdapter() != null && keys.equals(shownKeys)) {
+                    return;
+                }
+                shownKeys = keys;
                 // In the picker a long-press would fight the tap-to-assign gesture, so the
                 // app-details shortcut only exists in the browsing drawers.
                 AppListAdapter.OnAppClickListener longClick =
