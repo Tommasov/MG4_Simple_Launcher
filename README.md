@@ -22,8 +22,15 @@ fits visually with the system, while providing a minimal, focused home screen.
   — turn it on in Settings.
 - **Fourth column** (home):
   - **All apps** (top card): every launchable app, in a grid.
-  - **Two fixed shortcuts** (bottom card): the Android 9 default **Files** and
-    **Settings** apps, side by side as icons.
+  - **Dock** (bottom card): two small slots side by side, set to Android's **Files**
+    and **Settings** to begin with and changeable like any other slot. Drawn flatter
+    than the cards above it, so it reads as a shelf rather than as a fourth favourite.
+- **More than apps on a tile**: besides an installed app, a slot can hold an Android
+  settings screen (Wi-Fi, Bluetooth, mobile data, display, apps), one of the
+  launcher's own screens, or one of the **vehicle's own screens** found on the car
+  itself — charge management, the cameras, the climate panels. The emergency-call
+  screens are deliberately never offered: opened outside a real call they show a
+  call in progress while nobody has been dialled.
 - **Charging points**: the nearest stations of one network, from Open Charge Map,
   with a full-screen map, a detail panel for the station you pick, and a **send to
   the car's navigator** button. See below.
@@ -60,9 +67,16 @@ On the card itself:
 - The **gear** chooses which network the card lists: everything nearby, the
   motorway network, Superchargers open to non-Tesla vehicles, or fast DC. The
   choice is remembered.
-- The **refresh** button reads the list again straight away. The card otherwise
-  loads once per visit and never on a timer: Open Charge Map bans callers that
-  poll it.
+- The **battery** figure on each row is the charge you would arrive with. It comes
+  from the remaining range the car reports, the distance to the station and a
+  consumption model, and it is coloured once it gets thin: amber at or below 15%,
+  red at or below 5%. It is an estimate, and the card says so rather than hiding
+  behind a ≈ sign.
+- The card **follows the car**. The rows are redrawn every 200 m so the distances
+  and the arrival figures stay honest while you drive, and the search itself runs
+  again only after 10 km — Open Charge Map bans callers that poll it, and a station
+  list does not change over a few hundred metres. The **refresh** button reads the
+  list again straight away whatever the distance.
 
 Tapping the card opens the full screen **on the network the card was showing**,
 with the same choices as tabs, a list on the left and an OpenStreetMap map on the
@@ -77,6 +91,12 @@ a panel opens over the map with what Open Charge Map knows about it:
 - Whether the station is **not simply open to anyone** — private, or by arrangement.
   Nothing is said about public stations, or about the membership tariffs some
   networks record, because a padlock that turns out to be wrong costs a usable stop.
+- The **charge on arrival**, corrected for the route when the factory navigator is
+  guiding. Straight-line distance understates a drive, so the card multiplies it by
+  a road factor; once the navigator is running, the launcher asks it for the real
+  remaining distance and time instead of guessing, and the panel says when the
+  figure is route-corrected. The correction is only ever applied when it makes the
+  estimate more pessimistic.
 - The button that hands the destination to the car's navigator.
 
 Prices are deliberately absent. Open Charge Map carries them as free text, often
@@ -96,6 +116,14 @@ Charge Map asks callers not to do.
 The first fix after a cold start can take minutes when the car's own mobile data is
 off, because assisted GPS rides on that connection; the screen keeps looking as long
 as it is open and says so.
+
+### Journey panel
+
+When the factory navigator is guiding, the charging page shows what it knows: the
+distance and the time still to go, and the charge you are expected to arrive with.
+The figures come from the vehicle's own adapter service rather than from a
+calculation of ours, so they agree with what the navigator is showing on its own
+screen. Without an active route the panel is not shown at all.
 
 ### Sending a destination to the car's navigator
 
@@ -149,7 +177,13 @@ Reached from the button on the charging points page:
 - **Launch page**: which of the pages the launcher opens on.
 - **Features**: the shortcuts page, the six-tile home, whether to look for updates
   at launch, and the beta channel.
-- **Updates**: the installed version, and a manual check.
+- **Vehicle**: which battery this car has — 51, 64 or 77 kWh, by the figure on the
+  spec sheet. The arrival estimate cannot be worked out without it. Cars sold as
+  49 kWh are the 51 pack quoted as usable rather than gross, so they belong to the
+  51 entry; internally the launcher uses the usable energy of each pack, which is
+  what the car can actually spend.
+- **Updates**: the installed version, with a **BETA** mark beside it while you are
+  on the pre-release channel, and a manual check.
 - **System**: the technical details, and the diagnostics log.
 
 ### Updates
@@ -164,17 +198,27 @@ the beta until a stable release overtakes it.
 
 ### Technical details
 
-A screen of live, permission-free readings: device model, Android version and
-uptime, the installed launcher build, memory, storage, and the active network with
-its Wi-Fi link speed.
+A screen of live, permission-free readings laid out in three columns: device model,
+Android version, build fingerprint and uptime, the installed launcher build and the
+WebView engine behind it, memory and storage, and the network — what is carrying the
+connection, the Wi-Fi link speed, and the mobile operator when the head unit's own
+SIM is the one online.
 
 ### Diagnostics log
 
 An on-device log, with a crash handler behind it. A head unit cannot be reached
 over adb, so when something goes wrong in the car this is the only way to find out
 what: it records what the launcher was doing, why a download or a position lookup
-failed, and the stack trace of a crash. It can be copied to the clipboard and
-cleared.
+failed, and the stack trace of a crash.
+
+From here the log can be **sent to the author** as a report. It is worth saying why
+this exists rather than a copy button: there is nowhere on this head unit for copied
+text to go. No app of the car's own accepts a share — the firmware ships the
+Bluetooth stack with object push disabled — and there is no text field to paste
+into. Before sending, a dialogue says exactly what leaves the car (the log, the
+build, the model of the head unit, and that the log can contain position fixes) and
+asks for one line about what you were doing; nothing is sent until you confirm. The
+log can also simply be cleared.
 
 ## Screenshots
 
@@ -183,7 +227,7 @@ cleared.
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/home.png" alt="Home: three favourite cards, all apps and the two fixed shortcuts" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/home.png" alt="Home: three favourite cards, all apps and the dock" width="800" />
 </p>
 
 <p align="center">
@@ -199,7 +243,7 @@ cleared.
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/settings.png" alt="Settings: launch page, features, updates and the system screens" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/settings.png" alt="Settings: launch page, features, vehicle, updates and the system screens" width="800" />
 </p>
 
 ## Videoguida in italiano
@@ -243,6 +287,26 @@ OCM_API_KEY=your-key-here
 
 Without it the launcher builds and runs; the charging card simply says the data is
 unavailable.
+
+## License
+
+MG4 Simple Launcher is free software: you can redistribute it and modify it under
+the terms of the **GNU General Public License, version 3 or later**, as published
+by the Free Software Foundation. The full text is in [`LICENSE`](LICENSE).
+
+    Copyright (C) 2026 Tommaso Vietina
+
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+    PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+In practice this means anyone may use this, change it and publish their own version
+— and a published version has to carry its source under the same licence. That is
+the whole intent: the work stays open for the people driving these cars.
+
+**What this licence does not cover**: the graphic resources taken from the vehicle's
+own system software. They are not mine to license — see *Graphic resources* below.
+The licence applies to the code written for this project.
 
 ## Disclaimer (English)
 
