@@ -2,7 +2,9 @@ package com.tommasov.mg4simplelauncher;
 
 import android.content.Context;
 import android.content.res.Configuration;
-
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,8 @@ import androidx.appcompat.view.ContextThemeWrapper;
  * reaches all four, and reaches anything AppCompat adds later without being told about it.
  *
  * <p>Only dialogs are scaled. The rest of the launcher is laid out by hand for this screen and
- * would not survive having its text grown underneath it.
+ * would not survive having its text grown underneath it. Toasts are handled separately, and
+ * for the opposite reason — see {@link #toast}.
  */
 public final class Dialogs {
 
@@ -40,20 +43,59 @@ public final class Dialogs {
     }
 
     /**
-     * A toast at the same enlarged size as the dialogs.
+     * The smallest a toast may be on this screen, in sp.
      *
-     * <p>A toast built with the activity keeps the system's own text size, which on this
-     * screen is a line of grey you cannot read before it fades — and a message nobody can
-     * read in the seconds it lasts might as well not be shown.
+     * <p>A floor, not a multiplier. The MG4's framework already sets its toasts to 42sp —
+     * three times the Android default, because SAIC had the same problem we do and solved it
+     * once for the whole head unit. Scaling that by another 1.4 gave the 59sp banner the
+     * driver reported. So the rule is only ever to raise a toast that is too small, which on
+     * the car means changing nothing at all and on a stock emulator means lifting the 14sp
+     * default to something readable from the seat.
+     */
+    private static final float TOAST_MIN_SP = 28f;
+
+    /**
+     * A toast that is readable from the driving position, whatever platform it lands on.
+     *
+     * <p>Unlike the dialogs, this does not go through {@link #scaled}: the font scale is a
+     * multiplier, and multiplying a size the platform has already enlarged compounds instead
+     * of correcting. Setting the floor directly leaves the vendor's own choice alone.
      */
     public static void toast(@NonNull Context context, @StringRes int messageRes, int duration) {
-        Toast.makeText(scaled(context), messageRes, duration).show();
+        toast(context, context.getText(messageRes), duration);
     }
 
     /** As above, for a message that is not a resource. */
     public static void toast(@NonNull Context context, @NonNull CharSequence message,
                              int duration) {
-        Toast.makeText(scaled(context), message, duration).show();
+        Toast toast = Toast.makeText(context, message, duration);
+        raiseToFloor(context, toast);
+        toast.show();
+    }
+
+    /**
+     * Grows a toast's text if the platform's own size is below the floor, and otherwise lets
+     * it be.
+     *
+     * <p>The view is only reachable up to Android 10; from 11 the system renders text toasts
+     * itself and {@code getView} returns nothing. Nothing this launcher runs on is affected,
+     * and on anything that is, the system's own size stands.
+     */
+    @SuppressWarnings("deprecation")
+    private static void raiseToFloor(@NonNull Context context, @NonNull Toast toast) {
+        View view = toast.getView();
+        View message = view == null ? null : view.findViewById(android.R.id.message);
+        if (!(message instanceof TextView)) {
+            return;
+        }
+        TextView text = (TextView) message;
+        // applyDimension carries the driver's own font setting, so raising the floor never
+        // undoes an enlargement they asked for themselves.
+        float floor = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, TOAST_MIN_SP,
+                context.getResources().getDisplayMetrics());
+        if (text.getTextSize() < floor) {
+            text.setTextSize(TypedValue.COMPLEX_UNIT_PX, floor);
+        }
     }
 
     /** An {@link AlertDialog.Builder} whose text is sized for the car. */
