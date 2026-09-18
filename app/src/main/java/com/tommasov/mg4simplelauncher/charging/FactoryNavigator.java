@@ -90,14 +90,31 @@ final class FactoryNavigator {
      * an owner who installed a map app of their own.
      */
     public static boolean isNavigationAvailable(@NonNull Context context) {
+        if (hasFactoryNavigator(context)) {
+            return true;
+        }
+        Intent geo = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=0,0"));
+        return geo.resolveActivity(context.getPackageManager()) != null;
+    }
+
+    /**
+     * Whether one of the vehicle's own navigators is installed.
+     *
+     * <p>Asked before the adapter service is, because the adapter is no evidence either way:
+     * it ships on every trim, including the ones sold without a navigator. Binding to it
+     * succeeds there and {@code goToPoi} returns without complaint — it simply has nothing to
+     * hand the destination to. Treating that as success swallowed the stop on those cars:
+     * the launcher reported the route as sent, never reached the fallback, and the driver saw
+     * a tap that did nothing at all.
+     */
+    public static boolean hasFactoryNavigator(@NonNull Context context) {
         PackageManager packages = context.getPackageManager();
         for (String navigator : FACTORY_NAVIGATORS) {
             if (packages.getLaunchIntentForPackage(navigator) != null) {
                 return true;
             }
         }
-        Intent geo = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=0,0"));
-        return geo.resolveActivity(packages) != null;
+        return false;
     }
 
     /**

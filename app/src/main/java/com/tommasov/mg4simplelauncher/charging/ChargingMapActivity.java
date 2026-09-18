@@ -639,6 +639,12 @@ public class ChargingMapActivity extends AppCompatActivity
      */
     @Override
     public void onNavigate(@NonNull ChargePoint point) {
+        // Nothing to send to: skip the adapter entirely rather than let it accept the call
+        // and drop it. On a trim without a navigator that silence looked like a dead button.
+        if (!FactoryNavigator.hasFactoryNavigator(this)) {
+            navigateWithoutFactoryService(point);
+            return;
+        }
         FactoryNavigator.sendDestination(this, point.latitude, point.longitude, point.title,
                 point.address,
                 new FactoryNavigator.Callback() {
