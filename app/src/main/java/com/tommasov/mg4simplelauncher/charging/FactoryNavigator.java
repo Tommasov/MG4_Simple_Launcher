@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 
@@ -108,13 +110,38 @@ final class FactoryNavigator {
      * a tap that did nothing at all.
      */
     public static boolean hasFactoryNavigator(@NonNull Context context) {
+        return factoryNavigator(context) != null;
+    }
+
+    /** Which of the vehicle's own navigators is installed, or null when none is. */
+    @Nullable
+    private static String factoryNavigator(@NonNull Context context) {
         PackageManager packages = context.getPackageManager();
         for (String navigator : FACTORY_NAVIGATORS) {
             if (packages.getLaunchIntentForPackage(navigator) != null) {
-                return true;
+                return navigator;
             }
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * Writes down which way a destination is about to go, and why.
+     *
+     * <p>A report from a car without a factory navigator showed twelve taps in a row logging
+     * nothing but "goToPoi accepted the destination" — true, and useless, because the line
+     * says what the adapter answered rather than what happened next. The one thing it could
+     * not settle was whether that car had a navigator installed but inert, which needs the
+     * opposite fix from having none at all. Now the log says.
+     */
+    public static void logRoute(@NonNull Context context) {
+        String navigator = factoryNavigator(context);
+        Intent geo = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=0,0"));
+        ResolveInfo handler = context.getPackageManager().resolveActivity(geo, 0);
+        DiagnosticsLog.log(context, TAG, "factory navigator "
+                + (navigator == null ? "none installed" : navigator)
+                + ", geo: handled by "
+                + (handler == null ? "nothing" : handler.activityInfo.packageName));
     }
 
     /**

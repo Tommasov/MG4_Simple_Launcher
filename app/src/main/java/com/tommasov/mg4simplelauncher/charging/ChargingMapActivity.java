@@ -639,6 +639,7 @@ public class ChargingMapActivity extends AppCompatActivity
      */
     @Override
     public void onNavigate(@NonNull ChargePoint point) {
+        FactoryNavigator.logRoute(this);
         // Nothing to send to: skip the adapter entirely rather than let it accept the call
         // and drop it. On a trim without a navigator that silence looked like a dead button.
         if (!FactoryNavigator.hasFactoryNavigator(this)) {
@@ -670,6 +671,7 @@ public class ChargingMapActivity extends AppCompatActivity
                 + "(" + Uri.encode(point.title) + ")");
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            DiagnosticsLog.log(this, TAG_DIAG, "destination sent as " + uri);
             return;
         } catch (ActivityNotFoundException ignored) {
             // Falls through: the factory navigator does not answer geo:.
