@@ -46,6 +46,9 @@ fits visually with the system, while providing a minimal, focused home screen.
   uninstall).
 - **Over-the-air updates**: the launcher can check for a new build and install it
   itself, on a stable or a beta channel.
+- **Downloads**: the author's other apps for this car, listed with what is installed and what
+  is not, and installed from here — the only way onto a head unit that has no store and no
+  browser. See below.
 - **Light / dark theme**: follows the system day/night mode automatically, using
   the original SAIC light and dark artwork.
 - **Persisted favorites**: the three home cards and the eight grid tiles are saved
@@ -170,6 +173,20 @@ update.
 These eight slots are stored separately from the three home cards, so assigning an
 app here never disturbs the home page.
 
+## Downloads
+
+The other apps written for this car, reached from the button beside *Settings* on the
+charging points page. A head unit has no Play Store, no browser worth downloading from, and
+otherwise no way in at all short of carrying a USB stick out to the car — which is the whole
+reason this screen exists.
+
+It is not a shop. The catalogue is one JSON file on the author's server with the binaries
+beside it. The screen lists what exists, says which of them this car already has and at what
+version, and offers to install or update the rest. Every download is checked against the hash
+published in the catalogue before Android is asked to install it — the same path the
+launcher's own updates take, and for the same reason: there is no store here to vouch for
+anything.
+
 ## Settings
 
 Reached from the button on the charging points page:
@@ -232,6 +249,10 @@ log can also simply be cleared.
 
 <p align="center">
   <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/map.png" alt="Charging points in full screen: filters, list, and the car over OpenStreetMap" width="800" />
+</p>
+
+<p align="center">
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/map-selected.png" alt="A station picked: the line from the car, the address, the connectors by kind and power, and the button that hands it to the navigator" width="800" />
 </p>
 
 <p align="center">
