@@ -223,19 +223,15 @@ log can also simply be cleared.
 ## Screenshots
 
 <p align="center">
-  <img width="320" height="180" alt="MG4 Simple Launcher in use" src="https://github.com/user-attachments/assets/7a3e3bb3-c81e-41d8-ad17-c9b56d28c359" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/home.png" alt="Home: three favourite slots waiting to be filled, All apps, and the dock" width="800" />
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/home.png" alt="Home: three favourite cards, all apps and the dock" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/charging.png" alt="Charging points card: the four nearest stations of the chosen network, and the journey panel" width="800" />
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/charging.png" alt="Charging points: the nearest stations of the chosen network" width="800" />
-</p>
-
-<p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/map.png" alt="Charging points map: filters, list and the car position over OpenStreetMap" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/map.png" alt="Charging points in full screen: filters, list, and the car over OpenStreetMap" width="800" />
 </p>
 
 <p align="center">
@@ -243,7 +239,7 @@ log can also simply be cleared.
 </p>
 
 <p align="center">
-  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/settings.png" alt="Settings: launch page, features, vehicle, updates and the system screens" width="800" />
+  <img src="https://ws2.tommasovietina.it/mg4/MG4_Simple_Launcher/17/settings.png" alt="Settings: launch page, features, vehicle and the launcher’s own screens" width="800" />
 </p>
 
 ## Videoguida in italiano
