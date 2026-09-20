@@ -94,6 +94,9 @@
     <string name="settings_battery">Batteria</string>
     <string name="settings_vehicle">Vettura</string>
     <string name="settings_battery_hint">Serve per stimare la carica all\'arrivo — scegli la taglia del tuo libretto</string>
+    <string name="settings_navigator">Manda le destinazioni a</string>
+    <string name="settings_navigator_factory">Navigatore di bordo</string>
+    <string name="settings_navigator_hint">Solo il navigatore di bordo può aggiungere una tappa a un percorso già avviato. Con un’altra app il pannello Viaggio resta vuoto.</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Stima sul percorso nel navigatore</string>
     <string name="trip_title">Viaggio</string>

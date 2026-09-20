@@ -3,32 +3,28 @@ package com.tommasov.mg4simplelauncher;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.tommasov.mg4simplelauncher.charging.FactoryNavigator;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsActivity;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Launcher settings: which carousel page opens on launch, whether the shortcuts page
- * exists at all, and a manual update check.
- *
- * <p>Changes are saved as they are made rather than behind an OK button — there is no
- * cancel to honour, and a driver should be able to leave at any point without losing what
- * they just set. {@link MainActivity} picks the new shape up when it resumes.
- */
 public class SettingsActivity extends AppCompatActivity {
 
     private PreferencesManager preferences;
@@ -50,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
         bindFeatures();
         bindSixTileHome();
         bindBattery();
+        bindNavigator();
         bindBetaBadge();
         bindUpdateOnLaunch();
         bindBetaChannel();
@@ -112,6 +109,63 @@ public class SettingsActivity extends AppCompatActivity {
                 if (ids[i] == checkedId) {
                     preferences.setBatteryCapacityKwh(sizes[i]);
                 }
+            }
+        });
+    }
+
+    /**
+     * Where destinations go, offered only when this vehicle has more than one answer.
+     *
+     * <p>A car with the factory navigator and no map app has nothing to choose, and so does a
+     * car with one map app and no factory navigator: in both cases the row would be a control
+     * with a single position, which is worse than no control. The labels are the apps' own,
+     * read from the package manager, because "OsmAnd" means something to the driver and
+     * net.osmand.plus does not.
+     */
+    private void bindNavigator() {
+        View block = findViewById(R.id.settings_navigator_block);
+        RadioGroup group = findViewById(R.id.settings_navigator_group);
+        group.removeAllViews();
+
+        List<String> values = new ArrayList<>();
+        List<CharSequence> labels = new ArrayList<>();
+        if (FactoryNavigator.hasFactoryNavigator(this)) {
+            values.add(PreferencesManager.NAVIGATOR_FACTORY);
+            labels.add(getString(R.string.settings_navigator_factory));
+        }
+        PackageManager packages = getPackageManager();
+        for (ResolveInfo info : FactoryNavigator.geoHandlers(this)) {
+            values.add(info.activityInfo.packageName);
+            labels.add(info.loadLabel(packages));
+        }
+        if (values.size() < 2) {
+            block.setVisibility(View.GONE);
+            return;
+        }
+
+        block.setVisibility(View.VISIBLE);
+        String chosen = preferences.getNavigatorTarget();
+        for (int i = 0; i < values.size(); i++) {
+            RadioButton button = (RadioButton) getLayoutInflater()
+                    .inflate(R.layout.part_choice_item, group, false);
+            button.setId(View.generateViewId());
+            button.setText(labels.get(i));
+            button.setTag(values.get(i));
+            group.addView(button);
+            if (values.get(i).equals(chosen)) {
+                group.check(button.getId());
+            }
+        }
+        // Nothing matched, which happens on a car with no factory navigator and more than
+        // one map app: the stored value is still the factory default nobody has changed. The
+        // group is left with no position marked, because that is the truth — no one has
+        // chosen, and until someone does the destination goes out as a plain geo: intent and
+        // Android asks. Marking one here would be the launcher deciding quietly on the
+        // driver's behalf, and writing that decision to disk.
+        group.setOnCheckedChangeListener((g, id) -> {
+            View checked = g.findViewById(id);
+            if (checked != null) {
+                preferences.setNavigatorTarget((String) checked.getTag());
             }
         });
     }

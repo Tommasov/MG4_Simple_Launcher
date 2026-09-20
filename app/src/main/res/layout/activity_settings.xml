@@ -239,70 +239,123 @@
                 android:layout_marginBottom="12dp"
                 android:background="@color/hairline" />
 
-            <TextView
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_battery"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/charge_item_title_size" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="none">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/settings_battery_hint"
-                android:textColor="@color/text_secondary"
-                android:textSize="@dimen/secondary_text_size" />
-
-            <!-- Three sizes, three buttons, the way the launch page picks its page. A list
-                 of three is not worth a dialogue: the choice is visible, the current one is
-                 marked, and the column no longer holds a single line adrift in empty space. -->
-            <RadioGroup
-                android:id="@+id/settings_battery_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_choice_group"
-                android:divider="@drawable/choice_divider"
-                android:orientation="vertical"
-                android:showDividers="middle">
-
-                <RadioButton
-                    android:id="@+id/battery_51"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_tab_height"
-                    android:background="@drawable/choice_item_selector"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/settings_tab_text_size" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/battery_64"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_tab_height"
-                    android:background="@drawable/choice_item_selector"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/settings_tab_text_size" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_battery"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/charge_item_title_size" />
 
-                <RadioButton
-                    android:id="@+id/battery_77"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_tab_height"
-                    android:background="@drawable/choice_item_selector"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:textColor="@color/filter_tab_text"
-                    android:textSize="@dimen/settings_tab_text_size" />
-            </RadioGroup>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/settings_battery_hint"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <!-- Three sizes, three buttons, the way the launch page picks its page. A list
+                     of three is not worth a dialogue: the choice is visible, the current one is
+                     marked, and the column no longer holds a single line adrift in empty space. -->
+                <RadioGroup
+                    android:id="@+id/settings_battery_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_choice_group"
+                    android:divider="@drawable/choice_divider"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <RadioButton
+                        android:id="@+id/battery_51"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/settings_tab_height"
+                        android:background="@drawable/choice_item_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/filter_tab_text"
+                        android:textSize="@dimen/settings_tab_text_size" />
+
+                    <RadioButton
+                        android:id="@+id/battery_64"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/settings_tab_height"
+                        android:background="@drawable/choice_item_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/filter_tab_text"
+                        android:textSize="@dimen/settings_tab_text_size" />
+
+                    <RadioButton
+                        android:id="@+id/battery_77"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/settings_tab_height"
+                        android:background="@drawable/choice_item_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/filter_tab_text"
+                        android:textSize="@dimen/settings_tab_text_size" />
+                </RadioGroup>
+
+                    <!-- Where a chosen charging point is sent. Hidden unless this vehicle
+                         offers more than one answer, which is the same rule that hides the
+                         navigate action itself when it offers none. It is not only a
+                         preference: on a car whose factory navigator is installed but inert,
+                         this is the only way for the driver to get a destination out at all,
+                         which is why it overrides our own detection rather than following it. -->
+                    <LinearLayout
+                        android:id="@+id/settings_navigator_block"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_navigator"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/charge_item_title_size" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/settings_navigator_hint"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/secondary_text_size" />
+
+                        <RadioGroup
+                            android:id="@+id/settings_navigator_group"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:background="@drawable/bg_choice_group"
+                            android:divider="@drawable/choice_divider"
+                            android:orientation="vertical"
+                            android:showDividers="middle" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
 
         <!-- The launcher itself: which version is installed, whether a newer one exists, and

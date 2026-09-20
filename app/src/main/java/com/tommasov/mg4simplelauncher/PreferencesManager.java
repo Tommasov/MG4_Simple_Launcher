@@ -19,6 +19,15 @@ public class PreferencesManager {
     private static final String KEY_GRID_FAVORITE_PREFIX = "grid_favorite_";
     private static final String KEY_DOCK_PREFIX = "dock_";
     private static final String KEY_BATTERY_KWH = "battery_kwh";
+    private static final String KEY_NAVIGATOR = "navigator_target";
+
+    /**
+     * Stored when destinations should go to the vehicle's own navigator. A sentinel rather
+     * than a package name because the navigator is not reached by package at all: it is
+     * reached through the adapter service, and the package that would name it is only ever
+     * used to ask whether it is there.
+     */
+    public static final String NAVIGATOR_FACTORY = "factory";
     private static final String KEY_HOME_PAGE = "home_page";
     private static final String KEY_SHORTCUTS_ENABLED = "shortcuts_enabled";
     private static final String KEY_BETA_CHANNEL = "beta_channel";
@@ -186,6 +195,20 @@ public class PreferencesManager {
      */
     public int getBatteryCapacityKwh() {
         return prefs.getInt(KEY_BATTERY_KWH, 64);
+    }
+
+    /**
+     * Where a chosen charging point is sent: {@link #NAVIGATOR_FACTORY}, or the package of a
+     * map app that answers {@code geo:}. Defaults to the factory navigator, which is the only
+     * one that can add a stop to a route already running.
+     */
+    @NonNull
+    public String getNavigatorTarget() {
+        return prefs.getString(KEY_NAVIGATOR, NAVIGATOR_FACTORY);
+    }
+
+    public void setNavigatorTarget(@NonNull String target) {
+        prefs.edit().putString(KEY_NAVIGATOR, target).apply();
     }
 
     public void setBatteryCapacityKwh(int kwh) {

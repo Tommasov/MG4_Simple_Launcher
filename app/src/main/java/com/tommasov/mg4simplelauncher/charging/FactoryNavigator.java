@@ -16,6 +16,11 @@ import androidx.annotation.Nullable;
 
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Sends a destination to the vehicle's factory navigator.
  *
@@ -49,7 +54,7 @@ import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
  * <p>None of this is a published API. It can disappear with a firmware update, so every
  * failure path falls back to the caller rather than surfacing an error.
  */
-final class FactoryNavigator {
+public final class FactoryNavigator {
 
     private static final String TAG = "FactoryNavigator";
 
@@ -123,6 +128,26 @@ final class FactoryNavigator {
             }
         }
         return null;
+    }
+
+    /**
+     * The map apps on this vehicle that accept a destination, one entry per package.
+     *
+     * <p>Asked of the package manager rather than carried as a list: what is sideloaded onto
+     * a head unit is the owner's business, and a hard-coded set would be wrong on the first
+     * car that installed something else.
+     */
+    @NonNull
+    public static List<ResolveInfo> geoHandlers(@NonNull Context context) {
+        Intent geo = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=0,0"));
+        List<ResolveInfo> found = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (ResolveInfo info : context.getPackageManager().queryIntentActivities(geo, 0)) {
+            if (seen.add(info.activityInfo.packageName)) {
+                found.add(info);
+            }
+        }
+        return found;
     }
 
     /**

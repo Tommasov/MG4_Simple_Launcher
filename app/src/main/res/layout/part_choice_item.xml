@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One row of a choice group, for groups whose entries are only known at runtime. Same
+     shape as the ones written by hand in activity_settings.xml: no radio dot, the fill of
+     choice_item_selector marks the one in force, and the group around them draws the frame. -->
+<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settings_tab_height"
+    android:background="@drawable/choice_item_selector"
+    android:button="@null"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:includeFontPadding="false"
+    android:maxLines="1"
+    android:paddingHorizontal="12dp"
+    android:textColor="@color/filter_tab_text"
+    android:textSize="@dimen/settings_tab_text_size" />

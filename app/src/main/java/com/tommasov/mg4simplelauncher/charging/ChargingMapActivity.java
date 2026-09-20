@@ -644,6 +644,19 @@ public class ChargingMapActivity extends AppCompatActivity
     @Override
     public void onNavigate(@NonNull ChargePoint point) {
         FactoryNavigator.logRoute(this);
+        // A driver who named a map app is sent there, whatever the vehicle carries. The
+        // setting exists for two different people: the one who prefers their own navigator,
+        // and the one whose factory navigator is installed but does not work — for the second
+        // this is the only way out, so it has to win over our own detection.
+        String chosen = new PreferencesManager(this).getNavigatorTarget();
+        if (!PreferencesManager.NAVIGATOR_FACTORY.equals(chosen)) {
+            if (sendTo(chosen, point)) {
+                return;
+            }
+            // The app they picked is gone. Fall through rather than fail: the point of the
+            // button is to hand the stop over, not to defend a stale preference.
+            DiagnosticsLog.log(this, TAG_DIAG, "chosen navigator " + chosen + " is gone");
+        }
         // Nothing to send to: skip the adapter entirely rather than let it accept the call
         // and drop it. On a trim without a navigator that silence looked like a dead button.
         if (!FactoryNavigator.hasFactoryNavigator(this)) {
@@ -665,14 +678,37 @@ public class ChargingMapActivity extends AppCompatActivity
                 });
     }
 
+    /** The destination as a {@code geo:} URI, which is all a map app is given. */
+    @NonNull
+    private static Uri geoUri(@NonNull ChargePoint point) {
+        return Uri.parse("geo:" + point.latitude + "," + point.longitude
+                + "?q=" + point.latitude + "," + point.longitude
+                + "(" + Uri.encode(point.title) + ")");
+    }
+
+    /** Hands the point to one named app. False when that app can no longer take it. */
+    private boolean sendTo(@NonNull String packageName, @NonNull ChargePoint point) {
+        Uri uri = geoUri(point);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage(packageName);
+        if (intent.resolveActivity(getPackageManager()) == null) {
+            return false;
+        }
+        try {
+            startActivity(intent);
+            DiagnosticsLog.log(this, TAG_DIAG, "destination sent to " + packageName
+                    + " as " + uri);
+            return true;
+        } catch (ActivityNotFoundException e) {
+            return false;
+        }
+    }
+
     private void navigateWithoutFactoryService(@NonNull ChargePoint point) {
         if (isFinishing() || isDestroyed()) {
             return;
         }
         // A geo: intent still carries the destination, and any sideloaded map app takes it.
-        Uri uri = Uri.parse("geo:" + point.latitude + "," + point.longitude
-                + "?q=" + point.latitude + "," + point.longitude
-                + "(" + Uri.encode(point.title) + ")");
+        Uri uri = geoUri(point);
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             DiagnosticsLog.log(this, TAG_DIAG, "destination sent as " + uri);
