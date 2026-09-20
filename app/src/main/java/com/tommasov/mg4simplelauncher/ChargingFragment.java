@@ -39,10 +39,6 @@ public class ChargingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         chargingCard = new ChargingCardBinder(view);
-        view.findViewById(R.id.settings_card_button).setOnClickListener(
-                v -> startActivity(new Intent(requireContext(), SettingsActivity.class)));
-        view.findViewById(R.id.downloads_button).setOnClickListener(
-                v -> startActivity(new Intent(requireContext(), DownloadsActivity.class)));
     }
 
     @Override

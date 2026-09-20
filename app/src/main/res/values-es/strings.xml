@@ -96,6 +96,7 @@
     <string name="settings_battery_hint">Necesaria para estimar la carga al llegar — elige el tamaño de tu ficha</string>
     <string name="settings_navigator">Enviar destinos a</string>
     <string name="settings_navigator_factory">Navegador de serie</string>
+    <string name="settings_navigator_ask">Preguntar cada vez</string>
     <string name="settings_navigator_hint">Solo el navegador de serie puede añadir una parada a una ruta ya iniciada. Con otra aplicación el panel Viaje queda vacío.</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimación para la ruta del navegador</string>

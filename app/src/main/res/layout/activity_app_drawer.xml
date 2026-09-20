@@ -35,6 +35,45 @@
             tools:ignore="HardcodedText"
             xmlns:tools="http://schemas.android.com/tools" />
 
+        <!-- The launcher's own two screens. They live here because this header is the one
+             surface that is always present: the All apps card is fixed on the home page,
+             unlike the dock beside it, and unlike the charging page these two used to hang
+             off — which is about to become something a driver can switch off entirely.
+
+             Words, not icons. The button next to them says "System apps", and a header that
+             mixes a text chip with two icon chips reads as two different kinds of control;
+             the icons also had to be fought into shape, being 96dp artwork drawn for the
+             home cards. There is room for three labels on a screen this wide. -->
+        <TextView
+            android:id="@+id/drawer_downloads_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:text="@string/downloads_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size" />
+
+        <TextView
+            android:id="@+id/drawer_settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/native_button_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/native_button_padding_h"
+            android:paddingVertical="@dimen/native_button_padding_v"
+            android:text="@string/settings_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/drawer_button_size" />
+
         <!-- Two switches, because while picking there are three lists to move between:
              apps, Android's screens and the car's. Which labels they carry is decided in
              code, since it depends on where you already are. -->

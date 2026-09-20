@@ -23,13 +23,21 @@ import androidx.fragment.app.Fragment;
  */
 public class HomeFragment extends Fragment {
 
-    // Android 9 default Settings and Files packages, launched by the two fixed shortcuts.
     /**
-     * What the two small slots hold until the driver says otherwise. Files first, Settings
-     * second, reading left to right as they always have.
+     * What the two small slots hold until the driver says otherwise: the launcher's own
+     * Downloads and Settings.
+     *
+     * <p>They used to be Android's Files and Settings, which was the first thing anyone
+     * complained about — two system apps that are already one tap away in All apps, sitting
+     * on the home screen doing nothing the drawer does not. These two are not: Downloads is
+     * the only way to install anything on a head unit with no store, and neither has another
+     * home now that the charging page they hung off can be switched off.
+     *
+     * <p>Only a default. A driver who has put something of their own in a slot keeps it, and
+     * the long-press still offers the way back.
      */
     private static final String[] DOCK_DEFAULTS = {
-            "com.android.documentsui", "com.android.settings"};
+            LaunchTargets.OWN_DOWNLOADS, LaunchTargets.OWN_SETTINGS};
 
     private PreferencesManager preferencesManager;
     /** Which arrangement is currently on screen, so a change in settings can be noticed. */
@@ -105,8 +113,8 @@ public class HomeFragment extends Fragment {
                 v -> openDrawer(AppDrawerActivity.MODE_ALL, -1));
 
         // Two fixed shortcuts to the Android 9 default Settings and Files apps.
-        dockIcons[0] = container.findViewById(R.id.icon_files);
-        dockIcons[1] = container.findViewById(R.id.icon_settings);
+        dockIcons[0] = container.findViewById(R.id.icon_dock_0);
+        dockIcons[1] = container.findViewById(R.id.icon_dock_1);
         for (int i = 0; i < dockIcons.length; i++) {
             final int slot = i;
             dockIcons[i].setOnClickListener(v -> launch(dockPackage(slot)));

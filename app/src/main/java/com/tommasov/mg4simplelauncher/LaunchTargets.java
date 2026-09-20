@@ -56,6 +56,10 @@ public final class LaunchTargets {
     /** A specific activity, as {@code act:package/class}: the vehicle's own screens. */
     private static final String ACTIVITY_PREFIX = "act:";
 
+    /** The two the dock is set to out of the box, named so nobody has to spell the prefix. */
+    public static final String OWN_DOWNLOADS = OWN_PREFIX + "downloads";
+    public static final String OWN_SETTINGS = OWN_PREFIX + "settings";
+
     /**
      * Package name fragments that mark software belonging to the car rather than to Android.
      *
@@ -143,9 +147,9 @@ public final class LaunchTargets {
     private static final Target[] OWN = {
             new Target(OWN_PREFIX + "charging",
                     R.string.charging_title, R.drawable.ic_target_charge),
-            new Target(OWN_PREFIX + "downloads",
+            new Target(OWN_DOWNLOADS,
                     R.string.downloads_title, R.drawable.ic_download),
-            new Target(OWN_PREFIX + "settings",
+            new Target(OWN_SETTINGS,
                     R.string.settings_title, R.drawable.ic_gear),
             new Target(OWN_PREFIX + "technical",
                     R.string.sys_technical, R.drawable.ic_target_info),

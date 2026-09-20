@@ -95,6 +95,7 @@
     <string name="settings_battery_hint">Needed to estimate charge on arrival — pick the size on your spec sheet</string>
     <string name="settings_navigator">Send destinations to</string>
     <string name="settings_navigator_factory">On-board navigator</string>
+    <string name="settings_navigator_ask">Ask each time</string>
     <string name="settings_navigator_hint">Only the on-board navigator can add a stop to a route already running. With any other app the Journey panel stays empty.</string>
     <string name="settings_battery_kwh">%1$d kWh</string>
     <string name="charging_note_route">· Estimate for the route in the navigator</string>

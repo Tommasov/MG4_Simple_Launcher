@@ -1,11 +1,13 @@
 package com.tommasov.mg4simplelauncher;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -116,58 +118,96 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Where destinations go, offered only when this vehicle has more than one answer.
      *
-     * <p>A car with the factory navigator and no map app has nothing to choose, and so does a
-     * car with one map app and no factory navigator: in both cases the row would be a control
-     * with a single position, which is worse than no control. The labels are the apps' own,
-     * read from the package manager, because "OsmAnd" means something to the driver and
-     * net.osmand.plus does not.
+     * <p>A car with the factory navigator and nothing else has nothing to choose, and neither
+     * has a car with one map app and no factory navigator: the row would be a control with a
+     * single position, which is worse than no control at all.
+     *
+     * <p>The first entry is always "no app of my own": on a car that has the factory
+     * navigator that means sending the stop to it, and on a car that does not it means
+     * letting Android ask, which is what already happens today. One stored value, two honest
+     * readings, and a driver who picked an app can always get back to neither.
      */
     private void bindNavigator() {
-        View block = findViewById(R.id.settings_navigator_block);
-        RadioGroup group = findViewById(R.id.settings_navigator_group);
-        group.removeAllViews();
-
-        List<String> values = new ArrayList<>();
-        List<CharSequence> labels = new ArrayList<>();
-        if (FactoryNavigator.hasFactoryNavigator(this)) {
-            values.add(PreferencesManager.NAVIGATOR_FACTORY);
-            labels.add(getString(R.string.settings_navigator_factory));
-        }
-        PackageManager packages = getPackageManager();
-        for (ResolveInfo info : FactoryNavigator.geoHandlers(this)) {
-            values.add(info.activityInfo.packageName);
-            labels.add(info.loadLabel(packages));
-        }
-        if (values.size() < 2) {
-            block.setVisibility(View.GONE);
+        View row = findViewById(R.id.settings_navigator_row);
+        boolean factory = FactoryNavigator.hasFactoryNavigator(this);
+        List<ResolveInfo> apps = FactoryNavigator.geoHandlers(this);
+        if ((factory ? 1 : 0) + apps.size() < 2) {
+            row.setVisibility(View.GONE);
             return;
         }
 
-        block.setVisibility(View.VISIBLE);
-        String chosen = preferences.getNavigatorTarget();
+        List<String> values = new ArrayList<>();
+        List<CharSequence> labels = new ArrayList<>();
+        values.add(PreferencesManager.NAVIGATOR_FACTORY);
+        labels.add(getString(factory ? R.string.settings_navigator_factory
+                : R.string.settings_navigator_ask));
+        PackageManager packages = getPackageManager();
+        for (ResolveInfo info : apps) {
+            values.add(info.activityInfo.packageName);
+            labels.add(info.loadLabel(packages));
+        }
+
+        row.setVisibility(View.VISIBLE);
+        showNavigator(values, labels);
+        row.setOnClickListener(v -> askNavigator(values, labels));
+    }
+
+    /** The current choice, on the row, so it can be read without opening anything. */
+    private void showNavigator(@NonNull List<String> values, @NonNull List<CharSequence> labels) {
+        int at = values.indexOf(preferences.getNavigatorTarget());
+        TextView value = findViewById(R.id.settings_navigator_value);
+        value.setText(labels.get(at < 0 ? 0 : at));
+    }
+
+    /**
+     * The picker itself. Built by hand rather than with {@code setSingleChoiceItems} because
+     * the list needs the sentence above it: what a driver gives up by choosing an app of
+     * their own is the part they cannot work out from the names.
+     */
+    private void askNavigator(@NonNull List<String> values, @NonNull List<CharSequence> labels) {
+        Context scaled = Dialogs.scaled(this);
+        int pad = getResources().getDimensionPixelSize(R.dimen.card_gap);
+
+        TextView hint = new TextView(scaled);
+        hint.setText(R.string.settings_navigator_hint);
+        hint.setTextColor(getColor(R.color.text_secondary));
+        hint.setPadding(0, 0, 0, pad);
+
+        RadioGroup group = new RadioGroup(scaled);
+        group.setOrientation(RadioGroup.VERTICAL);
+
+        LinearLayout body = new LinearLayout(scaled);
+        body.setOrientation(LinearLayout.VERTICAL);
+        body.setPadding(pad, pad, pad, 0);
+        body.addView(hint);
+        body.addView(group);
+
+        int chosen = values.indexOf(preferences.getNavigatorTarget());
         for (int i = 0; i < values.size(); i++) {
             RadioButton button = (RadioButton) getLayoutInflater()
                     .inflate(R.layout.part_choice_item, group, false);
             button.setId(View.generateViewId());
             button.setText(labels.get(i));
-            button.setTag(values.get(i));
             group.addView(button);
-            if (values.get(i).equals(chosen)) {
+            if (i == (chosen < 0 ? 0 : chosen)) {
                 group.check(button.getId());
             }
         }
-        // Nothing matched, which happens on a car with no factory navigator and more than
-        // one map app: the stored value is still the factory default nobody has changed. The
-        // group is left with no position marked, because that is the truth — no one has
-        // chosen, and until someone does the destination goes out as a plain geo: intent and
-        // Android asks. Marking one here would be the launcher deciding quietly on the
-        // driver's behalf, and writing that decision to disk.
+
+        AlertDialog dialog = Dialogs.builder(this)
+                .setTitle(R.string.settings_navigator)
+                .setView(body)
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
         group.setOnCheckedChangeListener((g, id) -> {
-            View checked = g.findViewById(id);
-            if (checked != null) {
-                preferences.setNavigatorTarget((String) checked.getTag());
+            int index = g.indexOfChild(g.findViewById(id));
+            if (index >= 0) {
+                preferences.setNavigatorTarget(values.get(index));
+                showNavigator(values, labels);
             }
+            dialog.dismiss();
         });
+        dialog.show();
     }
 
     private void bindSixTileHome() {

@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tommasov.mg4simplelauncher.apps.DownloadsActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,6 +89,19 @@ public class AppDrawerActivity extends AppCompatActivity {
 
         // Explicit back affordance for the head unit, mirroring the system back gesture.
         findViewById(R.id.drawer_back_button).setOnClickListener(v -> finish());
+
+        // The launcher's own screens, offered only while browsing. In the picker the header
+        // is already carrying the switches between the three lists, and a driver who came
+        // here to fill a tile is in the middle of something else.
+        boolean browsing = MODE_ALL.equals(mode) || MODE_SYSTEM.equals(mode);
+        View downloads = findViewById(R.id.drawer_downloads_button);
+        View settings = findViewById(R.id.drawer_settings_button);
+        downloads.setVisibility(browsing ? View.VISIBLE : View.GONE);
+        settings.setVisibility(browsing ? View.VISIBLE : View.GONE);
+        downloads.setOnClickListener(
+                v -> startActivity(new Intent(this, DownloadsActivity.class)));
+        settings.setOnClickListener(
+                v -> startActivity(new Intent(this, SettingsActivity.class)));
 
         // Where each of the two header buttons goes depends on which list is on screen: the
         // two it is not showing. In the browsing drawer the second one has nothing to do.
