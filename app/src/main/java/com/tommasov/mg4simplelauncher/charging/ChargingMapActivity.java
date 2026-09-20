@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -143,6 +146,7 @@ public class ChargingMapActivity extends AppCompatActivity
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
         map.getController().setZoom(DEFAULT_ZOOM);
+        applyNightMap();
 
         status = findViewById(R.id.charging_status);
         canNavigate = FactoryNavigator.isNavigationAvailable(this);
@@ -683,6 +687,44 @@ public class ChargingMapActivity extends AppCompatActivity
             }
         }
         Dialogs.toast(this, R.string.charging_no_navigation, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * How much of the map's own light survives after dark. Tuned by eye against the charcoal
+     * the rest of the night theme uses.
+     */
+    private static final float NIGHT_DIM = 0.55f;
+
+    /**
+     * Turns the map down after dark, following the system the way the rest of the launcher
+     * does.
+     *
+     * <p>Dimmed, not inverted. osmdroid offers {@code INVERT_COLORS} and it is the obvious
+     * thing to reach for, but Mapnik inverted is a photographic negative: the sea turns
+     * orange, woodland turns purple, and the white roads — the one thing worth seeing —
+     * become dark lines on a dark ground, so the map reads worse at night than it does by
+     * day. Scaling the brightness instead keeps every colour where a driver expects it, water
+     * blue and roads pale, and simply stops the panel glowing like a sheet of paper at eye
+     * level. It costs no tile key, no second source and no extra network, which is what ruled
+     * the proper dark basemaps out.
+     */
+    private void applyNightMap() {
+        // Fully qualified: in this file "Configuration" is osmdroid's, not Android's.
+        int mode = getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        boolean night = mode == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        map.getOverlayManager().getTilesOverlay().setColorFilter(night ? dim() : null);
+    }
+
+    /** Multiplies the three channels and leaves alpha alone. */
+    @NonNull
+    private static ColorFilter dim() {
+        return new ColorMatrixColorFilter(new ColorMatrix(new float[]{
+                NIGHT_DIM, 0, 0, 0, 0,
+                0, NIGHT_DIM, 0, 0, 0,
+                0, 0, NIGHT_DIM, 0, 0,
+                0, 0, 0, 1, 0,
+        }));
     }
 
     @Override
