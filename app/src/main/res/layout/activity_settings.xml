@@ -195,17 +195,16 @@
                         layout="@layout/part_settings_toggle"
                         android:id="@+id/toggle_shortcuts_page" />
 
+                    <!-- Next to the shortcuts page and not further down: these two are the
+                         same decision asked twice, which of the optional pages the carousel
+                         carries. -->
+                    <include
+                        layout="@layout/part_settings_toggle"
+                        android:id="@+id/toggle_charging_page" />
+
                     <include
                         layout="@layout/part_settings_toggle"
                         android:id="@+id/toggle_six_tile_home" />
-
-                    <include
-                        layout="@layout/part_settings_toggle"
-                        android:id="@+id/toggle_update_on_launch" />
-
-                    <include
-                        layout="@layout/part_settings_toggle"
-                        android:id="@+id/toggle_beta_channel" />
 
                 </LinearLayout>
             </ScrollView>
@@ -426,39 +425,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
 
+            <!-- How the launcher keeps itself up to date. They sit under the version they
+                 act on, rather than among the switches that decide what the carousel shows:
+                 those answer "what do I want to see", these answer "which build am I on". -->
+            <include
+                layout="@layout/part_settings_toggle"
+                android:id="@+id/toggle_update_on_launch" />
+
+            <include
+                layout="@layout/part_settings_toggle"
+                android:id="@+id/toggle_beta_channel" />
+
             <!-- Actions, not choices: each one leaves this screen. A row with an arrow
                  says that before the label is read, and it keeps the filled surfaces in this
                  screen meaning one thing only — the option currently in force. -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/hairline" />
-
-            <LinearLayout
-                android:id="@+id/settings_open_technical"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_action_height"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sys_technical"
-                    android:textColor="@color/text_primary"
-                    android:textSize="@dimen/charge_item_title_size" />
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_chevron" />
-            </LinearLayout>
-            <View
+           <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/hairline" />

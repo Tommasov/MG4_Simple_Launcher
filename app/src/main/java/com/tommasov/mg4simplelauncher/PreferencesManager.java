@@ -20,6 +20,7 @@ public class PreferencesManager {
     private static final String KEY_DOCK_PREFIX = "dock_";
     private static final String KEY_BATTERY_KWH = "battery_kwh";
     private static final String KEY_NAVIGATOR = "navigator_target";
+    private static final String KEY_CHARGING_ENABLED = "charging_page_enabled";
 
     /**
      * Stored when destinations should go to the vehicle's own navigator. A sentinel rather
@@ -117,6 +118,20 @@ public class PreferencesManager {
 
     public void setShortcutsPageEnabled(boolean enabled) {
         prefs.edit().putBoolean(KEY_SHORTCUTS_ENABLED, enabled).apply();
+    }
+
+    /**
+     * Whether the charging points page is in the carousel. On by default: it is the reason
+     * most people install this launcher at all, and someone who does not want it can say so
+     * — a driver with a hundred apps and no interest in where the chargers are should not
+     * have to swipe past them for the life of the car.
+     */
+    public boolean isChargingPageEnabled() {
+        return prefs.getBoolean(KEY_CHARGING_ENABLED, true);
+    }
+
+    public void setChargingPageEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_CHARGING_ENABLED, enabled).apply();
     }
 
     /**

@@ -8,6 +8,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 
 import com.tommasov.mg4simplelauncher.BuildConfig;
+import com.tommasov.mg4simplelauncher.TechnicalDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -68,9 +69,12 @@ public final class ProbeReport {
     /**
      * Uploads the current log off the main thread; the callback always lands back on it.
      *
-     * <p>The log is sent with a fresh header in front of it. The stored one is the first
-     * thing the trimmer drops when the file grows past its cap, and a report that does not
-     * say which build and which car it came from is worth very little on the other end.
+     * <p>The log is sent with a fresh header in front of it, and the device card behind that.
+     * The stored header is the first thing the trimmer drops when the file grows past its
+     * cap, and a report that does not say which build and which car it came from is worth
+     * very little on the other end. The readings come along for the same reason: the person
+     * reading this is at a desk, and cannot ask the screen which WebView is installed or what
+     * is carrying the connection.
      */
     public static void send(@NonNull Context context, @NonNull String note,
                             @NonNull Callback callback) {
@@ -80,7 +84,8 @@ public final class ProbeReport {
                 String body = "k=" + encode(BuildConfig.PROBE_KEY)
                         + "&app=" + encode(BuildConfig.PROBE_APP)
                         + "&note=" + encode(note(note))
-                        + "&text=" + encode(DiagnosticsLog.sessionHeader() + "\n"
+                        + "&text=" + encode(DiagnosticsLog.sessionHeader() + "\n\n"
+                                + TechnicalDetails.report(appContext)
                                 + DiagnosticsLog.read(appContext));
                 String answer = post(BuildConfig.PROBE_URL, body);
                 if (answer.startsWith("OK")) {

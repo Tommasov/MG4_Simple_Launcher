@@ -23,14 +23,15 @@ public class HomePagerAdapter extends FragmentStateAdapter {
 
     private final List<Integer> pages = new ArrayList<>(3);
 
-    public HomePagerAdapter(@NonNull FragmentActivity activity, boolean shortcutsEnabled) {
+    public HomePagerAdapter(@NonNull FragmentActivity activity, boolean shortcutsEnabled,
+                            boolean chargingEnabled) {
         super(activity);
-        this.pages.addAll(pagesFor(shortcutsEnabled));
+        this.pages.addAll(pagesFor(shortcutsEnabled, chargingEnabled));
     }
 
-    /** Adds or removes the shortcuts page in place, keeping the other two alive. */
-    public void setShortcutsEnabled(boolean shortcutsEnabled) {
-        List<Integer> updated = pagesFor(shortcutsEnabled);
+    /** Adds or removes an optional page in place, keeping the surviving ones alive. */
+    public void setPages(boolean shortcutsEnabled, boolean chargingEnabled) {
+        List<Integer> updated = pagesFor(shortcutsEnabled, chargingEnabled);
         if (updated.equals(pages)) {
             return;
         }
@@ -39,21 +40,30 @@ public class HomePagerAdapter extends FragmentStateAdapter {
         notifyDataSetChanged();
     }
 
-    /** The page kinds on show, in carousel order. */
+    /**
+     * The page kinds on show, in carousel order.
+     *
+     * <p>Both of the outer two can be switched off, and the home cannot: it is the launcher.
+     * Someone who lives in their apps keeps the shortcuts grid and drops the chargers,
+     * someone who bought the car for the chargers does the opposite, and most people keep
+     * what they are given.
+     */
     @NonNull
-    public static List<Integer> pagesFor(boolean shortcutsEnabled) {
+    public static List<Integer> pagesFor(boolean shortcutsEnabled, boolean chargingEnabled) {
         List<Integer> kinds = new ArrayList<>(3);
         kinds.add(PAGE_HOME);
         if (shortcutsEnabled) {
             kinds.add(PAGE_SHORTCUTS);
         }
-        kinds.add(PAGE_CHARGING);
+        if (chargingEnabled) {
+            kinds.add(PAGE_CHARGING);
+        }
         return kinds;
     }
 
     /** Carousel position showing {@code kind}, or 0 when that page is not on show. */
-    public static int positionOf(int kind, boolean shortcutsEnabled) {
-        int position = pagesFor(shortcutsEnabled).indexOf(kind);
+    public static int positionOf(int kind, boolean shortcutsEnabled, boolean chargingEnabled) {
+        int position = pagesFor(shortcutsEnabled, chargingEnabled).indexOf(kind);
         return position < 0 ? 0 : position;
     }
 

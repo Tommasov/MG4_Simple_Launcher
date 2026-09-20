@@ -35,6 +35,7 @@
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
     <string name="sys_model">Modell</string>
+    <string name="sys_headunit">Software der Kopfeinheit</string>
     <string name="sys_android_label">Android</string>
     <string name="sys_launcher_label">Launcher</string>
     <string name="sys_uptime_label">Laufzeit</string>
@@ -127,6 +128,8 @@
     <string name="settings_page_charging">Ladepunkte</string>
     <string name="settings_shortcuts_page">Verknüpfungsseite</string>
     <string name="settings_shortcuts_page_hint">Die Verknüpfungsseite im Karussell anzeigen</string>
+    <string name="settings_charging_page">Ladepunkte-Seite</string>
+    <string name="settings_charging_page_hint">Die Ladepunkte-Seite im Karussell anzeigen</string>
     <string name="settings_six_tile_home">Sechs Kacheln</string>
     <string name="settings_six_tile_home_hint">Sechs kleinere Favoriten statt drei großer Karten</string>
     <string name="settings_updates">Updates</string>
@@ -149,7 +152,7 @@
     <string name="diagnostics_sent">Protokoll gesendet</string>
     <string name="diagnostics_send_failed">Protokoll konnte nicht gesendet werden</string>
     <string name="diagnostics_send_title">Bericht senden</string>
-    <string name="diagnostics_send_explain">Das Protokoll geht an den Autor der App, zusammen mit Version und Modell der Kopfeinheit. Es kann GPS-Positionen und die Namen installierter Apps enthalten. Vor dem Tippen auf Senden wird nichts übertragen.</string>
+    <string name="diagnostics_send_explain">Das Protokoll geht an den Autor der App, zusammen mit Messwerten dieser Kopfeinheit — Modell, Android- und Launcher-Version, Speicher, Ablage und aktive Verbindung. Das Protokoll kann GPS-Positionen und die Namen installierter Apps enthalten. Vor dem Tippen auf Senden wird nichts übertragen.</string>
     <string name="diagnostics_send_note_hint">Was haben Sie gerade getan? (optional)</string>
     <string name="diagnostics_clear">Leeren</string>
     <string name="diagnostics_empty">Das Protokoll ist leer</string>

@@ -35,6 +35,7 @@
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
     <string name="sys_model">Modèle</string>
+    <string name="sys_headunit">Logiciel de l’unité</string>
     <string name="sys_android_label">Android</string>
     <string name="sys_launcher_label">Launcher</string>
     <string name="sys_uptime_label">Allumé depuis</string>
@@ -127,6 +128,8 @@
     <string name="settings_page_charging">Points de recharge</string>
     <string name="settings_shortcuts_page">Page des raccourcis</string>
     <string name="settings_shortcuts_page_hint">Afficher la page des raccourcis dans le carrousel</string>
+    <string name="settings_charging_page">Page des bornes</string>
+    <string name="settings_charging_page_hint">Afficher la page des bornes dans le carrousel</string>
     <string name="settings_six_tile_home">Accueil à six</string>
     <string name="settings_six_tile_home_hint">Six favoris plus petits au lieu de trois grandes cartes</string>
     <string name="settings_updates">Mises à jour</string>
@@ -149,7 +152,7 @@
     <string name="diagnostics_sent">Journal envoyé</string>
     <string name="diagnostics_send_failed">Impossible d\'envoyer le journal</string>
     <string name="diagnostics_send_title">Envoyer un rapport</string>
-    <string name="diagnostics_send_explain">Le journal est envoyé à l’auteur de l’application, avec la version et le modèle de l’unité. Il peut contenir des positions GPS et les noms des applications installées. Rien n’est envoyé avant que vous touchiez Envoyer.</string>
+    <string name="diagnostics_send_explain">Le journal est envoyé à l’auteur de l’application, avec un relevé de cette unité — modèle, versions d’Android et du lanceur, mémoire, stockage et connexion active. Le journal peut contenir des positions GPS et les noms des applications installées. Rien n’est envoyé avant que vous touchiez Envoyer.</string>
     <string name="diagnostics_send_note_hint">Que faisiez-vous ? (facultatif)</string>
     <string name="diagnostics_clear">Vider</string>
     <string name="diagnostics_empty">Le journal est vide</string>

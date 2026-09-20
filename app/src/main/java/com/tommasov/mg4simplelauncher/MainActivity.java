@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private HomePagerAdapter adapter;
     /** Carousel shape the current views were built for, to spot a settings change. */
     private boolean shortcutsEnabled;
+    private boolean chargingEnabled;
     private int pageCount;
 
     @Override
@@ -34,10 +35,11 @@ public class MainActivity extends AppCompatActivity {
         // migration decides what one of them says on an installation that predates it.
         preferences.migrate();
         shortcutsEnabled = preferences.isShortcutsPageEnabled();
-        pageCount = HomePagerAdapter.pagesFor(shortcutsEnabled).size();
+        chargingEnabled = preferences.isChargingPageEnabled();
+        pageCount = HomePagerAdapter.pagesFor(shortcutsEnabled, chargingEnabled).size();
 
         pager = findViewById(R.id.home_pager);
-        adapter = new HomePagerAdapter(this, shortcutsEnabled);
+        adapter = new HomePagerAdapter(this, shortcutsEnabled, chargingEnabled);
         pager.setAdapter(adapter);
 
         pageBars = new View[]{
@@ -46,13 +48,12 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.page_bar_2)};
         // One bar per page on show: with the shortcuts page off, the third would be a dot
         // the user can never reach.
-        for (int i = 0; i < pageBars.length; i++) {
-            pageBars[i].setVisibility(i < pageCount ? View.VISIBLE : View.GONE);
-        }
+        showIndicator();
 
         // Open on the page chosen in settings, without animating in from page one.
         pager.setCurrentItem(
-                HomePagerAdapter.positionOf(preferences.getHomePage(), shortcutsEnabled), false);
+                HomePagerAdapter.positionOf(preferences.getHomePage(), shortcutsEnabled,
+                        chargingEnabled), false);
         pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -84,9 +85,11 @@ public class MainActivity extends AppCompatActivity {
         // Settings can add or remove a page while this activity sits in the background.
         // Reshaping the adapter beats recreating the activity: the two surviving pages keep
         // their state, and the user does not watch the launcher blink.
-        boolean enabled = new PreferencesManager(this).isShortcutsPageEnabled();
-        if (enabled != shortcutsEnabled) {
-            applyCarouselShape(enabled);
+        PreferencesManager current = new PreferencesManager(this);
+        boolean shortcuts = current.isShortcutsPageEnabled();
+        boolean charging = current.isChargingPageEnabled();
+        if (shortcuts != shortcutsEnabled || charging != chargingEnabled) {
+            applyCarouselShape(shortcuts, charging);
         }
     }
 
@@ -100,19 +103,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Applies a page added or removed in settings to the pager and the indicator. */
-    private void applyCarouselShape(boolean enabled) {
-        shortcutsEnabled = enabled;
-        pageCount = HomePagerAdapter.pagesFor(enabled).size();
-        adapter.setShortcutsEnabled(enabled);
-        for (int i = 0; i < pageBars.length; i++) {
-            pageBars[i].setVisibility(i < pageCount ? View.VISIBLE : View.GONE);
-        }
+    private void applyCarouselShape(boolean shortcuts, boolean charging) {
+        shortcutsEnabled = shortcuts;
+        chargingEnabled = charging;
+        pageCount = HomePagerAdapter.pagesFor(shortcuts, charging).size();
+        adapter.setPages(shortcuts, charging);
+        showIndicator();
         // Removing a page can leave the pager on an index that no longer exists.
         pager.post(() -> {
             int position = Math.min(pager.getCurrentItem(), pageCount - 1);
             pager.setCurrentItem(position, false);
             updateIndicator(position);
         });
+    }
+
+    /**
+     * One bar per page on show, and none at all when there is only the home left: a single
+     * dot under a screen you cannot swipe away from says nothing, and looks like a carousel
+     * that has broken rather than one the driver emptied on purpose.
+     */
+    private void showIndicator() {
+        boolean any = pageCount > 1;
+        for (int i = 0; i < pageBars.length; i++) {
+            pageBars[i].setVisibility(any && i < pageCount ? View.VISIBLE : View.GONE);
+        }
     }
 
     /** Highlights the bar of the current page and shrinks the others (SAIC-style pagination). */

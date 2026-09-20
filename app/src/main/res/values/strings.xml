@@ -34,6 +34,7 @@
     <string name="sys_android">Android %1$s · API %2$d</string>
     <string name="sys_launcher">Launcher %1$s (%2$d)</string>
     <string name="sys_model">Model</string>
+    <string name="sys_headunit">Head unit software</string>
     <string name="sys_android_label">Android</string>
     <string name="sys_launcher_label">Launcher</string>
     <string name="sys_uptime_label">Uptime</string>
@@ -126,6 +127,8 @@
     <string name="settings_page_charging">Charging points</string>
     <string name="settings_shortcuts_page">Shortcuts page</string>
     <string name="settings_shortcuts_page_hint">Show the shortcuts page in the carousel</string>
+    <string name="settings_charging_page">Charging points page</string>
+    <string name="settings_charging_page_hint">Show the charging points page in the carousel</string>
     <string name="settings_six_tile_home">Six-tile home</string>
     <string name="settings_six_tile_home_hint">Six smaller favourites instead of three large cards</string>
     <string name="settings_updates">Updates</string>
@@ -148,7 +151,7 @@
     <string name="diagnostics_sent">Log sent</string>
     <string name="diagnostics_send_failed">The log could not be sent</string>
     <string name="diagnostics_send_title">Send a report</string>
-    <string name="diagnostics_send_explain">The log goes to the app author, along with the version and the model of the head unit. It can contain position fixes and the names of the apps you have installed. Nothing is sent until you tap Send.</string>
+    <string name="diagnostics_send_explain">The log goes to the app author, with a card of readings from this head unit — model, Android and launcher versions, memory, storage and the active connection. The log itself can contain position fixes and the names of the apps you have installed. Nothing is sent until you tap Send.</string>
     <string name="diagnostics_send_note_hint">What were you doing? (optional)</string>
     <string name="diagnostics_clear">Clear</string>
     <string name="diagnostics_empty">The log is empty</string>

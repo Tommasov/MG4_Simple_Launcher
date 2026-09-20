@@ -32,6 +32,10 @@ import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +48,7 @@ import java.util.Map;
  * cannot be had shows a dash rather than blanking the screen or, worse, crashing a launcher
  * the driver cannot then get out of.
  */
-class TechnicalDetails {
+public class TechnicalDetails {
 
     private static final long REFRESH_MS = 3_000;
     private static final double GB = 1024d * 1024d * 1024d;
@@ -56,8 +60,15 @@ class TechnicalDetails {
     private final LinearLayout right;
     /** One value view per row, kept so a refresh writes into the rows instead of rebuilding. */
     private final Map<String, TextView> values = new LinkedHashMap<>();
+    /** The same readings as text, so they can be reported without a screen. */
+    private final Map<String, String> snapshot = new LinkedHashMap<>();
     /** The technology reading is explained to the log once, not every three seconds. */
     private boolean technologyExplained;
+
+    /** Never changes while the launcher lives; "" means looked for and not found. */
+    private static final String HEAD_UNIT_PROPERTY = "ro.build.mt2712.version";
+    @Nullable
+    private static String headUnit;
 
     private final Runnable ticker = new Runnable() {
         @Override
@@ -66,6 +77,48 @@ class TechnicalDetails {
             handler.postDelayed(this, REFRESH_MS);
         }
     };
+
+    /**
+     * Readings without a screen, for the diagnostics report. The same code fills the same
+     * values; there is simply nowhere to draw them, which {@link #set} already tolerates.
+     */
+    private TechnicalDetails(@NonNull Context context) {
+        this.context = context;
+        this.left = null;
+        this.middle = null;
+        this.right = null;
+    }
+
+    /**
+     * The device card as plain text, for a report read at a desk.
+     *
+     * <p>These are the facts a technician asks for first and the driver cannot be expected to
+     * read out: which WebView is installed, what is carrying the connection, how much storage
+     * is left. The screen that shows them was taken out of Settings because in normal use
+     * nobody needs it — so the readings travel with the report instead, where they are needed
+     * by someone who is not in the car.
+     */
+    @NonNull
+    public static String report(@NonNull Context context) {
+        TechnicalDetails details = new TechnicalDetails(context);
+        details.refresh();
+        StringBuilder out = new StringBuilder();
+        details.section(out, R.string.sys_device, DEVICE_KEYS, DEVICE_LABELS);
+        details.section(out, R.string.sys_network, NETWORK_KEYS, NETWORK_LABELS);
+        return out.toString();
+    }
+
+    private void section(@NonNull StringBuilder out, @StringRes int titleRes,
+                         @NonNull String[] keys, @NonNull int[] labels) {
+        out.append("--- ").append(context.getString(titleRes)).append(" ---\n");
+        for (int i = 0; i < keys.length; i++) {
+            String value = snapshot.get(keys[i]);
+            if (value != null) {
+                out.append(context.getString(labels[i])).append(": ").append(value).append('\n');
+            }
+        }
+        out.append('\n');
+    }
 
     TechnicalDetails(@NonNull View root) {
         this.context = root.getContext();
@@ -87,23 +140,35 @@ class TechnicalDetails {
 
     // --- rows -------------------------------------------------------------
 
+    /**
+     * Every reading, in order, described once. The screen builds its rows from this and the
+     * report writes its lines from it, so a reading added to one cannot go missing from the
+     * other — which is exactly what would have happened the first time somebody added a row
+     * here and forgot the report existed.
+     */
+    private static final String[] DEVICE_KEYS = {
+            "model", "headunit", "android", "launcher", "uptime", "memory", "storage",
+            "webview"};
+    private static final int[] DEVICE_LABELS = {
+            R.string.sys_model, R.string.sys_headunit, R.string.sys_android_label,
+            R.string.sys_launcher_label,
+            R.string.sys_uptime_label, R.string.sys_memory, R.string.sys_storage,
+            R.string.sys_webview};
+    private static final String[] NETWORK_KEYS = {
+            "connection", "link", "operator", "technology", "signal", "roaming"};
+    private static final int[] NETWORK_LABELS = {
+            R.string.net_connection, R.string.net_link_speed, R.string.net_operator,
+            R.string.net_technology, R.string.net_signal, R.string.net_roaming};
+
     private void buildRows() {
         heading(left, R.string.sys_device);
-        row(left, "model", R.string.sys_model);
-        row(left, "android", R.string.sys_android_label);
-        row(left, "launcher", R.string.sys_launcher_label);
-        row(left, "uptime", R.string.sys_uptime_label);
-        row(left, "memory", R.string.sys_memory);
-        row(left, "storage", R.string.sys_storage);
-        row(left, "webview", R.string.sys_webview);
-
+        for (int i = 0; i < DEVICE_KEYS.length; i++) {
+            row(left, DEVICE_KEYS[i], DEVICE_LABELS[i]);
+        }
         heading(middle, R.string.sys_network);
-        row(middle, "connection", R.string.net_connection);
-        row(middle, "link", R.string.net_link_speed);
-        row(middle, "operator", R.string.net_operator);
-        row(middle, "technology", R.string.net_technology);
-        row(middle, "signal", R.string.net_signal);
-        row(middle, "roaming", R.string.net_roaming);
+        for (int i = 0; i < NETWORK_KEYS.length; i++) {
+            row(middle, NETWORK_KEYS[i], NETWORK_LABELS[i]);
+        }
     }
 
     private void heading(@NonNull LinearLayout column, @StringRes int titleRes) {
@@ -169,10 +234,12 @@ class TechnicalDetails {
     }
 
     private void set(@NonNull String key, @Nullable String text) {
+        String resolved = text == null || text.isEmpty()
+                ? context.getString(R.string.sys_unknown) : text;
+        snapshot.put(key, resolved);
         TextView view = values.get(key);
         if (view != null) {
-            view.setText(text == null || text.isEmpty()
-                    ? context.getString(R.string.sys_unknown) : text);
+            view.setText(resolved);
         }
     }
 
@@ -194,6 +261,7 @@ class TechnicalDetails {
 
     private void bindDevice() {
         set("model", capitalize(Build.MANUFACTURER) + " " + Build.MODEL);
+        set("headunit", headUnitVersion());
         set("android", Build.VERSION.RELEASE + " · API " + Build.VERSION.SDK_INT);
         set("uptime", formatUptime(SystemClock.elapsedRealtime()));
         try {
@@ -215,6 +283,67 @@ class TechnicalDetails {
      * anything we might build — runs on that engine and inherits both its abilities and its
      * unpatched holes. The version is the only way to know which.
      */
+
+    /**
+     * The head unit's own software version, which no Android field carries.
+     *
+     * <p>{@code ro.build.mt2712.version} is what the vehicle's OTA writes, and on this car it
+     * reads {@code SWI68-29958-1300R71} — the tail of it is the trim, so one line in a report
+     * says both which firmware a driver is on and which car they are driving. Worth more than
+     * everything else here put together when the person reading is not in the vehicle.
+     *
+     * <p>Read once and kept: it cannot change while the launcher is running, and this is on a
+     * three-second refresh. Asked of {@code SystemProperties} first and of {@code build.prop}
+     * only if that is refused, because the reflective call is on Android's hidden list — it
+     * works on this firmware, and the fallback costs nothing on the day it stops.
+     */
+    @Nullable
+    private static String headUnitVersion() {
+        if (headUnit == null) {
+            headUnit = readProperty(HEAD_UNIT_PROPERTY);
+            if (headUnit == null) {
+                headUnit = readFromBuildProp(HEAD_UNIT_PROPERTY);
+            }
+            if (headUnit == null) {
+                headUnit = "";
+            }
+        }
+        return headUnit.isEmpty() ? null : headUnit;
+    }
+
+    @Nullable
+    private static String readProperty(@NonNull String name) {
+        try {
+            Class<?> properties = Class.forName("android.os.SystemProperties");
+            Object value = properties.getMethod("get", String.class).invoke(null, name);
+            String text = value == null ? null : value.toString().trim();
+            return text == null || text.isEmpty() ? null : text;
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    @Nullable
+    private static String readFromBuildProp(@NonNull String name) {
+        File file = new File("/system/build.prop");
+        if (!file.canRead()) {
+            return null;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                int equals = line.indexOf('=');
+                if (equals > 0 && line.substring(0, equals).trim().equals(name)) {
+                    String value = line.substring(equals + 1).trim();
+                    return value.isEmpty() ? null : value;
+                }
+            }
+        } catch (IOException ignored) {
+            // Unreadable on this build; the row simply stays unknown.
+        }
+        return null;
+    }
+
     @Nullable
     private String webViewVersion() {
         try {

@@ -33,6 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
     private UpdateManager updateManager;
     private RadioGroup homePageGroup;
     private View shortcutsHomeOption;
+    private View chargingHomeOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +60,13 @@ public class SettingsActivity extends AppCompatActivity {
     private void bindHomePage() {
         homePageGroup = findViewById(R.id.settings_home_page_group);
         shortcutsHomeOption = findViewById(R.id.home_page_shortcuts);
+        chargingHomeOption = findViewById(R.id.home_page_system);
 
         homePageGroup.check(buttonFor(preferences.getHomePage()));
         homePageGroup.setOnCheckedChangeListener(
                 (group, checkedId) -> preferences.setHomePage(pageFor(checkedId)));
         updateShortcutsOptionVisibility(preferences.isShortcutsPageEnabled());
+        updateChargingOptionVisibility(preferences.isChargingPageEnabled());
     }
 
     private void bindFeatures() {
@@ -81,6 +84,21 @@ public class SettingsActivity extends AppCompatActivity {
                         homePageGroup.check(R.id.home_page_main);
                     }
                     updateShortcutsOptionVisibility(checked);
+                });
+        bindToggle(R.id.toggle_charging_page,
+                R.string.settings_charging_page,
+                R.string.settings_charging_page_hint,
+                preferences.isChargingPageEnabled(),
+                checked -> {
+                    preferences.setChargingPageEnabled(checked);
+                    // Same fallback as the shortcuts page: the launcher cannot open on a
+                    // screen that is no longer in the carousel.
+                    if (!checked
+                            && preferences.getHomePage() == HomePagerAdapter.PAGE_CHARGING) {
+                        preferences.setHomePage(HomePagerAdapter.PAGE_HOME);
+                        homePageGroup.check(R.id.home_page_main);
+                    }
+                    updateChargingOptionVisibility(checked);
                 });
     }
 
@@ -290,6 +308,10 @@ public class SettingsActivity extends AppCompatActivity {
         shortcutsHomeOption.setVisibility(shortcutsEnabled ? View.VISIBLE : View.GONE);
     }
 
+    private void updateChargingOptionVisibility(boolean chargingEnabled) {
+        chargingHomeOption.setVisibility(chargingEnabled ? View.VISIBLE : View.GONE);
+    }
+
     private void bindUpdates() {
         TextView version = findViewById(R.id.settings_version);
         try {
@@ -304,8 +326,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void bindDiagnostics() {
-        findViewById(R.id.settings_open_technical).setOnClickListener(
-                v -> startActivity(new Intent(this, TechnicalDetailsActivity.class)));
         TextView summary = findViewById(R.id.settings_diagnostics_summary);
         int lines = DiagnosticsLog.lineCount(DiagnosticsLog.read(this));
         summary.setText(getResources().getQuantityString(
