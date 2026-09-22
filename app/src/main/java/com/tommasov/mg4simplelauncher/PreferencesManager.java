@@ -2,6 +2,9 @@ package com.tommasov.mg4simplelauncher;
 
 import android.content.Context;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -21,6 +24,12 @@ public class PreferencesManager {
     private static final String KEY_BATTERY_KWH = "battery_kwh";
     private static final String KEY_NAVIGATOR = "navigator_target";
     private static final String KEY_CHARGING_ENABLED = "charging_page_enabled";
+    private static final String KEY_MOTORWAY_OPERATORS = "motorway_operators";
+    private static final String KEY_MOTORWAY_POWER = "motorway_min_power";
+    private static final String KEY_MOTORWAY_NAMES = "motorway_operator_names";
+
+    /** Power thresholds offered for the motorway tab, in kW. */
+    public static final int[] MOTORWAY_POWERS = {50, 100, 150, 250};
 
     /**
      * Stored when destinations should go to the vehicle's own navigator. A sentinel rather
@@ -126,6 +135,56 @@ public class PreferencesManager {
      * — a driver with a hundred apps and no interest in where the chargers are should not
      * have to swipe past them for the life of the car.
      */
+    /**
+     * Which operators the motorway tab is narrowed to, as Open Charge Map ids.
+     *
+     * <p>Empty means every operator, which is deliberately the default: a tab tied to one
+     * network works beautifully in the country that network covers and returns nothing at all
+     * across the border. Out of the box the tab is therefore "the most powerful ones nearby",
+     * which is a fair approximation of a motorway stop anywhere; a driver who knows their own
+     * country narrows it to the networks that actually line their motorways.
+     */
+    @NonNull
+    public Set<String> getMotorwayOperators() {
+        return new LinkedHashSet<>(prefs.getStringSet(KEY_MOTORWAY_OPERATORS,
+                Collections.emptySet()));
+    }
+
+    /**
+     * Saves the chosen networks, ids for the query and names for the settings row.
+     *
+     * <p>The names are stored rather than looked up because the row that shows them is in
+     * Settings, where there is no position and no reason to reach the network: "Free To X,
+     * Ewiva" has to be readable the moment the screen opens, and an id means nothing to
+     * anybody. They are a copy, and a copy can go stale — but the worst a renamed network
+     * costs here is an old label on one line, while the query itself still uses the id.
+     */
+    public void setMotorwayOperators(@NonNull Set<String> operatorIds, @NonNull String names) {
+        prefs.edit()
+                .putStringSet(KEY_MOTORWAY_OPERATORS, new LinkedHashSet<>(operatorIds))
+                .putString(KEY_MOTORWAY_NAMES, names)
+                .apply();
+    }
+
+    @NonNull
+    public String getMotorwayOperatorNames() {
+        return prefs.getString(KEY_MOTORWAY_NAMES, "");
+    }
+
+    /**
+     * The floor the motorway tab applies, always — the operator choice narrows it further.
+     *
+     * <p>150 kW by default: above what an MG4 can draw, so everything the tab lists charges it
+     * as fast as it can go.
+     */
+    public int getMotorwayMinPowerKw() {
+        return prefs.getInt(KEY_MOTORWAY_POWER, 150);
+    }
+
+    public void setMotorwayMinPowerKw(int kw) {
+        prefs.edit().putInt(KEY_MOTORWAY_POWER, kw).apply();
+    }
+
     public boolean isChargingPageEnabled() {
         return prefs.getBoolean(KEY_CHARGING_ENABLED, true);
     }

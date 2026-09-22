@@ -45,6 +45,23 @@
                 android:textColor="@color/text_primary"
                 android:textSize="@dimen/drawer_title_size"
                 android:textStyle="bold" />
+
+            <!-- Shown only while the motorway tab is the one on screen. That tab is the only
+                 one with anything to configure — the other three mean the same thing on every
+                 car — so a button always present would promise settings that do not exist.
+                 Here rather than beside the tabs: the tab strip has four labels in 640dp and
+                 no width to give away. -->
+            <ImageView
+                android:id="@+id/charging_motorway_options"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/icon_press_selector"
+                android:clickable="true"
+                android:contentDescription="@string/settings_motorway"
+                android:focusable="true"
+                android:padding="14dp"
+                android:src="@drawable/ic_gear"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Filter tabs: a RadioGroup, exactly how the native energy screen does it. -->

@@ -186,4 +186,16 @@
     <string name="target_unavailable">Auf diesem Fahrzeug nicht verfügbar</string>
     <string name="drawer_empty">Nichts anzuzeigen</string>
     <string name="drawer_empty_vehicle">Keine Fahrzeugansichten gefunden. Die Software dieses Fahrzeugs wird nicht erkannt.</string>
+    <string name="settings_motorway">Motorway tab</string>
+    <string name="motorway_power">Minimum power</string>
+    <string name="motorway_power_value">%1$d kW</string>
+    <string name="motorway_operators">Networks</string>
+    <string name="motorway_looking">Looking for networks around the car…</string>
+    <string name="motorway_no_position">No position yet, so no networks to offer. The tab still works on power alone.</string>
+    <string name="motorway_none_found">No network nearby has stations at this power.</string>
+    <string name="motorway_lookup_failed">Could not reach Open Charge Map.</string>
+    <string name="motorway_operator_row">%1$s  (%2$d)</string>
+    <string name="motorway_save">Save</string>
+    <string name="motorway_all_operators">All networks</string>
+    <string name="motorway_summary">%1$s · ≥%2$d kW</string>
 </resources>

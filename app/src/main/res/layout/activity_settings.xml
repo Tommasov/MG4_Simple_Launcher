@@ -303,6 +303,51 @@
                     android:textSize="@dimen/settings_tab_text_size" />
             </RadioGroup>
 
+            <!-- What the motorway tab looks for. A row for the same reason as the one below
+                 it: the networks it can offer depend on where the car is, so the contents are
+                 not something a fixed column can hold. -->
+            <LinearLayout
+                android:id="@+id/settings_motorway_row"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_action_height"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_motorway"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/charge_item_title_size" />
+
+                    <TextView
+                        android:id="@+id/settings_motorway_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/secondary_text_size" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron" />
+            </LinearLayout>
+
             <!-- A choice behind a row rather than out in the open. The list is as long as the
                  map apps this particular car happens to carry — two entries or five — and a
                  fixed column is the wrong place for something of unknown length; putting it in

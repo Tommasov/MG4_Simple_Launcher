@@ -1,0 +1,15 @@
+<!-- Nothing to see, but the same size as the tick it stands in for.
+
+     A compound drawable takes its bounds from the state currently showing, so pairing a 32dp
+     tick with a zero-sized transparent colour left the row with no room reserved and the tick
+     never appeared at all. The path is transparent rather than absent: a vector with no path
+     at all does not inflate, it throws — which took the whole screen down with it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0h24v24h-24z" />
+</vector>

@@ -416,7 +416,8 @@ public class ChargingCardBinder {
     /** Runs one query, handing back an empty list rather than failing the whole card. */
     private void fetch(@NonNull Location origin, @NonNull ChargingFilter filter,
                        @NonNull Consumer<List<ChargePoint>> then) {
-        client.nearby(origin.getLatitude(), origin.getLongitude(), filter, SUMMARY_COUNT,
+        client.nearby(origin.getLatitude(), origin.getLongitude(),
+                ChargingQuery.of(card.getContext(), filter), SUMMARY_COUNT,
                 new OpenChargeMapClient.Callback() {
                     @Override
                     public void onResult(@NonNull List<ChargePoint> points) {

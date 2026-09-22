@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One row of a group where several answers can be on at once. Same size and same fill as
+     part_choice_item, because a driver should not have to learn two kinds of list — but with
+     a tick at the end, since a fill alone reads as "the one in force" everywhere else in this
+     launcher, and here several can be. Android's own CheckBox was tried first and is the
+     reason this exists: its box and label are sized for a phone in the hand, which on a screen
+     read at arm's length is unusable. -->
+<CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settings_tab_height"
+    android:background="@drawable/choice_item_selector"
+    android:button="@null"
+    android:drawableEnd="@drawable/choice_check_selector"
+    android:drawablePadding="12dp"
+    android:ellipsize="end"
+    android:gravity="center_vertical"
+    android:includeFontPadding="false"
+    android:maxLines="1"
+    android:paddingHorizontal="16dp"
+    android:textColor="@color/filter_tab_text"
+    android:textSize="@dimen/settings_tab_text_size" />

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The tick shown at the end of a multiple-choice row: present when the row is on, and an
+     invisible placeholder of the same size when it is not, so the labels do not shift as
+     rows are ticked. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:drawable="@drawable/ic_check" />
+    <item android:drawable="@drawable/ic_check_off" />
+</selector>

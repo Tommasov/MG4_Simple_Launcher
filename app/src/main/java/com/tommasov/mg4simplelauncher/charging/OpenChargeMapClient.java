@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.tommasov.mg4simplelauncher.BuildConfig;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -70,7 +74,93 @@ public class OpenChargeMapClient {
      *
      * @param maxResults upper bound on returned stations, ordered by distance.
      */
-    public void nearby(double latitude, double longitude, @NonNull ChargingFilter filter,
+    /** One operator seen near the car, with how many of its stations qualified. */
+    public static final class Operator {
+        public final String id;
+        public final String name;
+        public final int stations;
+
+        Operator(String id, String name, int stations) {
+            this.id = id;
+            this.name = name;
+            this.stations = stations;
+        }
+    }
+
+    public interface OperatorCallback {
+        void onResult(@NonNull List<Operator> operators);
+
+        void onError(@NonNull Exception e);
+    }
+
+    /**
+     * The networks that actually have powerful stations around this car, commonest first.
+     *
+     * <p>Built from a live query rather than from Open Charge Map's operator reference list,
+     * which runs to thousands of entries worldwide and would be unreadable on this screen. A
+     * driver in Italy is offered the Italian networks and one in France the French ones,
+     * without the launcher carrying a table of either.
+     */
+    public void operatorsNear(double latitude, double longitude, int radiusKm, int minPowerKw,
+                              @NonNull OperatorCallback callback) {
+        if (!hasApiKey()) {
+            mainHandler.post(() -> callback.onError(
+                    new IllegalStateException("No Open Charge Map API key configured")));
+            return;
+        }
+        executor.execute(() -> {
+            try {
+                String url = Uri.parse(ENDPOINT).buildUpon()
+                        .appendQueryParameter("output", "json")
+                        .appendQueryParameter("latitude", String.valueOf(latitude))
+                        .appendQueryParameter("longitude", String.valueOf(longitude))
+                        .appendQueryParameter("distance", String.valueOf(radiusKm))
+                        .appendQueryParameter("distanceunit", "KM")
+                        .appendQueryParameter("maxresults", "300")
+                        .appendQueryParameter("minpowerkw", String.valueOf(minPowerKw))
+                        .appendQueryParameter("statustypeid", "50,75")
+                        .appendQueryParameter("key", BuildConfig.OCM_API_KEY)
+                        .build().toString();
+                List<Operator> operators = parseOperators(download(url));
+                mainHandler.post(() -> callback.onResult(operators));
+            } catch (Exception e) {
+                Log.w(TAG, "operator lookup failed", e);
+                mainHandler.post(() -> callback.onError(e));
+            }
+        });
+    }
+
+    @NonNull
+    private static List<Operator> parseOperators(@NonNull String body) throws JSONException {
+        JSONArray array = new JSONArray(body);
+        Map<String, String> names = new LinkedHashMap<>();
+        Map<String, Integer> counts = new LinkedHashMap<>();
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject json = array.optJSONObject(i);
+            JSONObject info = json == null ? null : json.optJSONObject("OperatorInfo");
+            if (info == null) {
+                continue;
+            }
+            String id = info.optString("ID", "");
+            String name = info.optString("Title", "").trim();
+            // Open Charge Map uses these two for "nobody filled this in"; offering them as a
+            // network to pick would be offering the driver a filter that means nothing.
+            if (id.isEmpty() || name.isEmpty() || "1".equals(id) || "45".equals(id)) {
+                continue;
+            }
+            names.put(id, name);
+            counts.put(id, counts.containsKey(id) ? counts.get(id) + 1 : 1);
+        }
+        List<Operator> operators = new ArrayList<>();
+        for (Map.Entry<String, String> entry : names.entrySet()) {
+            operators.add(new Operator(entry.getKey(), entry.getValue(),
+                    counts.get(entry.getKey())));
+        }
+        Collections.sort(operators, (a, b) -> b.stations - a.stations);
+        return operators;
+    }
+
+    public void nearby(double latitude, double longitude, @NonNull ChargingQuery filter,
                        int maxResults, @NonNull Callback callback) {
         if (!hasApiKey()) {
             mainHandler.post(() -> callback.onError(
@@ -92,8 +182,10 @@ public class OpenChargeMapClient {
                         .appendQueryParameter("maxresults", String.valueOf(maxResults))
                         // Skip stations OCM knows to be decommissioned or not yet live.
                         .appendQueryParameter("statustypeid", "50,75");
-                if (filter.operatorId != null) {
-                    query.appendQueryParameter("operatorid", String.valueOf(filter.operatorId));
+                if (filter.operatorIds != null) {
+                    // OCM takes a comma separated list here, which is what lets the motorway
+                    // tab carry more than one network.
+                    query.appendQueryParameter("operatorid", filter.operatorIds);
                 }
                 if (filter.minPowerKw != null) {
                     query.appendQueryParameter("minpowerkw", String.valueOf(filter.minPowerKw));

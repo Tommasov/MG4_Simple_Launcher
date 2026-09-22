@@ -178,8 +178,14 @@ public class ChargingMapActivity extends AppCompatActivity
         // Checked before the listener is attached: check() fires it, and the load it would
         // start here would race the one that follows the position lookup.
         filters.check(buttonFor(filter));
+        View motorwayOptions = findViewById(R.id.charging_motorway_options);
+        motorwayOptions.setOnClickListener(v -> MotorwayTabDialog.show(this, this::load));
+        motorwayOptions.setVisibility(
+                filter == ChargingFilter.MOTORWAY ? View.VISIBLE : View.GONE);
         filters.setOnCheckedChangeListener((group, checkedId) -> {
             filter = filterFor(checkedId);
+            motorwayOptions.setVisibility(
+                    filter == ChargingFilter.MOTORWAY ? View.VISIBLE : View.GONE);
             // Each filter is a different query, not a different view of the same results.
             load();
         });
@@ -376,7 +382,8 @@ public class ChargingMapActivity extends AppCompatActivity
         }
         readVehicle();
         showStatus(R.string.charging_loading);
-        client.nearby(origin.getLatitude(), origin.getLongitude(), filter, MAX_RESULTS,
+        client.nearby(origin.getLatitude(), origin.getLongitude(),
+                ChargingQuery.of(this, filter), MAX_RESULTS,
                 new OpenChargeMapClient.Callback() {
                     @Override
                     public void onResult(@NonNull List<ChargePoint> points) {
@@ -423,8 +430,20 @@ public class ChargingMapActivity extends AppCompatActivity
             // standing on it the way a teardrop would.
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
             marker.setIcon(pin);
-            marker.setTitle(point.title);
-            marker.setSnippet(point.operator);
+            // A tap on the pin does what a tap on the row does: the station is selected, the
+            // line to the car is drawn and the panel opens. osmdroid's own answer is a bubble
+            // over the marker carrying the title and the operator, which is both less than
+            // the panel already says and in the way of the map. Returning true keeps that
+            // bubble shut — which is also why the marker is given no title or snippet: they
+            // fed nothing but that.
+            marker.setOnMarkerClickListener((tapped, view) -> {
+                onSelect(point);
+                int position = adapter.positionOf(point);
+                if (position >= 0) {
+                    list.scrollToPosition(position);
+                }
+                return true;
+            });
             map.getOverlays().add(marker);
             markers.put(point.id, marker);
         }

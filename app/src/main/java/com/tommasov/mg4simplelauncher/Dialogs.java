@@ -98,6 +98,22 @@ public final class Dialogs {
         }
     }
 
+    /**
+     * Wraps a dialogue's body so it can scroll.
+     *
+     * <p>Needed wherever the contents are as long as the data makes them — a list of the
+     * charging networks around the car is two entries in one place and fifteen in another —
+     * because a dialogue taller than 720px simply loses its buttons off the bottom of this
+     * screen.
+     */
+    @NonNull
+    public static android.view.View scroll(@NonNull Context context,
+                                           @NonNull android.view.View body) {
+        android.widget.ScrollView scroller = new android.widget.ScrollView(context);
+        scroller.addView(body);
+        return scroller;
+    }
+
     /** An {@link AlertDialog.Builder} whose text is sized for the car. */
     @NonNull
     public static AlertDialog.Builder builder(@NonNull Context context) {

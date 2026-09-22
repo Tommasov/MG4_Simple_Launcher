@@ -19,12 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.tommasov.mg4simplelauncher.charging.FactoryNavigator;
+import com.tommasov.mg4simplelauncher.charging.MotorwayTabDialog;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsActivity;
 import com.tommasov.mg4simplelauncher.diag.DiagnosticsLog;
 import com.tommasov.mg4simplelauncher.update.UpdateManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -50,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
         bindSixTileHome();
         bindBattery();
         bindNavigator();
+        bindMotorway();
         bindBetaBadge();
         bindUpdateOnLaunch();
         bindBetaChannel();
@@ -145,6 +148,26 @@ public class SettingsActivity extends AppCompatActivity {
      * letting Android ask, which is what already happens today. One stored value, two honest
      * readings, and a driver who picked an app can always get back to neither.
      */
+    /**
+     * What the motorway tab looks for. The summary names the networks when the driver has
+     * narrowed it, because "Free To X, Ewiva" says what the tab will do and a count does not.
+     */
+    private void bindMotorway() {
+        findViewById(R.id.settings_motorway_row).setOnClickListener(
+                v -> MotorwayTabDialog.show(this, this::showMotorway));
+        showMotorway();
+    }
+
+    private void showMotorway() {
+        Set<String> chosen = preferences.getMotorwayOperators();
+        String networks = chosen.isEmpty()
+                ? getString(R.string.motorway_all_operators)
+                : preferences.getMotorwayOperatorNames();
+        ((TextView) findViewById(R.id.settings_motorway_value)).setText(
+                getString(R.string.motorway_summary, networks,
+                        preferences.getMotorwayMinPowerKw()));
+    }
+
     private void bindNavigator() {
         View row = findViewById(R.id.settings_navigator_row);
         boolean factory = FactoryNavigator.hasFactoryNavigator(this);

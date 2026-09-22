@@ -87,7 +87,7 @@ final class LocationResolver {
 
     /** Returns the freshest cached fix across providers, or null when there is none. */
     @Nullable
-    static Location lastKnown(@NonNull Context context) {
+    public static Location lastKnown(@NonNull Context context) {
         LocationManager lm =
                 (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (lm == null) {

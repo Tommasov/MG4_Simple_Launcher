@@ -186,4 +186,16 @@
     <string name="target_unavailable">Non disponibile su questa vettura</string>
     <string name="drawer_empty">Niente da mostrare</string>
     <string name="drawer_empty_vehicle">Nessuna schermata di bordo trovata. Il software di questa vettura non è fra quelli riconosciuti.</string>
+    <string name="settings_motorway">Scheda Autostrada</string>
+    <string name="motorway_power">Potenza minima</string>
+    <string name="motorway_power_value">%1$d kW</string>
+    <string name="motorway_operators">Reti</string>
+    <string name="motorway_looking">Cerco le reti attorno alla vettura…</string>
+    <string name="motorway_no_position">Nessuna posizione, quindi nessuna rete da proporre. La scheda continua a funzionare solo sulla potenza.</string>
+    <string name="motorway_none_found">Nessuna rete qui vicino ha stazioni a questa potenza.</string>
+    <string name="motorway_lookup_failed">Non sono riuscito a raggiungere Open Charge Map.</string>
+    <string name="motorway_operator_row">%1$s  (%2$d)</string>
+    <string name="motorway_save">Salva</string>
+    <string name="motorway_all_operators">Tutte le reti</string>
+    <string name="motorway_summary">%1$s · ≥%2$d kW</string>
 </resources>

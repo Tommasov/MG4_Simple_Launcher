@@ -64,6 +64,20 @@ public class ChargePointAdapter
         notifyDataSetChanged();
     }
 
+    /**
+     * Where a station sits in the list, or -1 when it is not in the one on show. Used to
+     * bring a row into view after its pin was tapped on the map: lighting up a row that is
+     * forty entries down tells the driver nothing.
+     */
+    public int positionOf(@NonNull ChargePoint point) {
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).id == point.id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void setSelected(@NonNull ChargePoint point) {
         if (selectedId == point.id) {
             return;
