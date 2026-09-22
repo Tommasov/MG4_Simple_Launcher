@@ -31,8 +31,8 @@ android {
         applicationId = "com.tommasov.mg4simplelauncher"
         minSdk = 28
         targetSdk = 34
-        versionCode = 31
-        versionName = "1.8-beta1"
+        versionCode = 32
+        versionName = "1.8-beta2"
 
         // Base URL of the update server; the version manifest lives at <base>/version.json
         buildConfigField(
