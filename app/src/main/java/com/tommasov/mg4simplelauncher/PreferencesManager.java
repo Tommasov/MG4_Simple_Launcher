@@ -27,6 +27,8 @@ public class PreferencesManager {
     private static final String KEY_MOTORWAY_OPERATORS = "motorway_operators";
     private static final String KEY_MOTORWAY_POWER = "motorway_min_power";
     private static final String KEY_MOTORWAY_NAMES = "motorway_operator_names";
+    private static final String KEY_LAST_LAT = "last_latitude";
+    private static final String KEY_LAST_LON = "last_longitude";
 
     /** Power thresholds offered for the motorway tab, in kW. */
     public static final int[] MOTORWAY_POWERS = {50, 100, 150, 250};
@@ -183,6 +185,34 @@ public class PreferencesManager {
 
     public void setMotorwayMinPowerKw(int kw) {
         prefs.edit().putInt(KEY_MOTORWAY_POWER, kw).apply();
+    }
+
+    /**
+     * Remembers where the car was the last time anything got a fix.
+     *
+     * <p>Android keeps a last-known position of its own, and on this head unit it is always
+     * empty: a report from the car shows every lookup going out to the providers and coming
+     * back from fused, with nothing cached in between. Any screen that needs a rough position
+     * without waiting — the motorway networks picker, which has to ask Open Charge Map what
+     * is around before it can offer anything — would otherwise be told there is no position
+     * while the map two taps away is showing one.
+     */
+    public void setLastPosition(double latitude, double longitude) {
+        prefs.edit()
+                .putLong(KEY_LAST_LAT, Double.doubleToRawLongBits(latitude))
+                .putLong(KEY_LAST_LON, Double.doubleToRawLongBits(longitude))
+                .apply();
+    }
+
+    /** The remembered position as {latitude, longitude}, or null if there has never been one. */
+    @Nullable
+    public double[] getLastPosition() {
+        if (!prefs.contains(KEY_LAST_LAT) || !prefs.contains(KEY_LAST_LON)) {
+            return null;
+        }
+        return new double[]{
+                Double.longBitsToDouble(prefs.getLong(KEY_LAST_LAT, 0)),
+                Double.longBitsToDouble(prefs.getLong(KEY_LAST_LON, 0))};
     }
 
     public boolean isChargingPageEnabled() {

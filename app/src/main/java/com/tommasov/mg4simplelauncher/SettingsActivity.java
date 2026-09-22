@@ -154,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity {
      */
     private void bindMotorway() {
         findViewById(R.id.settings_motorway_row).setOnClickListener(
-                v -> MotorwayTabDialog.show(this, this::showMotorway));
+                v -> MotorwayTabDialog.show(this, null, this::showMotorway));
         showMotorway();
     }
 

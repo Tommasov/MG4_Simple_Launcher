@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.tommasov.mg4simplelauncher.Dialogs;
@@ -46,8 +47,15 @@ public final class MotorwayTabDialog {
     private MotorwayTabDialog() {
     }
 
-    /** Shows the dialogue; {@code onChanged} runs if anything was saved. */
-    public static void show(@NonNull Activity activity, @NonNull Runnable onChanged) {
+    /**
+     * Shows the dialogue; {@code onChanged} runs if anything was saved.
+     *
+     * <p>{@code origin} is the position the caller already has, if any — the charging screen
+     * is watching for fixes and knows one. Settings does not, and falls back to what the last
+     * screen that did remembered.
+     */
+    public static void show(@NonNull Activity activity, @Nullable Location origin,
+                            @NonNull Runnable onChanged) {
         PreferencesManager preferences = new PreferencesManager(activity);
         Context scaled = Dialogs.scaled(activity);
         int pad = activity.getResources().getDimensionPixelSize(R.dimen.card_gap);
@@ -84,7 +92,7 @@ public final class MotorwayTabDialog {
         body.addView(operators);
 
         Set<String> chosen = new LinkedHashSet<>(preferences.getMotorwayOperators());
-        loadOperators(activity, current, operators, chosen);
+        loadOperators(activity, origin, current, operators, chosen);
         // The list answers to the threshold above it, not to the saved one: raising the bar
         // while the dialogue is open is exactly when a driver wants to see which networks
         // survive it. What is already ticked is carried across, so changing your mind about
@@ -98,7 +106,7 @@ public final class MotorwayTabDialog {
             for (OpenChargeMapClient.Operator operator : ticked(operators)) {
                 chosen.add(operator.id);
             }
-            loadOperators(activity, (Integer) button.getTag(), operators, chosen);
+            loadOperators(activity, origin, (Integer) button.getTag(), operators, chosen);
         });
 
         Dialogs.builder(activity)
@@ -133,19 +141,19 @@ public final class MotorwayTabDialog {
      * says so: the tab still works on power alone, which is exactly what an unconfigured one
      * does.
      */
-    private static void loadOperators(@NonNull Activity activity, int minPowerKw,
-                                      @NonNull LinearLayout container,
+    private static void loadOperators(@NonNull Activity activity, @Nullable Location given,
+                                      int minPowerKw, @NonNull LinearLayout container,
                                       @NonNull Set<String> chosen) {
         container.removeAllViews();
         TextView loading = caption(container.getContext(),
                 activity.getString(R.string.motorway_looking));
         container.addView(loading);
-        Location origin = LocationResolver.lastKnown(activity);
+        double[] origin = position(activity, given);
         if (origin == null) {
             loading.setText(R.string.motorway_no_position);
             return;
         }
-        new OpenChargeMapClient().operatorsNear(origin.getLatitude(), origin.getLongitude(),
+        new OpenChargeMapClient().operatorsNear(origin[0], origin[1],
                 OPERATOR_SCAN_KM, minPowerKw,
                 new OpenChargeMapClient.OperatorCallback() {
                     @Override
@@ -172,6 +180,25 @@ public final class MotorwayTabDialog {
                         }
                     }
                 });
+    }
+
+    /**
+     * Where the car is, best source first: what the caller handed us, then what the last
+     * screen to get a fix wrote down, and only then Android's own cache — which on this head
+     * unit has never once held anything.
+     */
+    @Nullable
+    private static double[] position(@NonNull Activity activity, @Nullable Location given) {
+        if (given != null) {
+            return new double[]{given.getLatitude(), given.getLongitude()};
+        }
+        double[] remembered = new PreferencesManager(activity).getLastPosition();
+        if (remembered != null) {
+            return remembered;
+        }
+        Location cached = LocationResolver.lastKnown(activity);
+        return cached == null ? null
+                : new double[]{cached.getLatitude(), cached.getLongitude()};
     }
 
     @NonNull

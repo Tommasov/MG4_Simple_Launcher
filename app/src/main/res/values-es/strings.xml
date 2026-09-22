@@ -202,9 +202,6 @@
     <string name="oem_charge">Charge management</string>
     <string name="oem_discharge">Discharge (V2L)</string>
     <string name="oem_energy">Energy consumption</string>
-    <string name="oem_charge_point">Charge point</string>
-    <string name="oem_charge_point_bluetooth">Charge point: Bluetooth</string>
-    <string name="oem_charge_point_connect">Charge point: connection</string>
     <string name="oem_safety">Safety settings</string>
     <string name="oem_music_bluetooth">Music: Bluetooth</string>
     <string name="oem_music_usb">Music: USB</string>

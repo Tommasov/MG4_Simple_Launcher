@@ -179,7 +179,8 @@ public class ChargingMapActivity extends AppCompatActivity
         // start here would race the one that follows the position lookup.
         filters.check(buttonFor(filter));
         View motorwayOptions = findViewById(R.id.charging_motorway_options);
-        motorwayOptions.setOnClickListener(v -> MotorwayTabDialog.show(this, this::load));
+        motorwayOptions.setOnClickListener(
+                v -> MotorwayTabDialog.show(this, origin, this::load));
         motorwayOptions.setVisibility(
                 filter == ChargingFilter.MOTORWAY ? View.VISIBLE : View.GONE);
         filters.setOnCheckedChangeListener((group, checkedId) -> {
@@ -281,6 +282,9 @@ public class ChargingMapActivity extends AppCompatActivity
                 }
                 boolean first = origin == null;
                 origin = location;
+                // Kept for the screens that need a position but cannot wait for one.
+                new PreferencesManager(ChargingMapActivity.this).setLastPosition(
+                        location.getLatitude(), location.getLongitude());
                 if (first) {
                     DiagnosticsLog.log(ChargingMapActivity.this, TAG_DIAG,
                             "position from " + location.getProvider());
