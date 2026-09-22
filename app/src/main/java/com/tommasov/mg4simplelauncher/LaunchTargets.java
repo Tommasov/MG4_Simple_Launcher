@@ -55,6 +55,8 @@ public final class LaunchTargets {
     private static final String OWN_PREFIX = "own:";
     /** A specific activity, as {@code act:package/class}: the vehicle's own screens. */
     private static final String ACTIVITY_PREFIX = "act:";
+    /** A page inside one of the vehicle's own apps: see {@link VehicleShortcuts}. */
+    private static final String OEM_PREFIX = "oem:";
 
     /** The two the dock is set to out of the box, named so nobody has to spell the prefix. */
     public static final String OWN_DOWNLOADS = OWN_PREFIX + "downloads";
@@ -170,7 +172,19 @@ public final class LaunchTargets {
     /** True when this stored value is one of these rather than a package name. */
     public static boolean isTarget(@Nullable String id) {
         return id != null && (id.startsWith(SYSTEM_PREFIX) || id.startsWith(OWN_PREFIX)
-                || id.startsWith(ACTIVITY_PREFIX));
+                || id.startsWith(ACTIVITY_PREFIX) || id.startsWith(OEM_PREFIX));
+    }
+
+    /** The id under which a page inside one of the vehicle's apps is stored. */
+    @NonNull
+    public static String shortcutId(@NonNull VehicleShortcuts.Shortcut shortcut) {
+        return OEM_PREFIX + shortcut.id;
+    }
+
+    @Nullable
+    private static VehicleShortcuts.Shortcut shortcutOf(@NonNull String id) {
+        return id.startsWith(OEM_PREFIX)
+                ? VehicleShortcuts.find(id.substring(OEM_PREFIX.length())) : null;
     }
 
     /** The id under which a vehicle screen is stored. */
@@ -326,6 +340,12 @@ public final class LaunchTargets {
      */
     @Nullable
     public static Drawable iconFor(@NonNull Context context, @NonNull String id) {
+        VehicleShortcuts.Shortcut shortcut = shortcutOf(id);
+        if (shortcut != null) {
+            // The icon of the app the page lives in: it is the one the driver associates with
+            // that screen, and we have no artwork of our own for eleven vendor pages.
+            return AppIcons.highRes(context, shortcut.packageName());
+        }
         Target target = find(id);
         if (target != null) {
             return target.icon(context);
@@ -345,6 +365,10 @@ public final class LaunchTargets {
     /** The label for whatever a tile holds, or null when it cannot be resolved. */
     @Nullable
     public static CharSequence labelFor(@NonNull Context context, @NonNull String id) {
+        VehicleShortcuts.Shortcut shortcut = shortcutOf(id);
+        if (shortcut != null) {
+            return shortcut.label(context);
+        }
         Target target = find(id);
         if (target != null) {
             return target.label(context);
@@ -375,6 +399,19 @@ public final class LaunchTargets {
      * real possibility on a vendor Android.
      */
     public static boolean launch(@NonNull Context context, @NonNull String id) {
+        VehicleShortcuts.Shortcut shortcut = shortcutOf(id);
+        if (shortcut != null) {
+            try {
+                context.startActivity(shortcut.intent());
+                return true;
+            } catch (SecurityException | ActivityNotFoundException e) {
+                // Some of these pages are reachable and some are not, and the manifest does
+                // not always say which: the music app declares itself unexported and may or
+                // may not honour that. The tile reports the refusal rather than pretending.
+                DiagnosticsLog.log(context, "LaunchTargets", "refused " + id + ": " + e);
+                return false;
+            }
+        }
         ComponentName stored = componentOf(id);
         if (stored != null && isOffLimits(stored.getPackageName(), stored.getClassName())) {
             // Checked again here and not only where the list is built: a tile assigned before

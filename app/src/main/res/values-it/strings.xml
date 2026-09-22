@@ -198,4 +198,15 @@
     <string name="motorway_save">Salva</string>
     <string name="motorway_all_operators">Tutte le reti</string>
     <string name="motorway_summary">%1$s · ≥%2$d kW</string>
+    <string name="oem_bluetooth">Bluetooth (vettura)</string>
+    <string name="oem_charge">Gestione ricarica</string>
+    <string name="oem_discharge">Scarica (V2L)</string>
+    <string name="oem_energy">Consumi</string>
+    <string name="oem_charge_point">Punto di ricarica</string>
+    <string name="oem_charge_point_bluetooth">Punto di ricarica: Bluetooth</string>
+    <string name="oem_charge_point_connect">Punto di ricarica: connessione</string>
+    <string name="oem_safety">Impostazioni di sicurezza</string>
+    <string name="oem_music_bluetooth">Musica: Bluetooth</string>
+    <string name="oem_music_usb">Musica: USB</string>
+    <string name="oem_music_online">Musica: online</string>
 </resources>

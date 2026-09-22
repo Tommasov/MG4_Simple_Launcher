@@ -279,6 +279,14 @@ public class AppDrawerActivity extends AppCompatActivity {
      */
     private List<AppInfo> vehicleTargets() {
         List<AppInfo> targets = new ArrayList<>();
+        // First the named pages inside the car's own apps: they are the ones a driver was
+        // looking for, and they cannot be discovered — the screens below them are whole
+        // activities, these are pages reached with an intent extra. See VehicleShortcuts.
+        for (VehicleShortcuts.Shortcut shortcut : VehicleShortcuts.available(this)) {
+            String id = LaunchTargets.shortcutId(shortcut);
+            targets.add(new AppInfo(shortcut.label(this), id,
+                    LaunchTargets.iconFor(this, id), true));
+        }
         for (LaunchTargets.ActivityTarget screen : LaunchTargets.vehicleScreens(this)) {
             targets.add(new AppInfo(screen.label, screen.id(),
                     LaunchTargets.iconFor(this, screen.id()), true));
